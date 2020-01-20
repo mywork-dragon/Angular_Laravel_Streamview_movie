@@ -1,0 +1,843 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<head lang="en">
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+	<title>Easy Video Player documentation.</title>
+	<script type="text/javascript" src="scripts/shCore.js"></script>
+	<script type="text/javascript" src="scripts/shBrushJScript.js"></script>
+	<script type="text/javascript" src="scripts/shBrushXml.js"></script>
+	
+	<link type="text/css" rel="stylesheet" href="styles/shCoreDefault.css"/>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>
+	<!-- Framework CSS -->
+	<link rel="stylesheet" href="assets/blueprint-css/screen.css" type="text/css" media="screen, projection">
+	<link rel="stylesheet" href="assets/blueprint-css/print.css" type="text/css" media="print">
+	<!--[if lt IE 8]><link rel="stylesheet" href="assets/blueprint-css/ie.css" type="text/css" media="screen, projection"><![endif]-->
+	<link rel="stylesheet" href="assets/blueprint-css/plugins/fancy-type/screen.css" type="text/css" media="screen, projection">
+	<link rel="stylesheet" href="assets/blueprint-css/fwd.css" type="text/css" >
+	<style type="text/css" media="screen">
+		p, table, hr, .box { margin-bottom:25px; }
+		.box p { margin-bottom:10px; }
+	</style>
+</head>
+
+<body>
+	<div class="container">
+	
+		<h3 class="center alt">&ldquo;Easy Video Player &rdquo; Documentation by FWDesign</h3>
+		
+		<hr>
+		
+		<h1 class="center">&ldquo;<span class="center alt">Easy Video Player</span>&rdquo;</h1>
+		
+		<div class="borderTop">
+			<div class="span-6 colborder info prepend-1">
+				<p class="prepend-top">
+					<strong>
+					Created: 10/01/2018 - Version 6.1<br>
+					By:© FWD (FLASH WEB DESIGN)<br>
+					Email: <a href="mailto:contact@webdesign-flash.ro">contact@webdesign-flash.ro</a>
+					</strong>
+				</p>
+			</div><!-- end div .span-6 -->		
+	
+			<div class="span-12 last">
+				<p class="prepend-top append-0">Thank you for purchasing our script. If you have any questions that are beyond the scope of this help file, please feel free to email via our email. Thanks so much!</p>
+			</div>
+		</div><!-- end div .borderTop -->
+		
+		<hr>
+		
+		<h2 id="toc" class="alt">Table of Contents</h2>
+		<ol class="alpha">
+			<li><a href="#important">Important notes read this before anything else.</a></li>
+			<li><a href="#instalation">Install Easy Video Player into your html page.</a></li>
+			<li><a href="#source">Setup video / audio and poster source.</a></li>
+			<li><a href="#ads">Setup ads (pre-roll, mid-roll, post-roll)/ advertisement video.</a></li>
+			<li><a href="#cuepoints">Setup cuepoints</a></li>
+			<li><a href="#config">Constructor parameters.</a></li>
+			<li><a href="#sub">Setup subtitles.</a></li>
+			<li><a href="#share">Setup pop-up commercial ads.</a></li>
+			<li><a href="#annotations">Setup annotations.</a></li>
+			<li><a href="#private">Setup private videos.</a></li>
+			<li><a href="#encrypt">Encrypt video path.</a></li>
+			<li><a href="#popw">Setup advertisement on pause window.</a></li>
+			<li><a href="#api">API.</a></li>
+			<li><a href="#credits">Sources and Credits</a></li>
+		</ol>
+	
+		<hr>
+		
+		<h3 id="important"><strong>A) Important notes make sure you read this!</strong> - <a href="#toc">top</a></h3>
+		<p>Please note that the Easy Video Player installation and configuration is not complicated but because it has a lot of customizable settings it might seem complicated, please go through the entire documentation before trying to install it into your own page. Basically what it must be done is to copy some html code from the examples we provided and paste it into your own html page and of course add your own video file.</p>
+		<p>Easy Video Player only requires the mp4 video format and it  will work in all browsers on a desktop machine or on a mobile device, this is extremely important because there is no need to create multiple video formats for browsers that dose not support mp4, also please note that the mp4 video format is recommended and used by all major browsers distributors like Google, Microsoft, Apple, Mozzila etc.!</p>
+		<p>The server is character case sensitive so make sure that the Easy Video Player settings are identical to those from the provided examples.</p>
+		<p style="color:#FF0000;">When using mp4 video files located on your server with relative paths you must add all folders that contains mp4's videos in the content folder, this is extremely important in order for all features to work correctly.</p>
+		<p>It is important to understand that the more video instances are used the browser will be more stressed and problems may occur specially on mobile. If you think at all popular video websites like youtube or video they are only using a single video instance and this is done because of performance issues... Try to keep the Easy Video Player instances to a maximum of six instances if possible even less, this will help the browser to perform great. This recommendation applies to all video players available on the web including youtube or vimeo!</p>
+		<p>When testing local on IE7/IE8 or on an older browser that dose not support HTML5 video it will not work because the flash (.swf) file is trying to communicate with the browser and this is not allowed, of course it will work fine when tested online.</p>
+		<p>Some of the  features will not work local like the share button or playing youtube videos on some browsers like IE and Opera, or like playng vimeo videos, this is normal behavior because most browser does not allow this, once uploaded on the server it will function properly.</p>
+		<p>If you don't need to use youtube set <span class="boldLi">useYoutube:"no"</span> the same applies if you don't want to use Vimeo set <span class="boldLi">useVimeo:"no"</span>, this is important because it will not createa the Vimeo or Youtube instances this will improve overall performance.</p>
+		<p>When something is wrong with a Easy Video Player actions a info box with the problem description will appear over the Easy Video Player, please note that this box is there to help you understand the problem, for example if a mp4 video file is not found the box will appear and inform you about the problem. The box can be closed when clicked or touched.</p>
+		<p>The Easy Video Player skin is constructed from .png images, only  a few settings for changing colors are possible like changing the time color. If you want a different skin the .png files must be modified. The skin is really flexible this is allowing to skin the Easy Video Player as you like. We have a great designer in our team so if you need a custom skin please contact us!</p>
+		<p>To use EVP as a video a video background for your website set displayType:"backgroundVideo" .</p>
+		<h3 id="instalation"><strong>B) Install Easy Video Player into your html page.</strong> - <a href="#toc">top</a></h3>
+		<p>EVP has multiple display types (fluid width, responsive, fixed, fullscreen, after parent), each display type is explained in detail below.</p>
+
+		<h4><strong>Responsive installation</strong></h3>
+
+		<p>In the download files there is a start folder and in this folder there are html files starting with the label "responsive", each of this examples have exactly the same structure with different constructor settings. You can use one of them to copy and paste the required html code based on skin that you need, I will use the <span class="boldLi">responsive-skin-minimal-dark.html</span> as an example for this tutorial.</p>
+		<p>The skin is created using javascript and .png images, if you want a custom skin please contact us. If you want to create a skin of your own modify the ones we already provided.</p>
+		
+		<ul>
+			<li>Copy and paste the content folder and the java folder into the same folder with your .html file, inside the content folder there are other folders which are self explanatory. Keep only the skin folders that you need to save space on the server.</li>
+			<li>Open responsive-skin-minimal-dark.html with a text editor.</li>
+			<li>The javascript file must be imported, in the head section of your html file add the code from the below image.</li>
+			<pre class="brush: js; html-script: true, class-name: 'negativeLeftMarginsHTML'">
+				<script type="text/javascript" src="java/FWDEVPlayer.js"></script></pre>
+			<li>You need a div into which the Easy Video Player will be added as a child, so create a div and set an id for it, the id is important because it is passed in the Easy Video Player constructor, make sure it is unique. The Easy Video Player is responsive as follows, the width will adapt based on the <span class="boldLi">maxWidth</span> property specified in the constructor, the height is set based on the skin height, if the page is resized and the parent div width is smaller then the <span class="boldLi">maxWidth</span> property the Easy Video Player will adapt its size accordingly.</li>
+			<pre class="brush: js; html-script: true, class-name: 'negativeLeftMarginsHTML'">
+				<div id="myDiv" style="margin:auto;"></div></script></pre>
+			<li>Next step is to initialize the Easy Video Player with javascript, in the head section of your html page add the code from the below image. Please note that all parameters are described in the <a href="#config">constructor parameters</a> section.</li>
+			<pre class="brush: js; class-name: 'negativeLeftMargins'">
+		<script type="text/javascript">
+			FWDEVPUtils.onReady(function(){
+
+				FWDEVPlayer.videoStartBehaviour = "pause";
+				
+				new FWDEVPlayer({		
+					//main settings
+					useYoutube:"yes",
+					useVimeo:"no",
+					instanceName:"player1",
+					parentId:"myDiv",
+					mainFolderPath:"content",
+					skinPath:"minimal_skin_dark",
+					displayType:"responsive",
+					fillEntireVideoScreen:"no",
+					autoScale:"yes",
+					fillEntireVideoScreen:"no",
+					useHEXColorsForSkin:"no",
+					openDownloadLinkOnMobile:"no",
+					normalHEXButtonsColor:"#FF0000",
+					selectedHEXButtonsColor:"#FFFFFF",
+					startAtVideoSource:2,
+					videoSource:[
+						{source:"content/videos/fwd-480p.mp4", label:"small version"},
+						{source:"content/videos/fwd-720p.mp4", label:"hd720"},
+						{source:"content/videos/fwd-1080p.mp4", label:"hd1080"}
+					],
+					posterPath:"content/posters/mp4-poster.jpg, content/posters/mp4-poster-mobile.jpg",
+					showErrorInfo:"yes",
+					fillEntireScreenWithPoster:"yes",
+					rightClickContextMenu:"developer",
+					disableDoubleClickFullscreen:"no",
+					addKeyboardSupport:"yes",
+					useChromeless:"no",
+					showPreloader:"yes",
+					autoPlay:"no",
+					loop:"no",
+					scrubAtTimeAtFirstPlay:"00:00:00",
+					maxWidth:600,
+					maxHeight:380,
+					volume:.8,
+					greenScreenTolerance:200,
+					backgroundColor:"#000000",
+					posterBackgroundColor:"#0099FF",
+					//logo settings
+					showLogo:"yes",
+					hideLogoWithController:"yes",
+					logoPosition:"topRight",
+					logoLink:"http://www.webdesign-flash.ro",
+					logoMargins:5,
+					//controller settings
+					showController:"yes",
+					showControllerWhenVideoIsStopped:"yes",
+					showVolumeScrubber:"yes",
+					showVolumeButton:"yes",
+					showTime:"yes",
+					showQualityButton:"yes",
+					showSubtitleButton:"yes",
+					showShareButton:"yes",
+					showDownloadButton:"yes",
+					showFullScreenButton:"yes",
+					repeatBackground:"yes",
+					controllerHeight:41,
+					controllerHideDelay:3,
+					startSpaceBetweenButtons:7,
+					spaceBetweenButtons:9,
+					mainScrubberOffestTop:14,
+					scrubbersOffsetWidth:4,
+					timeOffsetLeftWidth:5,
+					timeOffsetRightWidth:3,
+					volumeScrubberWidth:80,
+					volumeScrubberOffsetRightWidth:0,
+					timeColor:"#777777",
+					youtubeQualityButtonNormalColor:"#777777",
+					youtubeQualityButtonSelectedColor:"#FFFFFF",
+					//cuepoints
+					executeCuepointsOnlyOnce:"no",
+					//annotations
+					annotiationsListId:"none",
+					showAnnotationsPositionTool:"no",
+					//subtitles
+					showSubtitleButton:"yes",
+					subtitlesOffLabel:"Subtitle off",
+					startAtSubtitle:1,
+					subtitlesSource:[
+						{subtitlePath:"content/english_subtitle.txt", subtileLabel:"English"},
+						{subtitlePath:"content/romanian_subtitle.txt", subtileLabel:"Romanian"},
+						{subtitlePath:"content/spanish_subtitle.txt", subtileLabel:"Spanish"}
+					],
+					//audio visualizer
+					audioVisualizerLinesColor:"#0099FF",
+					audioVisualizerCircleColor:"#FFFFFF",
+					//advertisement on pause window
+					aopwTitle:"Advertisement",
+					aopwSource:"",
+					aopwWidth:400,
+					aopwHeight:240,
+					aopwBorderSize:6,
+					aopwTitleColor:"#FFFFFF",
+					//playback rate / speed
+					showPlaybackRateButton:"yes",
+					defaultPlaybackRate:"1", //0.25, 0.5, 1, 1.25, 1.5, 2
+					//loggin
+					isLoggedIn:"no",
+					playVideoOnlyWhenLoggedIn:"yes",
+					loggedInMessage:"Please login to view this video.",
+					//embed window
+					embedWindowCloseButtonMargins:0,
+					borderColor:"#333333",
+					mainLabelsColor:"#FFFFFF",
+					secondaryLabelsColor:"#a1a1a1",
+					shareAndEmbedTextColor:"#5a5a5a",
+					inputBackgroundColor:"#000000",
+					inputColor:"#FFFFFF"
+				});				
+			});
+		</script></pre>
+        </ul>   
+		<p>This is how the player is installed in a HTML page, please read the  <a href="#config">Constructor parameters</a> section to understand the Easy Video Player properties</p>
+		
+		<h4><strong>Fullscreen and popup installation.</strong> - <a href="#toc">top</a></h4>
+		<p>To install the EVP player in fullscreen the exact same steps as in the <a href="#instalation">Responsive installation</a> must be followed, the only difference is that the <span class="boldLi">displyType</span> property must be set to <span class="boldLi">fullscreen</span> as follows : <span class="boldLi">displyType:"fullscreen"</span>. Inside the start folder there are html files examples for each skins, this examples are starting with the label "fullscreen".</p>
+		
+		<p>To popup the EVP there is a POPUP-example.html example includded in the start file. Please check out the source to see how this is accomplished.</p>
+		
+		<h4><strong>Atter parent installation</strong></h3>
+		<p>This display type is resizing EVP width and height to fill the available parent div width and height, this is really useful if you have a responsive div and you want EVP to resize based on it's size. To use this display type follow the same installation steps from <a href="#instalation">Responsive installation</a> section, the only difference is the <span class="boldLi">displayType</span> property which must be set to <span class="boldLi">afterParent</span> like this <span class="boldLi">displayType:afterParent</span>. In the start folder there is a html file called <span class="boldLi">AFTER-PARENT.html</span>, you can use it as reference.</p>
+
+		
+		<h3 id="source"><strong>C) Setup video / audio and poster source.</strong> - <a href="#toc">top</a></h3>
+		
+		<p>evp can play mp4 videos from your server, a different server youtube or vimeo. If you are using relative source paths for your videos make sure that all of them are situated inside the content folder, this is really important in order for the player to function correctly, </p>
+		<p>To play a video from your server set the <span class="boldLi">videoSource</span> property to point to the mp4 video path, relative or absolute paths can be used, also  evp can be set to play, multiple video sources. This is ilustrated below.</p>
+		<pre class="brush: js; class-name: 'negativeLeftMarginsHTML'">
+		//multiple sources
+		videoSource:[
+			{source:"content/videos/fwd-480p.mp4", label:"small version"},
+			{source:"content/videos/fwd-720p.mp4", label:"hd720"},
+			{source:"content/videos/fwd-1080p.mp4", label:"hd1080"}
+		],
+		
+		//single source
+		videoSource:[
+			{source:"content/videos/fwd-1080p.mp4", label:"hd1080"}
+		],
+		</pre>
+		
+		
+		<br><br>
+		<p>To add a poster for the video set posterPath to point to the poster image (jpg, jpeg, png), please note that an optional source for mobile devices can be added seprated by ",". Example below:
+		<pre class="brush: js; class-name: 'negativeLeftMarginsHTML'">
+		posterPath:"content/posters/mp4-poster.jpg, content/posters/mp4-poster-mobile.jpg",
+		</pre>
+		
+		<p>To play a HLS / m3u8 video file set the <span class="boldLi">videoSource</span> property to point to HLS / m3u8 video URL, this is illustrated below.</p>
+		<pre class="brush: js; class-name: 'negativeLeftMarginsHTML'">
+		videoSource:[
+			{source:"http://184.72.239.149/vod/smil:BigBuckBunny.smil/playlist.m3u8", label:""}
+		],
+		</pre>
+			
+		<p>To play a video from youtube set the <span class="boldLi">videoSource</span> property to point to youtube video URL, this is illustrated below.</p>
+		<pre class="brush: js; class-name: 'negativeLeftMarginsHTML'">
+		videoSource:[
+			{source:"https://www.youtube.com/watch?v=5wAHG-tPgc0"}
+		],
+		</pre>
+		<p></p>
+		<p>To play a video from vimeo set the <span class="boldLi">videoSource</span> property to point to vimeo video URL, this is illustrated below.</p>
+		<pre class="brush: js; class-name: 'negativeLeftMarginsHTML'">
+		videoSource:[
+			{source:"https://vimeo.com/187418097"}
+		],
+		</pre>
+		<p></p>
+		<p>To play a mp3 file set the <span class="boldLi">videoSource</span> property to point to the mp3 file relative or absolute path, this is illustrated below.</p>
+		<pre class="brush: js; class-name: 'negativeLeftMarginsHTML'">
+		videoSource:[
+			{source:"content/audio/1.mp3"}
+		],
+		</pre>
+		<p><p>
+		<p>To play a 360 degree / VR  video set the <span class="boldLi">videoSource</span> property to point to video video URL and there is an extra parameter named videoType that has to be set to 360DegreeVideo, this will enable this feature for the current video as illustrated below.</p>
+		<pre class="brush: js; class-name: 'negativeLeftMarginsHTML'">
+		videoSource:[
+			{source:"content/videos/360.mp4", label:"", videoType:"360DegreeVideo"}
+		],
+		</pre>
+		<p>To play a green screen  video set the <span class="boldLi">videoSource</span> property to point to video video URL and there is an extra parameter named videoType that has to be set to greenScreenVideo, this will enable this feature for the current video as illustrated below. In the start file there is a HTML file called GREENSCREEN-example.html, you can use it as reference. Please note that this feature will only work when tested online on a http protocol it will not work local, locally only the audio is playing, also the mp4 video has to be from the same domain with the domain on which the video player is running.</p>
+		<pre class="brush: js; class-name: 'negativeLeftMarginsHTML'">
+		videoSource:[
+			{source:"content/videos/zombie.mp4", label:"", videoType:"greenscreenvideo"}
+		],
+		</pre>
+		<p><p>
+		<p></p>
+		<p>To play a mp3 or mp4 file from  google drive set the <span class="boldLi">videoSource</span> property to point to the mp3 / mp4 google frive video source, this is explained in the tutorial below.</p>
+		<pre class="brush: js; class-name: 'negativeLeftMarginsHTML'">
+		videoSource:[
+			{source:"content/audio/1.mp3"}
+		],
+		</pre>
+		<p class="boldLi">Method 1:</p>
+		<p>Go to Disc – My drive.<br><br>Right click on <span class=class="boldLi">get shareable link</span> the like on screenshot: <a href="assets/images/GDRightClick.jpg" target="blank">get video id 1</a> <a href="assets/images/GDRightClick2.jpg" target="blank">get video id 2</a> and use that video ID to create google drive video URL.<br><br>This is final URL how google drive video URL should look:https://drive.google.com/uc?export=download&id=videoID<br><br>Replace videoID with the id taken from the previous step and use it as the video source:https://drive.google.com/uc?export=download&id=0B4Au_agYmWFZQWdHdHN3OVJLX0E</p>
+		<br>
+		<p class="boldLi">Method 2 for larger google drive video files:</p>
+		<p>Go to Disc – My drive.<br><br>Right click on <span class=class="boldLi">get shareable link</span> the like on screenshot: <a href="assets/images/GDRightClick.jpg" target="blank">get video id 1</a> <a href="assets/images/GDRightClick2.jpg" target="blank">get video id 2</a><br><br>Copy that URL of the video directly into browser then search for the video src, please see <a href="assets/images/GDRightClick3.jpg" target="blank">get video src</a>.<br><br>Right click on video -> inspect element -> find div with class ‘drive-viewer-video-player’ -> open up iframe -> document -> html -> body -> player -> html5-video-player -> and you will see a &lt;video&gt; tags with the ‘src’ of the video, you need copy/paste that ‘src’ into the player options.<br><br>Use the mp4 or mp3 src as the the video source.</p>
+		<br>
+		<p class="boldLi">Method 3:</p>
+		<p>Go to Disc – My drive.<br><br>Right click on <span class=class="boldLi">get shareable link</span> the like on screenshot: <a href="assets/images/GDRightClick.jpg" target="blank">get video id 1</a> <a href="assets/images/GDRightClick2.jpg" target="blank">get video id 2</a> and use that video ID to create google drive video URL.<br><br>This is how the final URL should look: http://api.getlinkdrive.com/getlink?url=https://drive.google.com/file/d/GOOGLE_DRIVE_VIDEO_ID/view where GOOGLE_DRIVE_VIDEO_ID represents the video id taken for the shareable link<br><br>Once open the link will answer with a JSON, use the JSON value of the url paramaeter as the video source.</p>
+		
+		<p></p>
+		<p><p>
+		
+		
+		
+	
+		<h3 id="cuepoints"><strong>E) Setup video couepoints.</strong> - <a href="#toc">top</a></h3>
+		<p>To add quepoints to a video the cuepoints parameter has to be set to an array of quepoints like showed below. Inside it there are the cuepoints, you can add as many as you like by stacking them one after eachother.  Each object contains the quepoints data as follows :<br><br><span class="boldLi">timeStart</span>: - the time in format "hours:minutes:seconds" at which the cuepoint will execute the javascript code, for example to execute the quepoint code at second 10 into the video playe set this option to 00:00:10.<br><span class="boldLi">javascriptCall</span>: - a function name for example myFunction() or a javascript snipet code like alert('cuepoint at time 00:00:10'), this will be executed at quepoint time start.</p>
+		<pre class="brush: js; html-script: true, class-name: 'negativeLeftMarginsHTML'">
+		cuepoints:[
+			{timeStart:"00:00:10", javascriptCall:"alert('cuepoint at time 00:00:10')"},
+			{timeStart:"00:00:30", javascriptCall:"alert('cuepoint at time 00:00:30')"}
+		]
+		</pre>
+		
+		<p><p>
+		<h3 id="ads"><strong>D) Setup ads (pre-roll, mid-roll, post-roll)/ advertisement video.</strong> - <a href="#toc">top</a></h3>
+		
+		<p>First of all to add ads to a video the adsSource parameter has to be set an array of ads like showed below. Inside it there are the ads, you can add as many as you like by stacking them one after each other. Each object contains the ads data as follows :<br><br><span class="boldLi">source</span> - the ad source, it can be a mp4 video path, an image path, webpage URL or a youtube video url.<br><span class="boldLi">timeStart</span> - the ad start time when it will appear in hours:minutes:seconds format.<br><span class="boldLi">timeToHoldAds</span> - the ad  time until the skip button will appear in hours:minutes:seconds format.<br><span class="boldLi">thumbnailSource</span> - optional tumbnail source that will appear as a small preview in the skip button.<br><span class="boldLi">link</span> - the link to open when the ad is clicked.<br><span class="boldLi">target</span> - the link target (_blank or _self).<br><span class="boldLi">addDuration</span> - this is optional if the ad is an image or a webpage(iframe) and it represents the time to hold the image or webpage(iframe) ad in in hours:minutes:seconds format.</p>
+		<pre class="brush: js; html-script: true, class-name: 'negativeLeftMarginsHTML'">
+		adsSource:[
+				{source:"https://www.cinemagia.ro/filme-2017/", timeStart:"00:00:20", addDuration:"00:00:60", timeToHoldAds:4, thumbnailSource:"content/images/thumbnail.jpg",  target:"_blank"},
+				{source:"content/videos/ad.mp4", timeStart:"00:00:20", timeToHoldAds:4, thumbnailSource:"content/images/thumbnail.jpg", link:"http://www.webdesign-flash.ro", target:"_blank"},
+				{source:"https://www.youtube.com/watch?v=Bv09DRd4lsM", timeStart:"00:00:40", timeToHoldAds:4, thumbnailSource:"content/images/thumbnail.jpg", link:"http://www.google.ro", target:"_blank"},
+				{source:"content/images/ad.jpg", timeStart:"00:00:55", addDuration:"00:00:20", timeToHoldAds:4, thumbnailSource:"content/images/thumbnail.jpg", link:"http://www.webdesign-flash.ro/p/evp/content/images/ad.jpg", target:"_blank"}
+		]
+		</pre>
+
+		<br><br>
+		<h3 id="config"><strong>F) Constructor parameters.</strong> - <a href="#toc">top</a></h3>
+		<p>Please open any of the .html files provided with a text editor as reference.</p>
+		<p>These parameters represents the possible setting for the Easy Video Player they are all visible in the below image and described below.</p>
+		<pre class="brush: js; class-name: 'negativeLeftMarginsHTML'">
+		<script type="text/javascript">
+			FWDEVPUtils.onReady(function(){
+
+				FWDEVPlayer.videoStartBehaviour = "pause";
+				
+				new FWDEVPlayer({		
+					//main settings
+					useYoutube:"yes",
+					useVimeo:"no",
+					instanceName:"player1",
+					parentId:"myDiv",
+					mainFolderPath:"content",
+					skinPath:"minimal_skin_dark",
+					displayType:"responsive",
+					fillEntireVideoScreen:"no",
+					autoScale:"yes",
+					fillEntireVideoScreen:"no",
+					useHEXColorsForSkin:"no",
+					openDownloadLinkOnMobile:"no",
+					normalHEXButtonsColor:"#FF0000",
+					selectedHEXButtonsColor:"#FFFFFF",
+					startAtVideoSource:2,
+					videoSource:[
+						{source:"content/videos/fwd-480p.mp4", label:"small version"},
+						{source:"content/videos/fwd-720p.mp4", label:"hd720"},
+						{source:"content/videos/fwd-1080p.mp4", label:"hd1080"}
+					],
+					posterPath:"content/posters/mp4-poster.jpg, content/posters/mp4-poster-mobile.jpg",
+					showErrorInfo:"yes",
+					fillEntireScreenWithPoster:"yes",
+					rightClickContextMenu:"developer",
+					disableDoubleClickFullscreen:"no",
+					addKeyboardSupport:"yes",
+					useChromeless:"no",
+					showPreloader:"yes",
+					autoPlay:"no",
+					loop:"no",
+					scrubAtTimeAtFirstPlay:"00:00:00",
+					maxWidth:600,
+					maxHeight:380,
+					volume:.8,
+					greenScreenTolerance:200,
+					backgroundColor:"#000000",
+					posterBackgroundColor:"#0099FF",
+					//logo settings
+					showLogo:"yes",
+					hideLogoWithController:"yes",
+					logoPosition:"topRight",
+					logoLink:"http://www.webdesign-flash.ro",
+					logoMargins:5,
+					//controller settings
+					showController:"yes",
+					showControllerWhenVideoIsStopped:"yes",
+					showVolumeScrubber:"yes",
+					showVolumeButton:"yes",
+					showTime:"yes",
+					showQualityButton:"yes",
+					showSubtitleButton:"yes",
+					showShareButton:"yes",
+					showDownloadButton:"yes",
+					showFullScreenButton:"yes",
+					repeatBackground:"yes",
+					controllerHeight:41,
+					controllerHideDelay:3,
+					startSpaceBetweenButtons:7,
+					spaceBetweenButtons:9,
+					mainScrubberOffestTop:14,
+					scrubbersOffsetWidth:4,
+					timeOffsetLeftWidth:5,
+					timeOffsetRightWidth:3,
+					volumeScrubberWidth:80,
+					volumeScrubberOffsetRightWidth:0,
+					timeColor:"#777777",
+					youtubeQualityButtonNormalColor:"#777777",
+					youtubeQualityButtonSelectedColor:"#FFFFFF",
+					//cuepoints
+					executeCuepointsOnlyOnce:"no",
+					//annotations
+					annotiationsListId:"none",
+					showAnnotationsPositionTool:"no",
+					//subtitles
+					showSubtitleButton:"yes",
+					subtitlesOffLabel:"Subtitle off",
+					startAtSubtitle:1,
+					subtitlesSource:[
+						{subtitlePath:"content/english_subtitle.txt", subtileLabel:"English"},
+						{subtitlePath:"content/romanian_subtitle.txt", subtileLabel:"Romanian"},
+						{subtitlePath:"content/spanish_subtitle.txt", subtileLabel:"Spanish"}
+					],
+					//audio visualizer
+					audioVisualizerLinesColor:"#0099FF",
+					audioVisualizerCircleColor:"#FFFFFF",
+					//advertisement on pause window
+					aopwTitle:"Advertisement",
+					aopwSource:"",
+					aopwWidth:400,
+					aopwHeight:240,
+					aopwBorderSize:6,
+					aopwTitleColor:"#FFFFFF",
+					//playback rate / speed
+					showPlaybackRateButton:"yes",
+					defaultPlaybackRate:"1", //0.25, 0.5, 1, 1.25, 1.5, 2
+					//loggin
+					isLoggedIn:"no",
+					playVideoOnlyWhenLoggedIn:"yes",
+					loggedInMessage:"Please login to view this video.",
+					//embed window
+					embedWindowCloseButtonMargins:0,
+					borderColor:"#333333",
+					mainLabelsColor:"#FFFFFF",
+					secondaryLabelsColor:"#a1a1a1",
+					shareAndEmbedTextColor:"#5a5a5a",
+					inputBackgroundColor:"#000000",
+					inputColor:"#FFFFFF"
+				});				
+			});
+		</script></pre>
+		
+		<p>//-- global settings --//</p>
+		<ul>
+			<li><span class="boldLi">FWDEVPlayer.videoStartBehaviour</span>:"pause" -  this can be stop, pause or none. If set to pause and more then one instance is used all instances will pause except the current playing instance otherwise if set to stop all instances will stop playing and stop the download precess except the current playing instance. If none is used when playing one instance will not stop or pause other instances.</li>
+		</ul>
+		
+		<p>//-- main settings --//</p>
+		<ul>
+			<li><span class="boldLi">useYoutube</span>:"yes" - This can be yes or no. If you don't use youtube set it to no.</li>
+			<li><span class="boldLi">useVimeo</span>:"yes" - This can be yes or no. If you don't use vimeo set it to no.</li>
+        	<li><span class="boldLi">instanceName</span>:"player1" - The player instance name, trough this instance the API is called for example if the instance name is "player1" and if you want to call play of this instance it is called like this player1.play();. Please note that the instance name must be unique for each instance.</li>
+			<li><span class="boldLi">parentId</span>:"myDiv" - The id of the div into which the Easy Video Player is added, this id must be unique for each instance.</li>
+			<li><span class="boldLi">skinPath</span>:"content/minimal_skin_dark" - The skin path, the folder that contains the skin graphics.</li>
+			<li><span class="boldLi">mainFolderPath</span>:"content" - The main folder path. This folder contains some important files like the php files and the mp4 vodeo files, in this folder you need to add your mp4 video folders or mpp video files.</li>
+			<li><span class="boldLi">skinPath</span>:"minimal_skin_dark" - The skin folder path, the path for the skin that you want to use.</li>
+			<li><span class="boldLi">displayType</span>:"responsive" - This can be responsive, afterParent, backgroundVideo or fullscreen, if you want to embed the player in your page inside the div then set this to responsive, if you want the player to always fill the browser window width and height set it to fullscreen, if you want the player inside a div and to have the player resizing based on that div widht and height set this feature to afterParent.</li>
+			<li><span class="boldLi">autoScale</span>:"yes" - this can be yes or no.If set to yes the EVP height will always be proportional to the EVP width, if set to no the height will be fixed based on the <span class="boldLi">maxHeight</span> property.</li>
+			<li><span class="boldLi">greenScreenTolerance</span>:"200" - a number from 0 to 256 that repreents fine tunning for removing the green pixles from the video background, by default is 200, modify this valye only if necessary.</li>
+			
+			<li><span class="boldLi">fillEntireVideoScreen</span>:"yes" - this can be yes or no. If set to yes the EVP will fill the video screen with the entire video otherwise it will resize the video normal, you can see an example at this link http://www.webdesign-flash.ro/p/evp/background.html .</li>
+			<li><span class="boldLi">openDownloadLinkOnMobile</span>:"no" - Set this option to yes if you want to open the video in a new window on mobile devices when the download button is clicked.</li>
+			
+			<li><span class="boldLi">useHEXColorsForSkin</span>:"no" - this can be yes or no, if this is set to yes EVP will use the canvas element to redraw the buttons and apply the specified color, the cool thing about this feature is that it will retain the buttons texture and at the same time apply the color, behind the hood this feature will change the white colors 100% , dark color 0% and everything else in between, is more complicated that it seam just know that it works, you can see an example at this link http://www.webdesign-flash.ro/p/evp/hex.html .</li>
+			<li><span class="boldLi">normalHEXButtonsColor</span>:"#FF0000" - the normal color applied to the skin buttons and elements if the useHEXColorsForSkin feature is enabled / set to  useHEXColorsForSkin:"yes" .</li>
+			<li><span class="boldLi">selectedHEXButtonsColor</span>:"#FFFFFF" - the selected color applied to the skin buttons and elements if the useHEXColorsForSkin feature is enabled / set to  useHEXColorsForSkin:"yes" .</li>
+			<li><span class="boldLi">videoSourcePath</span>:videoSource:[
+						{source:"content/videos/fwd-480p.mp4", label:"small version"},
+						{source:"content/videos/fwd-720p.mp4", label:"hd720"},
+						{source:"content/videos/fwd-1080p.mp4", label:"hd1080"}
+					], - The videos sources, you can add or more video sources as you can see in this example. Please read the <a href="#source">Setup video and poster source</a>.</li>
+			<li><span class="boldLi">posterPath</span>:"content/posters/mp4-poster.jpg" - The video poster source path, if you don't need a poster set this option to "none". Please read the <a href="#source">Setup video and poster source</a>.</li>
+			
+			<li><span class="boldLi">showErrorInfo</span>:"yes" - Set this to no if you don't want the error / info window message to appear, please note that if this is disabled there is no way to tell if an error might happen.</li>
+			
+			<li><span class="boldLi">fillEntireScreenWithPoster</span>:"no" - By default the poster is set to be completely viewed, if you want it to fill the entire player screen set this option to yes. Example in the image below.</li>
+			<li><span class="boldLi">disableDoubleClickFullscreen</span>:"no" - Set this to no if you don't want the player to go full screen on double click on PC or double tap on mobile devices.</li>
+			<li><span class="boldLi">rightClickContextMenu</span>:"developer" - The right click contect menu. By default is developer which means that a link to the FWD wesbiste will appear (please leave this active if possible this way you can help us with our work), none means that it will disable the right click context menu and default will have the default behavior.</li>
+			
+			<img src="assets/images/poster.jpg" height=400/>
+			<li><span class="boldLi">showContextMenu</span>:"yes" - this can be yes or no. Enable or disable the "Made by FWD" right click context menu. We would appreciate if you can leave this option set to yes.</li>
+			<li><span class="boldLi">addKeyboardSupport</span>:"yes" - this can be yes or no. Enable or disable the keyboard space bar to pause or play the video.</li>
+			<li><span class="boldLi">autoPlay</span>:"yes" - this can be yes or no.</li>
+			<li><span class="boldLi">scrubAtTimeAtFirstPlay</span>:"00:00:00" - this can be set to scrub at a specified time when the video starts to play the first time.</li>
+			
+			<li><span class="boldLi">loop</span>:"no" - this can be yes or no.</li>
+			<li><span class="boldLi">maxWidth</span>:750 - a number that represents the player maximum width in pixels, think of this property as it would be the max-width css property (only applies if the  <span class="boldLi">displayType</span> is <span class="boldLi">responsive</span>).</li>
+			<li><span class="boldLi">maxHeight</span>:750 - a number that represents the player maximum height in pixels, think of this property as it would be the max-height css property (only applies if the  <span class="boldLi">displayType</span> is <span class="boldLi">responsive</span>).</li>
+			<li><span class="boldLi">volume</span>:.8 - A number from 0.1 to 1 that represents the volume level.</li>
+			<li><span class="boldLi">backgroundColor</span>:"#000000" - the main background color.</li>
+			<li><span class="boldLi">posterBackgroundColor</span>:"#000000" - The video poster background color, if you want a transparent background set this to transparent.</li>
+		</ul>
+		
+		//-- logo settings --//
+		<ul>
+			<li><span class="boldLi">showLogo</span>:"yes" - This can be yes or no, hides or show the logo.</li>
+			<li><span class="boldLi">hideLogoWithController</span>:"yes" - This can be yes or no. If is set to yes the logo will hide when the controller hides otherwise it will always be visible over the video.</li>
+			<li><span class="boldLi">logoLink</span>:"http://www.yourlink.com" - The page link that will open when the logo is clicked, the <span class="boldLi">none</span> value will disable this feature.</li>
+			<li><span class="boldLi">logoPosition</span>:"topRight" - This can be topRight, topLeft, bottomRight, bottomLeft, used to position the logo in one of the video corners.</li>
+			<li><span class="boldLi">logoMargins</span>:"20" - Margins in px to push the logo from the video corners.</li>
+		</ul>
+		
+		//-- controller settings --//
+		<ul>
+			<li><span class="boldLi">showControllerWhenVideoIsStopped</span>:"yes" - this can be yes or no, if this is set to yes the control bar is showed when the video is stopped and the video poster is visible otherwise it the control bar is hidden until the video starts to play.</li>
+			<li><span class="boldLi">showVolumeScrubber</span>:"yes" - this can be yes or no. Hide or show the volume scrubber.</li>
+			<li><span class="boldLi">showVolumeButton</span>:"yes" - this can be yes or no. Hide or show the volume button.</li>
+			<li><span class="boldLi">showTime</span>:"yes" - this can be yes or no. Hide or show the video current and total time indicator.</li>
+			<li><span class="boldLi">showYoutubeQualityButton</span>:"yes" - this can be yes or no. Hide or show the youtube quality button (this only applies if the video is played from youtube).</li>
+			<li><span class="boldLi">showShareButton</span>:"yes" - this can be yes or no. Hide or show the share window button.</li>
+			<li><span class="boldLi">showFullScreenButton</span>:"yes" - this can be yes or no. Hide or show the fullscreen button.</li>
+			<li><span class="boldLi">repeatBackground</span>:"yes" - this can be yes or no. Repeat or not the control bar background.</li>
+			<li><span class="boldLi">controllerHeight</span>:70 - the controller height in pixels.</li>
+			<li><span class="boldLi">controllerHideDelay</span>:2 - a number that represents the seconds until the control bar is hiding after a period of inactivity.</li>
+			<li><span class="boldLi">startSpaceBetweenButtons</span>:10 - a number that represents the space between buttons in pixels, illustrated below with the red arrows.</li>
+			<img src="assets/images/startSpaceBetweenButtons.jpg"/>
+			<li><span class="boldLi">spaceBetweenButtons</span>:10 - a number that represents the space between buttons in pixels, illustrated below with the red arrows.</li>
+			<img src="assets/images/spaceBetweenButtons.jpg"/>
+			<li><span class="boldLi">mainScrubberOffestTop</span>:14 - the amount in pixels to push the main scrubber up when the controller is hiding.</li>
+			<li><span class="boldLi">scrubbersOffsetWidth</span>:10 - a number that represents the total amount in pixels removed from the scrubber bars progress line when they are at the end (change number to understand it better, useful based on the skin type).</li>
+			<li><span class="boldLi">timeOffsetLeftWidth</span>:10 - a number that represents the an addition in px to the space between the time indicator left side and the scrubber.</li>
+			<li><span class="boldLi">timeOffsetLeftWidth</span>:10 - a number that represents the an addition in px to the space between the time indicator left side and the scrubber.</li>
+			<li><span class="boldLi">timeOffsetRightWidth</span>:10 - a number that represents the an addition in px to the space between the time indicator right side and the volume button or any other button that will follow the time indicator.</li>
+			<li><span class="boldLi">volumeScrubberWidth</span>:70 - the width of the volume srubbar.</li>
+			<li><span class="boldLi">volumeScrubberOffsetRightWidth</span>:10 - a number that represents the an addition in px to the space between the volume scrubbar right side and the facebook share button or any other button that will follow the volume scrubbar.</li>
+			<li><span class="boldLi">timeColor</span>:"#888888" - the video time indicator color.</li>
+			<li><span class="boldLi">youtubeQualityButtonNormalColor</span>:"#888888" - the youtube quality buttons text normal color.</li>
+			<li><span class="boldLi">youtubeQualityButtonSelectedColor</span>:"#FFFFFF" - the youtube quality buttons text selected / hover color.</li>
+		</ul>
+	
+		<ul>
+			<li><span class="boldLi">audioVisualizerLinesColor</span>:"#0099FF" - The color of the audio visualiser bars.</li>
+			<li><span class="boldLi">audioVisualizerCircleColor</span>:"#FFFFFF" - The color of the audio visualiser center circle.</li>
+		</ul>
+		
+		//-- playback rate / speed --//
+		<ul>
+			<li><span class="boldLi">showPlaybackRateButton</span>:"yes" - This can be yes or no. Enable or disable the playback rate button.</li>
+			<li><span class="boldLi">defaultPlaybackRate</span>:"1" - This playback rate speed. This can be 0.25, 0.5, 1, 1.25, 1.5, 2.</li>
+		</ul>
+		
+		//-- loggin  --//
+		<ul>
+			<li><span class="boldLi">isLoggedIn</span>:"no" - Set this to yes if the user is loggedin, of course you will have to set the value of this parameter based on your website/project.</li>
+			<li><span class="boldLi">playVideoOnlyWhenLoggedIn</span>:"yes" - Set this to yes to allow only a loggedin user to play the video.</li>
+			<li><span class="boldLi">loggedInMessage</span>:"Please login to view this video" - Message to show to users that are not logged it.</li>
+		</ul>
+		
+		//-- embed window --//
+		<ul>
+			<li><span class="boldLi">embedWindowCloseButtonMargins</span>:0 - Margins for the next, previous and close buttons.</li>
+			<li><span class="boldLi">borderColor</span>:"#333333" - the border color of the main windows.</li>
+			<li><span class="boldLi">mainLabelsColor</span>:"#FFFFFF" - the color for the main labels.</li>
+			<li><span class="boldLi">secondaryLabelsColor</span>:"#a1a1a1" - the color for the secondary labels.</li>
+			<li><span class="boldLi">shareAndEmbedTextColor</span>:"#5a5a5a" - the color for the share and embed text.</li>
+			<li><span class="boldLi">inputBackgroundColor</span>:"#000000" - the background color for the input texts.</li>
+			<li><span class="boldLi">inputColor</span>:"#000000" - the color for the input texts.</li>
+		</ul>
+		<img src="assets/images/embedWindow.jpg"></img>
+		
+
+		//advertisement on pause window
+		<ul>
+			<li><span class="boldLi">aopwTitle</span>:"Advertisement" - The pause ad window title.</li>
+			<li><span class="boldLi">aopwSource</span>:""- The pause ad window source, this has to be a link to a page that will show up in the window, for example http://www.webdesign-flash.ro/iframe.html , the page can contain anything.</li>
+			<li><span class="boldLi">aopwWidth</span>:400- The pause ad window maximum width.</li>
+			<li><span class="boldLi">aopwWidth</span>:240- The pause ad window maximum height.</li>
+			<li><span class="boldLi">aopwBorderSize</span>:4- The pause ad window border height in px.</li>
+			<li><span class="boldLi">aopwTitleColor</span>:"#FFFFFF"- The pause ad window title color.</li>
+		</ul>
+		
+		//-- subtitle --//
+		<ul>
+			<li><span class="boldLi">subtitlePath</span>:"" - The subtitle path. If you don't need a subtitle leave it blank.</li>
+			<li><span class="boldLi">showSubtitleByDefault</span>:"yes"- This can be yes or no. Shows the subtitles by default.</li>
+		</ul>
+		
+		//-- ads / advertisement video --//
+		<ul>
+			<li><span class="boldLi">openNewPageAtTheEndOfTheAds</span>:"no" - If this is set to yes when the ad video has finished to play a new web page will open with the url specified with the <span class="boldLi">adsVideoSourcePath</span> property.</li>
+			<li><span class="boldLi">adsVideoSourcePath</span>:"none"- If you don't want an ads video set this to none, otherwise set this to the path of the ads video, please read the <a href="#source">Setup video and poster source</a>.</li>
+			<li><span class="boldLi">adsButtonsPosition</span>:"right" - this can be left or right and represents the ads info and button position over the video.</li>
+			<li><span class="boldLi">adsPageToOpenURL</span>:"http://www.webdesign-flash.ro" - the url of the page that will open when the ads video is clicked or when the ads video has finised to play, if you don't want to open a page set this to "none".</li>
+			<li><span class="boldLi">adsPageToOpenTarget</span>:"_blank" - the page to open target, it can be _self or _blank.</li>
+			<li><span class="boldLi">adsThumbnailPath</span>:"content/posters/thumbnail.jpg" - the thumbnail path for the skip add screen, if you don't want a thumbnail set it to "none". The thumbnail width and height should be higher then 100px.</li>
+			<li><span class="boldLi">skipToVideoText</span>:"You can skip to video in: " - the text that will appear in the skip info screen.</li>
+			<li><span class="boldLi">skipToVideoButtonText</span>:"Skip Ad " - the text that will appear in the ads skip button.</li>
+			<li><span class="boldLi">timeToHoldAds</span>:4 - time in seconds until the ads video can be skipped.</li>
+			<li><span class="boldLi">adsTextNormalColor</span>:"#777777" - the normal color for the text for both ads skip info screen and ads skip button.</li>
+			<li><span class="boldLi">adsTextSelectedColor</span>:"#FFFFFF" - the selected color for the text for both ads skip info screen and ads skip button.</li>
+			<li><span class="boldLi">adsBorderNormalColor</span>:"#444444" - the normal color for the border for both ads skip info screen and ads skip button.</li>
+			<li><span class="boldLi">adsBorderSelectedColor</span>:"#FFFFFF" - the selected color for the border for both ads skip info screen and ads skip button.</li>
+		</ul>
+		<br>
+		<br>
+		<br>
+		
+		
+		<h3 id="sub"><strong>G) Setup subtitles.</strong> - <a href="#toc">top</a></h3>
+		<p>EVP can load a .srt or .txt files as a subtitile file, the txt file have the same structure as the a file, for reference you can open with a text editor the <span class="boldLi">subtitle_english.txt</span> from the content folder, the structure is self explanatory. To change the subtitle style just edit the class EVPSubtitle from the global.css file.</p>
+		<p>To add one or more subtitles please see the code sample below, the code is self explanatory.</p>
+		<pre class="brush: js; html-script: true, class-name: 'negativeLeftMarginsHTML'">
+		//subtitles
+		showSubtitleButton:"yes",
+		subtitlesOffLabel:"Subtitle off",
+		startAtSubtitle:1,
+		subtitlesSource:[
+			{subtitlePath:"content/english_subtitle.txt", subtileLabel:"English"},
+			{subtitlePath:"content/romanian_subtitle.txt", subtileLabel:"Romanian"},
+			{subtitlePath:"content/spanish_subtitle.txt", subtileLabel:"Spanish"}
+		],
+		</pre>
+		<br><br>
+		<h3 id="share"><strong>H) Setup pop-up commercial ads.</strong> - <a href="#toc">top</a></h3>
+		<p>To add pop-up ads window or windows can be added with ease, some code has to be added inside the video player constructor, the example below will show better what I mean by that. Below you can see the code that has to be added into the contructor, the parameters that are self explanatory, you can add one or as many as you like. Please note that only image format is supported as the popup source (.jpg, .jpeg, .png).  Also I've provided a HTML example labeled POPUP-ADS.html.</p>
+
+		<pre class="brush: js; html-script: true, class-name: 'negativeLeftMarginsHTML'">
+		//popup commercial ads
+		showPopupAdsCloseButton:"yes",
+		popupCommercialAdsSource:[
+			{imagePath:"content/images/img.jpg", timeStart:"00:00:01", timeEnd:"00:00:28", link:"http://www.webdesign-flash.ro", target:"_blank"},
+			{imagePath:"content/images/img2.jpg", timeStart:"00:00:31", timeEnd:"00:00:52", link:"http://www.webdesign-flash.ro", target:"_blank"}
+		],
+		</pre>
+		<br><br><br>
+		
+		<h3 id="annotations"><strong>I) Setup annotations.</strong> - <a href="#toc">top</a></h3>
+		<p>There is an example includded in the download files called ANNOTATIONS-example.html, you can use it as reference. First of all to add annotations to a video an ul element with the structure presented below has to be added in the page. Inside it there are the annotations, you can add as many as you like by stacking them one after eachother. The li element that holds the annotation data has some attributes that consturct their logic:<br><br><span class="boldLi">data-start-time</span> - the start time when the annotaton show in hours:minutes:seconds format.<br><span class="boldLi">data-end-time</span> - the end time when the annotaton hide in hours:minutes:seconds format.<br><span class="boldLi">data-left</span> - the left postion in px.<br><span class="boldLi">data-top</span> - the top position in px.<br><span class="boldLi">data-normal-state-class</span> - a css class that represents the annotation normal state.<br><span class="boldLi">data-selected-state-class</span> - a css class that represents the annotation selected state, when the annotation is hovered this class will be applied, please note that this is optional if you don't want a selected state don't add this attribute<br><span class="boldLi">data-show-close-button</span> - this can be yes or no, shows or hides the annotation close button.<br><span class="boldLi">data-click-source</span> - this can contain a page URL or a javascript name ex:<span class="boldLi">data-click-source="myJavascritpFunction();"</span>, this attribute is optional if you don't want to open a page or to call a javascript function on click don't add this attribute.</span><br><span class="boldLi">data-click-source-target</span> - if you want to open a page this is this attribute holds the page target (_blank, _self).</p>
+		<p>After the annotation element is created the id of it has to be passed in the contructor  <span class="boldLi">annotiationsListId</span> property like this <span class="boldLi">annotiationsListId:annottaionId</span> in this case <span class="boldLi">annotiationsListId:fwdAnnotations</span>.</p>
+		<pre class="brush: js; html-script: true, class-name: 'negativeLeftMarginsHTML'">
+		<ul id="fwdAnnotations" style="display:none">
+			<li data-start-time="00:00:01" data-end-time="00:00:29" data-left="40" data-top="45" data-show-close-button="yes" data-normal-state-class="EVPAnnotationNormal" data-selected-state-class="EVPAnnotationSelected">
+				<div>Inactive annotation!</div>
+			</li>
+			
+			<li data-start-time="00:00:02" data-end-time="00:00:29" data-left="40" data-top="85" data-show-close-button="yes" data-click-source="http://www.webdesign-flash.ro" data-click-source-target="_blank" data-normal-state-class="EVPAnnotationLinkNormal" data-selected-state-class="EVPAnnotationLinkSelected">
+				<div><span style="font-weight:bold; text-decoration: underline;">LINK</span> support, href and target can be specified, also animation between annotation states is possible as you can see here on hover.</div>
+			</li>
+		</ul>
+		</pre>
+		
+		<p>To find the correct postion for the annotation in the contructor set <span class="boldLi">showAnnotationsPositionTool:"yes"</span>, this will allow to drag the annotation in the position that you like and the top and left postion will be displayed this way you will know the exact postion for the annotation. Please don't forget to click the play button and scrub to see your annotation/annotations, when you see the annotation for which you want to find the postion pause the video and drag the annoation at the postion that you like, then  just set <span class="boldLi">data-left</span> and <span class="boldLi">data-top</span> to the desired position. After this process is finished set <span class="boldLi">showAnnotationsPositionTool:"no"</span>.</p> 
+		
+		<br>
+		<h3 id="private"><strong>J) Setup private videos.</strong> - <a href="#toc">top</a></h3>
+		<p>To set a video private just set the <span class="boldLi">isPrivate</span> parameter in the video source to "yes", this is showed below.</p>
+		<pre class="brush: js; html-script: true, class-name: 'negativeLeftMarginsHTML'">
+		videoSource:[
+			{source:"content/videos/fwd-720p.mp4", label:"hd720", videoType:"normal", isPrivate:"yes"}
+		],
+		</pre>
+		<p>To set the video password there is a tool I have created that will encrypt the password <a href="http://www.webdesign-flash.ro/ps/" target="_blank">at this link</a>, enter your desired password in the input field then click on the <span class="boldLi">Encrypt passowrd</span> button, once this is done copy the encrypted password and paste it as a value of the <span class="boldLi">privateVideoPassword</span> parameter from the constructor. Doing this steps will configure EVP to request a password before the video can play. The default password is Melinda and there is example provided in the start folder called PRIVATE-VIDEO-example.html.</p>
+		
+		<h3 id="encrypt"><strong>K) Encrypt video path.</strong> - <a href="#toc">top</a></h3>
+		<p>To encrypt the video path I have created a tool that will encrypt the video path <a href="http://www.webdesign-flash.ro/vs/" target="_blank">at this link</a>, enter the video path (this applies all video / audio paths) in the input field then click on the <span class="boldLi">Encrypt media</span> button, once this is done copy the encrypted video path and paste it as the video source parameter from the contructor. There is example provided in the start folder called ENCRYPTED-VIDEO-PATH-example.html and also below there is a sample code ilustrating this. The same rule apply to the video poster.</p>
+		<pre class="brush: js; html-script: true, class-name: 'negativeLeftMarginsHTML'">
+			videoSource:[
+				{source:"encrypt:Y29udGVudC92aWRlb3MvZndkLTEwODBwLm1wNA==", label:"hd1080"}
+			],
+		</pre>
+		<br>
+		
+		 <h3 id="popw"><strong>L) Setup advertisement on pause window.</strong> - <a href="#toc">top</a></h3>
+		<p>EVP can open a advertisement window when the video is paused that will appear over the video and this window can load a webpage, the page content can be anything, to enable it just set the <span class="boldLi">aopwSource</span> value to the page link / url that you want to open in it  for example <span class="boldLi">aopwSource:"http://www.webdesigh-flash.ro/iframe.html"</span>.</p>
+		
+		
+	    <h3 id="api"><strong>M) API.</strong> - <a href="#toc">top</a></h3>
+		<p>Inside the donwload files there is HTML file called API-example.html, in this file I have added all events and methods for reference, open the page source to see them. Full reference below. Please note that the properties are read only and they can only be written in the consturctor for more info about this please read the <a href="#config">Constructor parameters</a> section.</p>
+		
+		<p CLASS="largeLabel1">API - public methods:</p>
+			<table>
+				  <tr class="firstTr">
+					<th class="fistTd">Function</td>
+					<th class="secondTd">Method</td>
+					<th class="thirdTd">Description</td>
+				  </tr>
+				  <tr>
+					<td><p class="mainProp">getVideoSource</p></td>
+					<td class="prop"><span class="inlineSpan">getVideoSource()</span>:String</td>
+					<td class="lastCol">Return the video source path if the video is from the server or youtube id if the video is playing from youtube.</td>
+				  </tr>
+				  <tr>
+					<td><p class="mainProp">getPosterSource</p></td>
+					<td class="prop"><span class="inlineSpan">getPosterSource()</span>:String</td>
+					<td class="lastCol">Return the poster source.</td>
+				  </tr>
+				  <tr>
+					<td><p class="mainProp">getCurrentTime</p></td>
+					<td class="prop"><span class="inlineSpan">getCurrentTime()</span>:String</td>
+					<td class="lastCol">Return the current time source.</td>
+				  </tr>
+				   <tr>
+					<td><p class="mainProp">getTotalTime</p></td>
+					<td class="prop"><span class="inlineSpan">getTotalTime()</span>:String</td>
+					<td class="lastCol">Return the video total time / duration.</td>
+				  </tr>
+				  
+				  <tr>
+					<td><p class="mainProp">goFullScreen</p></td>
+					<td class="prop"><span class="inlineSpan">goFullScreen()</span>:void</td>
+					<td class="lastCol">Set video player to fullscreen.</td>
+				  </tr>
+				 <tr>
+					<td><p class="mainProp">play</p></td>
+					<td class="prop"><span class="inlineSpan">play()</span>:void</td>
+					<td class="lastCol">Start / play playback.</td>
+				  </tr>
+				  <tr>
+					<td><p class="mainProp">pause</p></td>
+					<td class="prop"><span class="inlineSpan">pause()</span>:void</td>
+					<td class="lastCol">Pause the playback.</td>
+				  </tr>
+				  <tr>
+					<td><p class="mainProp">setVideoSource</p></td>
+					<td class="prop"><span class="inlineSpan">setVideoSource(videoSource:String)</span>:void</td>
+					<td class="lastCol">Set the video source path or youtube video id. Please read the <a href="#source">Setup video and poster source</a>.</td>
+				  </tr>
+				   <tr>
+					<td><p class="mainProp">setPosterSource</p></td>
+					<td class="prop"><span class="inlineSpan">setPosterSource(posterSource:String)</span>:void</td>
+					<td class="lastCol">Set the poster source path. Please read the <a href="#source">Setup video and poster source</a>.</td>
+				  </tr>
+				  <tr>
+					<td><p class="mainProp">share</p></td>
+					<td class="prop"><span class="inlineSpan">share()</span>:void</td>
+					<td class="lastCol">Share current track on facebook.</td>
+				  </tr>
+				  <tr>
+					<td><p class="mainProp">setVolume</p></td>
+					<td  class="prop"><span class="inlineSpan">setVolume( Number )</span>:void</td>
+					<td class="lastCol">Set the video volume, this method accepts a parameter that represents a number between 0 (video mute state) and 1 (video maximum volume).</td>
+				  </tr>
+				  <tr>
+					<td><p class="mainProp">scrub</p></td>
+					<td class="prop"><span class="inlineSpan">scrub( Number )</span>:void</td>
+					<td class="lastCol">Notify instance to scrub (set the video position), this method accepts a parameter that represents a number between 0 (video start position) and 1 (video end position).</td>
+				  </tr>
+				   <tr>
+					<td><p class="mainProp">scrubbAtTime</p></td>
+					<td class="prop"><span class="inlineSpan">scrubbAtTime(time:String)</span>:void</td>
+					<td class="lastCol">Notify instance to scrub at a specified time, the time argument has to be in hours:minutes:seconds format ex:00:01:20.</td>
+				  </tr>
+				  
+				  <tr>
+					<td><p class="mainProp">stop</p></td>
+					<td class="prop"><span class="inlineSpan">stop()</span>:void</td>
+					<td class="lastCol">Stops the playback and the loading process if the loading process has started.</td>
+				  </tr>
+				 
+				</table>
+				
+				<p CLASS="largeLabel1">API - event listeners:</p>
+				<table>
+				  <tr class="firstTr">
+					<th class="fistTd">Event</td>
+					<th class="secondTd">Prefix</td>
+					<th class="thirdTd">Description</td>
+				  </tr>
+				  <tr>
+					<td><p class="mainProp">error</p></td>
+					<td><p class="inlineSpan">FWDEVPlayer.ERROR</p></td>
+					<td class="lastCol">Dispatched when the Easy Video Player instance can't load or play the video file, this event has a property of type string that represents the error message.</td>
+				  </tr>
+				  <tr>
+					<td><p class="mainProp">goFullScreen</p></td>
+					<td><p class="inlineSpan">FWDEVPlayer.GO_FULLSCREEN</p></td>
+					<td class="lastCol">Dispatched when the Easy Video Player is set to fullscreen.</td>
+				  </tr>
+				  <tr>
+					<td><p class="mainProp">goNormalScreen</p></td>
+					<td><p class="inlineSpan">FWDEVPlayer.GO_NORMALSCREEN</p></td>
+					<td class="lastCol">Dispatched when the Easy Video Player is set to normalscreen.</td>
+				  </tr>
+				  <tr>
+					<td><p class="mainProp">ready</p></td>
+					<td><p class="inlineSpan">FWDEVPlayer.READY</p></td>
+					<td class="lastCol">Dispatched when the Easy Video Player instance API is actually available.</td>
+				  </tr>
+				  <tr>
+					<td><p class="mainProp">stop</p></td>
+					<td><p class="inlineSpan">FWDEVPlayer.STOP</p></td>
+					<td class="lastCol">Dispatched when the Easy Video Player instance is stopped.</td>
+				  </tr>
+				  <tr>
+					<td><p class="mainProp">play</p></td>
+					<td><p class="inlineSpan">FWDEVPlayer.PLAY</p></td>
+					<td class="lastCol">Dispatched when the Easy Video Player instance playback start to play.</td>
+				  </tr>
+				  <tr>
+					<td><p class="mainProp">pause</p></td>
+					<td><p class="inlineSpan">FWDEVPlayer.PAUSE</p></td>
+					<td class="lastCol">Dispatched when the Easy Video Player instance playback is paused.</td>
+				  </tr>
+				  <tr>
+					<td><p class="mainProp">update</p></td>
+					<td><p class="inlineSpan">FWDEVPlayer.UPDATE</p></td>
+					<td class="lastCol">Dispatched when the Easy Video Player instance is playing and it's position is changing (useful to update a custom scrub bar), this event has a property of type number between 0 (video start position) and 1 (video end position).</td>
+				  </tr>
+				  <tr>
+					<td><p class="mainProp">updateTime</p></td>
+					<td><p class="inlineSpan">FWDEVPlayer.UPDATE_TIME</p></td>
+					<td class="lastCol">Dispatched when the Easy Video Player instance current duration is changing. This event has two properties of type string curTime and totalTime.</td>
+				  </tr>
+				  <tr>
+					<td><p class="mainProp">playComplete</p></td>
+					<td><p class="inlineSpan">FWDEVPlayer.PLAY_COMPLETE</p></td>
+					<td class="lastCol">Dispatched when the Easy Video Player instance playback has reached the end of the video file.</td>
+				  </tr>
+				</table>
+		
+        <h3 id="credits"><strong>N) Sources and Credits</strong> - <a href="#toc">top</a></h3>
+        <p>This component was made by Tibi from FWD (FWDesign) <a href="http://www.webdesign-flash.ro">FLASH WEB DESIGN</a>, for more information and support contact us at <a href="mailto:youremail@yourdomain.com">contact@webdesign-flash.ro</a></p>
+		<p>Once again, thank you so much for purchasing this item. As I said at the beginning, I'd be glad to help you if you have any questions regarding this Easy Video Player and I'll do my best to assist.</p> 
+		
+		<p class="append-bottom alt large"><strong>FWDesign</strong></p>
+		<p><a href="#toc">Go To Table of Contents</a></p>
+		
+		<hr class="space">
+	</div><!-- end div .container -->
+</body>
+</html>
+
+</script>

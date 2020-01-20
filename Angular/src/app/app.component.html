@@ -1,0 +1,8 @@
+<div id=page_preloader class="page-loading" style="display: none">
+    <img src="./assets/img/page_preloader.svg" alt=Loader title=Loader width=48 height=48 />
+</div>
+<div *ngIf="appSettingLoaded">
+    <app-header *ngIf="layoutStatus"></app-header>
+    <router-outlet></router-outlet>
+    <app-footer></app-footer>
+</div>

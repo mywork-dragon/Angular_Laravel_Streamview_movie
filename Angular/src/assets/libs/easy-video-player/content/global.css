@@ -1,0 +1,407 @@
+
+/* Custom font icon */
+@font-face {
+  font-family: 'icomoon';
+  src:
+    url('../content/fonts/icomoon.ttf?suexqs') format('truetype'),
+    url('../content/fonts/icomoon.woff?suexqs') format('woff'),
+    url('../content/fonts/icomoon.svg?suexqs#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.icomoon,
+[class^="icon-"]:before,
+[class*=" icon-"]:before {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+.icon-10:before {
+  content: "\e900";
+}
+.icon-AB:before {
+  content: "\e901";
+}
+.icon-basket:before {
+  content: "\e902";
+}
+.icon-buffer:before {
+  content: "\e903";
+}
+.icon-CC:before {
+  content: "\e904";
+}
+.icon-CC-off:before {
+  content: "\e905";
+}
+.icon-close:before {
+  content: "\e906";
+}
+.icon-comments:before {
+  content: "\e907";
+}
+.icon-digg:before {
+  content: "\e908";
+}
+.icon-download:before {
+  content: "\e909";
+}
+.icon-embed:before {
+  content: "\e90a";
+}
+.icon-facebook:before {
+  content: "\e90b";
+}
+.icon-flikr:before {
+  content: "\e90c";
+}
+.icon-fullscreen:before {
+  content: "\e90d";
+}
+.icon-full-width:before {
+  content: "\e90e";
+}
+.icon-gallery:before {
+  content: "\e90f";
+}
+.icon-google-plus:before {
+  content: "\e910";
+}
+.icon-info:before {
+  content: "\e911";
+}
+.icon-instagram:before {
+  content: "\e912";
+}
+.icon-left:before {
+  content: "\e913";
+}
+.icon-left-arrow:before {
+  content: "\e914";
+}
+.icon-link:before {
+  content: "\e915";
+}
+.icon-linkedin:before {
+  content: "\e916";
+}
+.icon-love:before {
+  content: "\e917";
+}
+.icon-maximise:before {
+  content: "\e918";
+}
+.icon-minimise:before {
+  content: "\e919";
+}
+.icon-min-width:before {
+  content: "\e91a";
+}
+.icon-music:before {
+  content: "\e91b";
+}
+.icon-normalscreen:before {
+  content: "\e91c";
+}
+.icon-pause:before {
+  content: "\e91d";
+}
+.icon-photo:before {
+  content: "\e91e";
+}
+.icon-pinterest:before {
+  content: "\e91f";
+}
+.icon-play:before {
+  content: "\e920";
+}
+.icon-reddit:before {
+  content: "\e921";
+}
+.icon-right:before {
+  content: "\e922";
+}
+.icon-right-arrow:before {
+  content: "\e923";
+}
+.icon-screen-maximise:before {
+  content: "\e924";
+}
+.icon-screen-minimise:before {
+  content: "\e925";
+}
+.icon-settings:before {
+  content: "\e926";
+}
+.icon-share:before {
+  content: "\e927";
+}
+.icon-sound:before {
+  content: "\e928";
+}
+.icon-sound-off:before {
+  content: "\e929";
+}
+.icon-tumblr:before {
+  content: "\e92a";
+}
+.icon-twitter:before {
+  content: "\e92b";
+}
+.icon-watch-later:before {
+  content: "\e92c";
+}
+
+/* Font awesome buttons */
+.EVPMainButtonsNormalState{
+	font-size:18px !important;
+	color:#666666 !important;
+}
+
+.EVPMainButtonsSelectedState{
+	font-size:18px !important;
+	color:#0099FF !important;
+}
+
+.icomoon.icon-10{
+	font-size:20px;
+}
+
+.icomoon.icon-CC{
+	font-size:17px;
+}
+
+.icomoon.icon-CC-off{
+	font-size:16px;
+}
+
+.icomoon.icon-embed{
+	font-size:20px;
+}
+
+.icomoon.icon-download{
+	font-size:16px;
+}
+
+.icomoon.icon-fullscreen{
+	font-size:17px;
+}
+
+.icomoon.icon-AB{
+	font-size:20px;
+}
+
+.EVPLargePlayButtonNormalState{
+	position:absolute;
+	font-size:30px;
+	width:86px;
+	height:59px;
+	cursor: pointer;
+	background-color:#1f1f1f;
+	color:#6a6a6a;
+}
+
+.EVPLargePlayButtonNormalState .table-cell-fwdevp-button{
+	padding:2px 0 0;
+}
+
+.EVPLargePlayButtonSelectedState{
+	position:absolute;
+	font-size:30px;
+	width:80px;
+	height:80px;
+	cursor: pointer;
+	background-color:#1f1f1f;
+	color:#FFF;
+}
+
+.EVPLargePlayButtonSelectedState .table-cell-fwdevp-button{
+	padding:2px 0 0;
+}
+
+.EVPCloseButtonNormalState{
+	position:absolute;
+	font-size:16px;
+	width:40px;
+	height:39px;
+	cursor: pointer;
+	background-color:#1f1f1f;
+	color:#FFF;
+}
+
+.EVPCloseButtonSelectedState{
+	position:absolute;
+	font-size:16px;
+	width:40px;
+	height:39px;
+	cursor: pointer;
+	background-color:#1f1f1f;
+	color:#F00;
+}
+
+.EVPSocialMediaButtonsNormalState{
+	font-size:18px !important;
+	color:#FFFFFF !important;
+	font-weight:100;
+}
+
+.EVPSocialMediaButtonsSelectedState{
+	font-size:18px !important;
+	color:#0099FF !important;
+}
+
+.table-fwdevp-button { 
+	display: table; width:100%; height:100%; position:absolute;
+}
+
+.table-cell-fwdevp-button {
+	display: table-cell; width:100%; height: 100%; vertical-align: middle; text-align:center;
+}
+
+
+/* Subtitle */
+.EVPSubtitle{
+	font-family:Arial;
+	text-align:center;
+	color:#FFFFFF;
+	text-shadow: 0px 0px 1px #000000;
+	font-size:20px;
+	line-height:24px;
+    font-weight:600;
+	margin:0px;
+	padding:0px;
+	margin-left:20px;
+	margin-right:20px;
+	margin-bottom:12px;
+}
+
+/* Annotations */
+.EVPAnnotationNormal{
+	font:Arial;
+	width: 296px !important;
+	padding:10px !important;
+	padding-top:6px !important;
+	padding-bottom:6px !important;
+	color:#FFFFFF !important;
+	background: rgba(31, 31, 31, 1) !important;
+}
+
+.EVPAnnotationLinkNormal{
+	font:Arial;
+	width: 320px !important;
+	padding:10px !important;
+	padding-top:6px !important;
+	padding-bottom:6px !important;
+	color:#000000 !important;
+	line-height:18px !important;
+	background: rgba(0,153,255,1) !important;
+}
+
+.EVPAnnotationLinkSelected{
+	font:Arial;
+	width: 320px !important;
+	padding:10px !important;
+	padding-top:6px !important;
+	padding-bottom:6px !important;
+	color:#FFFFFF !important;
+	line-height:18px !important;
+	background: rgba(31, 31, 31, 1) !important;
+}
+
+.EVPAnnotationJavascriptNormal{
+	font:Arial;
+	width: 320px !important;
+	padding:10px !important;
+	padding-top:6px !important;
+	padding-bottom:6px !important;
+	color:#000000 !important;
+	line-height:18px !important;
+	background: rgba(255, 255, 255, 1) !important;
+}
+
+.EVPAnnotationJavascriptSelected{
+	font:Arial;
+	width: 320px !important;
+	padding:10px !important;
+	padding-top:6px !important;
+	padding-bottom:6px !important;
+	color:#FFFFFF !important;
+	line-height:18px !important;
+	background: rgba(0,153,255,1) !important;
+}
+
+.EVPAnnotationCSSNormal{
+	font:Arial !important;
+	text-align: center !important;
+	width: 280px !important;
+	padding:10px !important;
+	padding-top:6px !important;
+	padding-bottom:6px !important;
+	color:#FFFFFF !important;
+	line-height:20px !important;
+	background: rgba(0,0,0, .8) !important;
+}
+
+.EVPAnnotationCSSNormal p{
+	padding:0px !important;
+	margin:0px !important;
+	margin-top:8px !important;
+	margin-bottom:8px !important; 
+}
+
+.EVPAnnotationAPINormal{
+	font:Arial;
+	text-align:center !important;
+	width: 370px !important;
+	padding:6px !important;
+	color:#FFFFFF !important;
+	background: rgba(31, 31, 31, 1) !important;
+}
+
+.EVPAnnotationPlayNormal{
+	font:Arial;
+	text-align:center !important;
+	width: 120px !important;
+	padding:10px !important;
+	padding-top:6px !important;
+	padding-bottom:6px !important;
+	color:#000000 !important;
+	line-height:18px !important;
+	border-style: solid !important;
+    border-width: 1px !important;
+	border-color: #999999 !important;
+	border-radius:8px !important;
+	background: rgba(255, 255, 255, 1) !important;
+	box-shadow: 1px 1px 1px #999999 !important;
+}
+
+.EVPAnnotationPlaySelected{
+	font:Arial;
+	text-align:center !important;
+	width: 120px !important;
+	padding:10px !important;
+	padding-top:6px !important;
+	padding-bottom:6px !important;
+	color:#FFFFFF !important;
+	line-height:18px !important;
+	border-style: solid !important;
+    border-width: 1px !important;
+	border-color: #FFFFFF !important;
+	border-radius:8px !important;
+	background: rgba(0,153,255,1) !important;
+	box-shadow: 1px 1px 1px #999999 !important;
+}
+
+

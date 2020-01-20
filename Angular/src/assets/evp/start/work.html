@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>test</title>
+		
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1 user-scalable=no" />
+		
+		<link rel="stylesheet" type="text/css" href="content/global.css">
+		
+		<script type="text/javascript" src="../js/FWDEVPSubtitle.js"></script>
+		<script type="text/javascript" src="../js/FWDFrogaloop.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPData.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPlayer.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPVideoScreen.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPShareWindow.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPComplexButton.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPContextMenu.js"></script>
+		<script type="text/javascript" src="../js/FWDConsole.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPController.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPDisplayObject.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPEventDispatcher.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPInfo.js"></script>
+		<script type="text/javascript" src="../js/FWDAnimation.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPPreloader.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPVolumeButton.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPUtils.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPFlashTest.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPPoster.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPSimpleButton.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPTransformDisplayObject.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPHider.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPYoutubeScreen.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPVimeoScreen.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPFacebookShare.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPYTBQButton.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPLogo.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPEmbedWindow.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPFlashButton.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPSimpleSizeButton.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPAdsStart.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPAdsButton.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPAnnotations.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPAnnotation.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPPopupAds.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPPopupAddButton.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPVimeoScreen.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPAudioScreen.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPPassword.js"></script>
+		<script type="text/javascript" src="../js/FWDEVPOPWindow.js"></script>
+		
+		
+		<!-- Setup EVP -->
+		<script type="text/javascript">
+			FWDEVPlayer.videoStartBehaviour = "stop";
+			FWDConsole.setPrototype();
+			//var logger =  new FWDConsole();
+
+			FWDEVPUtils.onReady(function(){
+				
+				new FWDEVPlayer({		
+					//main settings
+					instanceName:"player1",
+					parentId:"myDiv",
+					mainFolderPath:"content",
+					skinPath:"minimal_skin_dark",
+					displayType:"responsive",
+					initializeOnlyWhenVisible:"no",
+					fillEntireVideoScreen:"no",
+					autoScale:"yes",
+					fillEntireVideoScreen:"no",
+					useHEXColorsForSkin:"no",
+					openDownloadLinkOnMobile:"no",
+					privateVideoPassword:"428c841430ea18a70f7b06525d4b748a",
+					startAtVideoSource:2,
+					startAtTime:"00:00:00",
+					stopAtTime:"00:00:00",
+					videoSource:[
+						{source:"content/videos/fwd-720p.mp4", label:"small version"},
+						{source:"content/videos/fwd-720p.mp4", label:"hd720"},
+						{source:"https://lh3.googleusercontent.com/CEus0uuj47ZJ9UuJtLtIdyJhmtNSNwUIsenFrNJWsz7nSmq20uSPtMdxVCuUTAvDiASrZ7drFbklj8W1z73a1V41LDjeN7IjJbre7KEpHAAOAkn8kW18CHapBKE1uVF7JREISrn6_rqzfTGHH6vwuyp_qzsHJ_I6tvMvF_Szt5O9Z-tRFKXzOi1pr_KdqlFUvz0fuOJb2QSegz8P3V1kO-j3-nLP__zHPpU7hixrnzKnCB4ZT_xaUqI6itiP54ik_oXI5rc_tHJIdaFujZzKEST_CuPDbocBUEjx2YQ3PibctFXzR8IB_TMceqVC3oCzOcz6s2MNJarMm-LV7Frz-GekwCVZ9bRb-dsM7sQ7Hsw5dugUSI7TiJYEzdhzw10FY3FcuSA4m4CBboRRC3a62t-xA5NZWAigwuCFbhP3HUNSZLq4dn8-hpD7rahsvxunGFzziDF76x3PAEBxtcu-YPQRQZl_UPHzUo-uVWpHwJNXoruW3Ze0i_-HDO7mXuLxepoplKPJ2jBDJeMUM-sRvBiq4O9WeliYRyV0NrITElU2i9Qq5mllDBbyXYFfbk9kp71_lrV2w00MJtVKS1iEkFmrU1iyIC3mZkGZpPdfsSJYRPYV9QXHVZpUDeE_XNw5FngkTHzD9y69i4OowH1TolISeTdT18gqxpU=m22", label:"hd1080"}
+					],
+					posterPath:"encrypt:Y29udGVudC9wb3N0ZXJzL21wNC1wb3N0ZXIuanBn",
+					fillEntireScreenWithPoster:"no",
+					normalHEXButtonsColor:"#FF0000",
+					selectedHEXButtonsColor:"#FFFFFF",
+					rightClickContextMenu:"default",
+					disableDoubleClickFullscreen:"no",
+					normalButtonsColor:"#0099ff",
+					selectedButtonsColor:"#00FF00",
+					useChromeless:"np",
+					showPreloader:"yes",
+					showErrorInfo:"yes",
+					addKeyboardSupport:"yes",
+					autoPlay:"no",
+					loop:"yes",
+					scrubAtTimeAtFirstPlay:"00:00:00",
+					maxWidth:1280,
+					maxHeight:720,
+					volume:0,
+					greenScreenTolerance:200,
+					backgroundColor:"#000000",
+					posterBackgroundColor:"#000000",
+					//ads
+					openNewPageAtTheEndOfTheAds:"no",
+					adsSource:[
+						{source:"https://www.cinemagia.ro/filme-2017/", timeStart:"00:00:20", addDuration:"00:00:60", timeToHoldAds:4, thumbnailSource:"content/images/thumbnail.jpg",  target:"_blank"},
+						{source:"content/videos/ad.mp4", timeStart:"00:00:30", timeToHoldAds:4, thumbnailSource:"content/images/thumbnail.jpg", link:"http://www.webdesign-flash.ro", target:"_blank"},
+						{source:"https://www.youtube.com/watch?v=Bv09DRd4lsM", timeStart:"00:00:40", timeToHoldAds:4, thumbnailSource:"content/images/thumbnail.jpg", link:"http://www.google.ro", target:"_blank"},
+						{source:"content/images/ad.jpg", timeStart:"00:00:55", addDuration:"00:00:20", timeToHoldAds:4, thumbnailSource:"content/images/thumbnail.jpg", link:"http://www.webdesign-flash.ro/p/evp/content/images/ad.jpg", target:"_blank"}
+					],
+
+					//cuepoints
+					executeCuepointsOnlyOnce:"yes",
+					cuepoints:[
+						
+					],
+					//annotations
+					annotiationsListId:"fwdAnnotations",
+					showAnnotationsPositionTool:"no",
+					//audio visualizer
+					audioVisualizerLinesColor:"#0099FF",
+					audioVisualizerCircleColor:"#FFFFFF",
+					//logo settings
+					showLogo:"yes",
+					hideLogoWithController:"yes",
+					logoPosition:"topRight",
+					logoLink:"http://www.webdesign-flash.ro",
+					logoPath:"",
+					logoMargins:5,
+					//controller settings
+					showController:"yes",
+					showControllerWhenVideoIsStopped:"yes",
+					showVolumeScrubber:"yes",
+					showVolumeButton:"yes",
+					showTime:"yes",
+					showQualityButton:"yes",
+					showShareButton:"yes",
+					showEmbedButton:"yes",
+					showDownloadButton:"yes",
+					showFullScreenButton:"yes",
+					repeatBackground:"yes",
+					controllerHeight:41,
+					controllerHideDelay:3,
+					startSpaceBetweenButtons:7,
+					spaceBetweenButtons:9,
+					mainScrubberOffestTop:14,
+					scrubbersOffsetWidth:4,
+					timeOffsetLeftWidth:5,
+					timeOffsetRightWidth:3,
+					volumeScrubberWidth:80,
+					volumeScrubberOffsetRightWidth:0,
+					timeColor:"#888888",
+					youtubeQualityButtonNormalColor:"#888888",
+					youtubeQualityButtonSelectedColor:"#FFFFFF",
+					//advertisement on pause window
+					aopwTitle:"Advertisement",
+					aopwSource:"https://www.youtube.com/embed/FmFlY74cQG4",
+					aopwWidth:400,
+					aopwHeight:240,
+					aopwBorderSize:6,
+					aopwTitleColor:"#FFFFFF",
+					//playback rate / speed
+					showPlaybackRateButton:"yes",
+					defaultPlaybackRate:"1", //0.25, 0.5, 1, 1.25, 1.5, 2
+					//embed window
+					embedWindowCloseButtonMargins:0,
+					borderColor:"#333333",
+					mainLabelsColor:"#FFFFFF",
+					secondaryLabelsColor:"#a1a1a1",
+					shareAndEmbedTextColor:"#5a5a5a",
+					inputBackgroundColor:"#000000",
+					inputColor:"#FFFFFF",
+					//loggin
+					isLoggedIn:"yes",
+					playVideoOnlyWhenLoggedIn:"yes",
+					loggedInMessage:"Please login to view this video.",
+					//subtitles
+					showSubtitleButton:"yes",
+					subtitlesOffLabel:"Subtitle off",
+					startAtSubtitle:1,
+					
+					subtitlesSource:[
+						{subtitlePath:"content/english_subtitle.txt", subtileLabel:"English"}
+					], 
+					
+					
+					adsButtonsPosition:"right",
+					skipToVideoText:"You can skip to video in: ",
+					skipToVideoButtonText:"Skip Ad",
+					adsTextNormalColor:"#999999",
+					adsTextSelectedColor:"#FFFFFF",
+					adsBorderNormalColor:"#666666",
+					adsBorderSelectedColor:"#FFFFFF"
+				}); 
+				
+				/*
+				new FWDEVPlayer({		
+					//main settings
+					instanceName:"player2",
+					parentId:"myDiv2",
+					mainFolderPath:"content",
+					skinPath:"minimal_skin_dark",
+					displayType:"responsive",
+					fillEntireVideoScreen:"no",
+					autoScale:"yes",
+					fillEntireVideoScreen:"no",
+					useHEXColorsForSkin:"no",
+					openDownloadLinkOnMobile:"no",
+					privateVideoPassword:"428c841430ea18a70f7b06525d4b748a",
+					startAtVideoSource:0,
+					startAtTime:"00:00:00",
+					stopAtTime:"00:00:00",
+					videoSource:[
+						{source:"https://vimeo.com/243653373", label:"hd720", videoType:"normalVideo", isPrivate:"no"}
+					],
+					posterPath:"encrypt:Y29udGVudC9wb3N0ZXJzL21wNC1wb3N0ZXIuanBn",
+					fillEntireScreenWithPoster:"no",
+					normalHEXButtonsColor:"#FF0000",
+					selectedHEXButtonsColor:"#FFFFFF",
+					rightClickContextMenu:"default",
+					disableDoubleClickFullscreen:"no",
+					normalButtonsColor:"#0099ff",
+					selectedButtonsColor:"#00FF00",
+					useChromeless:"np",
+					showPreloader:"yes",
+					showErrorInfo:"yes",
+					addKeyboardSupport:"yes",
+					autoPlay:"no",
+					loop:"no",
+					scrubAtTimeAtFirstPlay:"00:00:00",
+					maxWidth:1280,
+					maxHeight:720,
+					volume:0,
+					greenScreenTolerance:200,
+					backgroundColor:"#000000",
+					posterBackgroundColor:"#000000",
+					//ads
+					openNewPageAtTheEndOfTheAds:"no",
+					adsSource:[
+						
+						{source:"content/videos/ad.mp4", timeStart:"00:00:20", timeToHoldAds:4, thumbnailSource:"content/images/thumbnail.jpg", link:"http://www.webdesign-flash.ro", target:"_blank"},
+						{source:"https://www.youtube.com/watch?v=Bv09DRd4lsM", timeStart:"00:00:40", timeToHoldAds:4, thumbnailSource:"content/images/thumbnail.jpg", link:"http://www.google.ro", target:"_blank"},
+						{source:"content/images/ad.jpg", timeStart:"00:00:55", addDuration:"00:00:20", timeToHoldAds:4, thumbnailSource:"content/images/thumbnail.jpg", link:"http://www.webdesign-flash.ro/p/evp/content/images/ad.jpg", target:"_blank"}
+						
+					],
+
+					//cuepoints
+					executeCuepointsOnlyOnce:"yes",
+					cuepoints:[
+						
+					],
+					//annotations
+					annotiationsListId:"fwdAnnotations",
+					showAnnotationsPositionTool:"no",
+					//audio visualizer
+					audioVisualizerLinesColor:"#0099FF",
+					audioVisualizerCircleColor:"#FFFFFF",
+					//logo settings
+					showLogo:"yes",
+					hideLogoWithController:"yes",
+					logoPosition:"topRight",
+					logoLink:"http://www.webdesign-flash.ro",
+					logoPath:"",
+					logoMargins:5,
+					//controller settings
+					showController:"yes",
+					showControllerWhenVideoIsStopped:"yes",
+					showVolumeScrubber:"yes",
+					showVolumeButton:"yes",
+					showTime:"yes",
+					showQualityButton:"yes",
+					showShareButton:"yes",
+					showEmbedButton:"yes",
+					showDownloadButton:"yes",
+					showFullScreenButton:"yes",
+					repeatBackground:"yes",
+					controllerHeight:41,
+					controllerHideDelay:3,
+					startSpaceBetweenButtons:7,
+					spaceBetweenButtons:9,
+					mainScrubberOffestTop:14,
+					scrubbersOffsetWidth:4,
+					timeOffsetLeftWidth:5,
+					timeOffsetRightWidth:3,
+					volumeScrubberWidth:80,
+					volumeScrubberOffsetRightWidth:0,
+					timeColor:"#888888",
+					youtubeQualityButtonNormalColor:"#888888",
+					youtubeQualityButtonSelectedColor:"#FFFFFF",
+					//advertisement on pause window
+					aopwTitle:"Advertisement",
+					aopwSource:"",
+					aopwWidth:400,
+					aopwHeight:240,
+					aopwBorderSize:6,
+					aopwTitleColor:"#FFFFFF",
+					//playback rate / speed
+					showPlaybackRateButton:"yes",
+					defaultPlaybackRate:"1", //0.25, 0.5, 1, 1.25, 1.5, 2
+					//embed window
+					embedWindowCloseButtonMargins:0,
+					borderColor:"#333333",
+					mainLabelsColor:"#FFFFFF",
+					secondaryLabelsColor:"#a1a1a1",
+					shareAndEmbedTextColor:"#5a5a5a",
+					inputBackgroundColor:"#000000",
+					inputColor:"#FFFFFF",
+					//loggin
+					isLoggedIn:"yes",
+					playVideoOnlyWhenLoggedIn:"yes",
+					loggedInMessage:"Please login to view this video.",
+					//subtitles
+					showSubtitleButton:"yes",
+					subtitlesOffLabel:"Subtitle off",
+					startAtSubtitle:1,
+					
+					subtitlesSource:[
+						{subtitlePath:"content/english_subtitle.txt", subtileLabel:"English"}
+					], 
+					
+					
+					adsButtonsPosition:"right",
+					skipToVideoText:"You can skip to video in: ",
+					skipToVideoButtonText:"Skip Ad",
+					adsTextNormalColor:"#999999",
+					adsTextSelectedColor:"#FFFFFF",
+					adsBorderNormalColor:"#666666",
+					adsBorderSelectedColor:"#FFFFFF"
+				}); 
+				*/
+				registerAPI();
+			});
+			
+			
+			
+			//Register API (an setInterval is required because the player is not available until the youtube API is loaded).
+			var registerAPIInterval;
+			function registerAPI(){
+				clearInterval(registerAPIInterval);
+				if(window.player1){
+					player1.addListener(FWDEVPlayer.READY, readyHandler);
+					player1.addListener(FWDEVPlayer.PLAY, playHandler);
+					player1.addListener(FWDEVPlayer.PAUSE, pauseHandler);
+					player1.addListener(FWDEVPlayer.STOP, stopHandler);
+					player1.addListener(FWDEVPlayer.UPDATE_VIDEO_SOURCE, updateVideoSourceHandler);
+					player1.addListener(FWDEVPlayer.UPDATE_POSTER_SOURCE, updatePosterSourceHandler);
+				}else{
+					registerAPIInterval = setInterval(registerAPI, 100);
+				}
+			};
+
+			//API event listeners examples
+			function readyHandler(e){
+				//console.log("API -- ready to use");
+			}
+
+			function playHandler(e){
+				//console.log("API -- play");
+			}
+
+			function pauseHandler(e){
+				//console.log("API -- pause");
+			}
+
+			function stopHandler(e){
+				//console.log("API -- stop");
+			}
+
+			function updateVideoSourceHandler(e){
+				//console.log("API -- video source update: " + player1.getVideoSource());
+			}
+
+			function updatePosterSourceHandler(e){
+				//console.log("API -- video source update: " + player1.getPosterSource());
+			}
+
+			//API methods examples
+			function play(){
+				player1.play();
+			}
+
+			function pause(){
+				player1.pause();
+			}
+
+			function stop(){
+				player1.stop();
+			}
+
+			function scrub(percent){
+				player1.scrub(percent);
+			}
+
+			function setVolume(percent){
+				player1.setVolume(percent);
+			}
+
+			function goFullScreen(){
+				player1.goFullScreen();
+			}
+
+			function setPosterSource(){
+				player1.setPosterSource("content/posters/youtube-poster.jpg");
+			}
+			
+			function setAudioSource(){
+				player1.setVideoSource("http://webdesign-flash.ro/p/msp/content/mp3/01.mp3");
+			}
+			
+			function setVimeoSource(){
+				player1.setVideoSource("https://vimeo.com/channels/staffpicks/148662087");
+			}
+			
+			function setYoutubeSource(){
+				player1.setVideoSource("https://www.youtube.com/watch?v=bqhM0L394Y8&list=RD1Rxkx-aSSDY&index=20");
+			}
+			
+			function setHLSSource(){
+				player1.setVideoSource("https://video-dev.github.io/streams/x36xhzz/x36xhzz.m3u8");
+			}
+			
+
+			function setMp4Source(){
+				player1.setVideoSource("content/videos/desktop.mp4");
+			}
+			
+			function changeColors(){
+				player1.updateHEXColors(getRandomColor(),getRandomColor());
+			}
+			
+			function getRandomColor() {
+				var letters = '0123456789ABCDEF';
+				var color = '#';
+				for (var i = 0; i < 6; i++ ) {
+					color += letters[Math.floor(Math.random() * 16)];
+				}
+				return color;
+			}
+			
+			
+
+
+		</script>
+		
+		
+		
+	</head>
+
+	<body style="background-color:#aaaaaa; padding:0px; margin:0px;">	
+		
+		
+	
+		
+		<div id="myDiv" style="width:100%; height:500px; position:relative; left:0px; top:0px;"></div>
+		<div id="myDiv2" style="float:left;"></div>
+		<div id="myDiv3" style="float:left;"></div>
+		<div id="myDiv4" style="float:left;"></div>
+		<div id="myDiv5" style="float:left;"></div>
+		<div id="myDiv6" style="float:left;"></div>
+		
+		<button type="button" onclick="changeColors()">CHange hex colors</button>
+		<button type="button" onclick="play()">play</button>
+		<button type="button" onclick="pause()">pause</button>
+		<button type="button" onclick="stop()">stop</button>
+		<button type="button" onclick="scrub(.5)">scrub to half</button>
+		<button type="button" onclick="setVolume(.5)">set volume to half</button>
+		<button type="button" onclick="goFullScreen(.5)">go full screen</button>
+		<button type="button" onclick="setPosterSource()">set poster source</button>
+		<button type="button" onclick="setAudioSource()">set audio source</button>
+		<button type="button" onclick="setVimeoSource()">set vimeo source</button>
+		<button type="button" onclick="setHLSSource()">set HLS source</button>
+		<button type="button" onclick="setYoutubeSource()">set youtube source</button>
+		<button type="button" onclick="setMp4Source()">set mp4 source</button>
+		
+		<!-- Adds -->
+		<ul id="fwdAds"  style="display:none">
+			<li data-video-source="content/videos/ad.mp4" data-start="00:00:00">
+			<li data-video-source="content/videos/ad.mp4" data-start="00:00:20">
+			<li data-video-source="content/videos/ad.mp4" data-start="00:00:35">
+		</ul>
+		
+		<!-- Annotations -->
+		<ul id="fwdAnnotations" style="display:none">
+			<li data-start-time="00:00:00" data-end-time="00:00:29" data-left="40" data-top="45" data-show-close-button="yes" data-normal-state-class="EVPAnnotationNormal">
+				<div> Annotations like this can be added with ease!</div>
+			</li>
+			
+			<li data-start-time="00:00:02" data-end-time="00:00:29" data-left="40" data-top="85" data-show-close-button="yes" data-click-source="http://www.webdesign-flash.ro" data-click-source-target="_blank" data-normal-state-class="EVPAnnotationLinkNormal" data-selected-state-class="EVPAnnotationLinkSelected">
+				<div><span style="font-weight:bold; text-decoration: underline;">LINK</span> support, href and target can be specified, also animation between annotation states is possible as you can see here on hover.</div>
+			</li>
+			
+			<li data-start-time="00:00:03" data-end-time="00:00:29" data-left="40" data-top="167" data-show-close-button="yes" data-click-source="alert('This is a javascript function called using the annotations feature of Easy Video Player!');" data-click-source-target="_blank" data-normal-state-class="EVPAnnotationJavascriptNormal" data-selected-state-class="EVPAnnotationJavascriptSelected">
+				<div><span <span style="font-weight:bold; text-decoration: underline;">JAVASCRIPT</span> support, a javascript function can be called on click.</div>
+			</li>
+			
+			<li data-start-time="00:00:04" data-end-time="00:00:29" data-left="460" data-top="46" data-normal-state-class="EVPAnnotationCSSNormal">
+				<div>
+				<p><span style="color:#0099FF; font-familly:myFont; font-weight:bold;">FULL CSS SUPPORT</span></p>
+				<p><span style="color:#FFFFFF; font-familly:myFont; font-weight:bold;">OPTIONAL CLOSE BUTTON</span></div></p>
+				<p><span style="color:#0099FF; font-familly:myFont; font-weight:bold;">FULL HTML SUPPORT</span></div></p>
+				<p>The <span style="color:#0099FF; font-familly:myFont; font-weight:bold; text-decoration: underline;">start</span> / <span style="color:#0099FF; font-familly:myFont; font-weight:bold; text-decoration: underline;">show</span> time and <span style="color:#FFFFFF; font-familly:myFont; font-weight:bold; text-decoration: underline;">end</span> / <span style="color:#FFFFFF; font-familly:myFont; font-weight:bold; text-decoration: underline;">stop</span> time for each annotation can be specified with ease.<p>
+			</li>
+			
+			<li data-start-time="00:00:32" data-end-time="00:01:06" data-left="398" data-top="45" data-show-close-button="no" data-normal-state-class="EVPAnnotationAPINormal">
+				<div>ANNOTATIONS CAN BE USED TO CALL API METHODS!</div>
+			</li>
+			
+			<li data-start-time="00:00:33" data-end-time="00:01:06" data-left="640" data-top="85" data-show-close-button="no" data-click-source="player2.play();" data-normal-state-class="EVPAnnotationPlayNormal" data-selected-state-class="EVPAnnotationPlaySelected">
+				<div>play</div>
+			</li>
+			
+			<li data-start-time="00:00:34" data-end-time="00:01:06" data-left="640" data-top="125" data-show-close-button="no" data-click-source="player2.pause();" data-normal-state-class="EVPAnnotationPlayNormal" data-selected-state-class="EVPAnnotationPlaySelected">
+				<div>pause</div>
+			</li>
+			
+			<li data-start-time="00:00:35" data-end-time="00:01:06" data-left="640" data-top="165" data-show-close-button="no" data-click-source="player2.scrub(0.6);" data-normal-state-class="EVPAnnotationPlayNormal" data-selected-state-class="EVPAnnotationPlaySelected">
+				<div>scrub to 60%</div>
+			</li>
+			
+			<li data-start-time="00:00:36" data-end-time="00:01:06" data-left="640" data-top="205" data-show-close-button="no" data-click-source="player2.setVolume(0.5);" data-normal-state-class="EVPAnnotationPlayNormal" data-selected-state-class="EVPAnnotationPlaySelected">
+				<div>set volume to 50%</div>
+			</li>
+			
+			<li data-start-time="00:00:37" data-end-time="00:01:06" data-left="640" data-top="245" data-show-close-button="no" data-click-source="player2.goFullScreen();" data-normal-state-class="EVPAnnotationPlayNormal" data-selected-state-class="EVPAnnotationPlaySelected">
+				<div>go full screen</div>
+			</li>
+			
+		</ul>
+	
+	</body>
+
+		
+	</body>
+</html>
+
+
+
+
