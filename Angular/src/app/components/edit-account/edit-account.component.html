@@ -1,0 +1,36 @@
+<!-- <div class="main-content form-content bg-img" style="background-image:url({{login_bg}})"> -->
+    <div class="main-content">
+
+        <!-- LOGIN FORM 
+        ===================================================-->
+        <div class="login-form" style="padding-top: 100px;padding-bottom: 40px;">
+          <div class="container">
+            <div class="login-form-inner grey-bg">	
+              <h3 class="login-tit">Edit Profile</h3>
+              <form method="post" (ngSubmit)="editProfile()">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Full Name</label>
+                    <input type="name" class="form-control" placeholder="Enter Your Name" required [ngModel]="profile?.name" name="name" (ngModelChange)="onInputNameUpdate($event)">
+                   
+                </div>
+      
+                <div class="form-group" *ngIf="profile?.login_by == 'manual'">
+                    <label for="exampleInputEmail1">Email address</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Email" required [ngModel]="profile?.email" name="email" (ngModelChange)="onInputEmailUpdate($event)">
+                </div>
+      
+                <div class="form-group">
+                    <label>Mobile Number</label>
+                    <input type="text" class="form-control" placeholder="Enter Mobile Number" required [ngModel]="profile?.mobile" pattern="[0-9]{0,}" maxlength="11" name="mobile" (ngModelChange)="onInputMobileUpdate($event)">
+                </div>
+      
+      
+                <div>
+                  <button type="submit" class="btn btn-primary form-btn">Save</button>
+                </div>
+      
+                
+              </form>
+            </div>					
+          </div>
+        </div>
