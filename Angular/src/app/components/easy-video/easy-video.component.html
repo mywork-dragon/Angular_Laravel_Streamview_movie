@@ -1,0 +1,36 @@
+<div class="content" style="position: relative;">
+    <div class="back_button" style="z-index: 2147483647;">
+        <button (click)="redirect()" style="background: transparent;border: none;">
+            <i class="fa fa-arrow-circle-o-left" title="Back To Home"></i>
+        </button>
+    </div>
+  <div style="width: 90% !important;margin: 0 auto;">
+      <fwd *ngIf = "videoFetched" parentId="video01" [opts] = "opts" ></fwd>
+  </div>
+  <div class="embed-link">
+      <div class="embed_icon">
+          <div class="modal fade embed-top" id="embed-popup" role="dialog">
+              <div class="modal-dialog">
+                  <!-- Modal content-->
+                  <div class="modal-content embed-bg" style="background-image: url(img/img7.jpg);">
+                      <div class="embed-overlay">
+                          <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                              <h4 class="modal-title">Video Name</h4>
+                          </div>
+                          <div class="modal-body">
+                              <textarea type="text" row="" name="embed_link" [(ngModel)]="embed_link" class="form-control" id="embed_link"></textarea>
+                          </div>
+                          <div class="modal-footer">
+                              <div class="text-right">
+                                  <button type="button" class="payment-submit" title="Copy Link" (click)="copyFromTextBox()">Copy</button>
+                                  <!-- <button type="button" class="btn btn-danger btn-sm" title="Cancel" (click)="closePopup()"  data-dismiss="modal">Cancel</button> -->
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>

@@ -1,0 +1,34 @@
+<div class="main-content">
+
+    <div class="content-panel" style="padding-top: 57px;">
+  
+      <!-- LOGIN FORM 
+      ===================================================-->
+      <div class="login-form">
+        <div class="container">
+          <div class="login-form-inner grey-bg">  
+            <h3 class="login-tit">Hope, see you soon</h3>
+            <form method="post" (ngSubmit)="deleteAccount()">
+              <div class="form-group">
+                  <label><b>Note:</b> Once you deleted account, you will lose your history and wishlist details. </label>
+                  <br>
+                  <div *ngIf="login_by == 'manual'">
+                    <input type="password" class="form-control" placeholder="Enter Password" [ngModel]="password" name="password">
+                  </div>
+              </div>
+  
+             
+              <div>
+                <button type="submit" class="btn btn-primary form-btn">Delete Account</button>
+              </div>
+  
+              <div class="clearfix"></div>
+  
+            </form>
+          </div>          
+        </div>
+      </div>
+      <!-- LOGIN FORM -->
+  
+    </div>
+  </div>
