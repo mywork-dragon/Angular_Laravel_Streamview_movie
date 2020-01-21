@@ -6,8 +6,16 @@ describe('PayPerViewComponent', () => {
   let component: PayPerViewComponent;
   let fixture: ComponentFixture<PayPerViewComponent>;
 
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [ PayPerViewComponent ]
+    })
+    .compileComponents();
+  }));
+
   beforeEach(() => {
     fixture = TestBed.createComponent(PayPerViewComponent);
+    component = fixture.componentInstance;
     fixture.detectChanges();
   });
 

@@ -13,4 +13,13 @@ describe('PaidVideoComponent', () => {
     .compileComponents();
   }));
 
+  beforeEach(() => {
+    fixture = TestBed.createComponent(PaidVideoComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });

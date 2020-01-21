@@ -14,12 +14,18 @@ declare var UIkit: any;
 
 @Component({
   selector: 'app-trailer-video',
+  templateUrl: './trailer-video.component.html',
   styleUrls: ['./trailer-video.component.css']
 })
 
 export class TrailerVideoComponent implements OnInit {
 
   sessionStorage;
+  user_id;
+  access_token;
+  sub_profile_id;
+  user_type;
+  height;
   page_not_changed;
   videoData;
   embed_link;
@@ -50,6 +56,22 @@ export class TrailerVideoComponent implements OnInit {
     showErrorInfo: "yes",
     fillEntireScreenWithPoster: "yes",
     rightClickContextMenu: "default",
+    disableDoubleClickFullscreen: "no",
+    useChromeless: "no",
+    showPreloader: "yes", 
+    addKeyboardSupport: "yes",
+    autoPlay: "no",
+    loop: "no",
+    maxWidth: 2500,
+    maxHeight: 1500,
+    volume: .8,
+    greenScreenTolerance: 200,
+    backgroundColor: "#000000",
+    posterBackgroundColor: "#0099FF",
+    //logo settings
+    showLogo: "yes",
+    hideLogoWithController: "yes",
+    logoPosition: "topRight",
     logoLink: "http://www.webdesign-flash.ro",
     logoMargins: 5,
     //controller settings
