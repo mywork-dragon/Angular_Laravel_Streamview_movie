@@ -1,0 +1,8 @@
+<smil>
+                      <head>
+                        <meta base="https://www.flashington.com" />
+                      </head>
+                      <body>
+                        <switch><video src="SV-2019-04-16-17-14-15-f3f2d931f59862bf78d4a78790504911f1ca32f1.mp4" height="720" width="1280" /><video src="426x240SV-2019-04-16-17-14-15-f3f2d931f59862bf78d4a78790504911f1ca32f1.mp4" height="240" width="426" /><video src="640x360SV-2019-04-16-17-14-15-f3f2d931f59862bf78d4a78790504911f1ca32f1.mp4" height="360" width="640" /><video src="854x480SV-2019-04-16-17-14-15-f3f2d931f59862bf78d4a78790504911f1ca32f1.mp4" height="480" width="854" /></switch>
+                      </body>
+                    </smil>

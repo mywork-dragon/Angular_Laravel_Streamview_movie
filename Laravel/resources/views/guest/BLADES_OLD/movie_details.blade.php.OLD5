@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    @include('guest.partials._head')
+</head>
+
+<body>
+    <div id="preloader"></div>
+
+    <!-- header-start -->
+    @include('guest.partials._header')
+    <!-- header-end -->
+
+    <!-- details-area-start -->
+    <div class="details-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="details">
+                        <div class="details-movie">
+                            <div class="img">
+                                <img alt='{{$data["title"]}}' title='{{$data["title"]}}' src='{{$data["default_image"]}}' id="default_image" itemprop="image" />
+                            </div>
+                            <div class="content">
+                                <h2 class="name">Many Variations</h2>
+                                <div class="reviews">
+                                    <div class="rating clearfix">
+                                        <div class="star star-on"></div>
+                                        <div class="star star-on"></div>
+                                        <div class="star star-on"></div>
+                                        <div class="star star-on"></div>
+                                        <div class="star star-half"></div>
+                                    </div>
+                                    <p class="review">(564 Reviews(S)</p>
+                                </div>
+                                <ul class="info">
+                                    <li>Actor : Priti kapel, Justin orjun </li>
+                                    <li>Genre : Drama, Action</li>
+                                    <li>Release : Jun, 02, 2018</li>
+                                    <li>Language : English</li>
+                                </ul>
+                                <div class="share">
+                                    <span class="label">Share:</span>
+                                    <ul class="social">
+                                        <li class="facebook">
+                                            <a href="#" target="_blank">
+                                                <i class="fab fa-facebook-f"></i>
+                                            </a>
+                                        </li>
+                                        <li class="twitter">
+                                            <a href="#" target="_blank">
+                                                <i class="fab fa-twitter"></i>
+                                            </a>
+                                        </li>
+                                        <li class="instagram">
+                                            <a href="#" target="_blank">
+                                                <i class="fab fa-instagram"></i>
+                                            </a>
+                                        </li>
+                                        <li class="pinterest">
+                                            <a href="#" target="_blank">
+                                                <i class="fab fa-pinterest-p"></i>
+                                            </a>
+                                        </li>
+                                        <li class="vimeo">
+                                            <a href="#" target="_blank">
+                                                <i class="fab fa-vimeo-v"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <a class="all" href="#">All Movie</a>
+                            </div>
+                        </div>
+                        <div class="details-content">
+                            <h2 class="title">Discription :</h2>
+                            <p class="text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been
+                                the industry's standard dummy text ever since the 1500s, when an unknown the printer took
+                                a galley of type and scrambled it to make a type specimen book. It has survived not only
+                                five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+                                It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum
+                                passages, and more recently with desktop publishing software like Aldus PageMaker including
+                                versions of Lorem Ipsum.
+                                <br>
+                                <br> It is a long established fact that a reader will be distracted by the readable content of
+                                a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less
+                                normal distribution of letters.
+                                <br>
+                                <br> Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece
+                                of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock,
+                                a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure
+                                Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the
+                                word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections
+                                1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by
+                                Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during
+                                the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from
+                                a line in section 1.10.32.
+                                <br>
+                                <br> The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested.
+                                Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced
+                                in their exact original form, accompanied by English versions from the 1914 translation by
+                                H. Rackham.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- details-area-end -->
+
+    <!-- footer-start -->
+    @include('guest.partials._footer')
+    <!-- footer-end -->
+
+    <!-- javascript-start -->
+    @include('guest.partials._javascripts')
+    <!-- javascript-end -->
+
+</body>
+
+</html>

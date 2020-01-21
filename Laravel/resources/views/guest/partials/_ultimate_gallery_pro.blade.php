@@ -1,0 +1,131 @@
+<!-- Import grid -->
+<link rel="stylesheet" type="text/css"  href="/css/ugp_global.css"/>
+
+<script type="text/javascript" src="/java/FWDUGP.js"></script>
+
+<style>
+    @font-face{
+        font-family:myFont;
+        src: url(/fonts/Lato-Lig.ttf);
+    }
+</style>
+
+<script type="text/javascript">
+    FWDRLUtils.onReady(function(){
+        new FWDUGP({
+            //main settings
+            gridType:"classicVertical",
+            rightClickContextMenu:"default",
+            instanceName:"myUGP",
+            parentId:"myDiv",
+            mainFolderPath:"content",
+            gridSkinPath:"grid_skin_classic",
+            lightboxSkinPath:"lightbox_skin_classic",
+            playlistId:"myPlaylist",
+            allCategoriesLabel:"ALL GALLERIES",
+            showAllCategories:"yes",
+            randomizeCategories:"no",
+            animateParent:"yes",
+            startAtCategory:0,
+            backgroundColor:"#0c0b21",
+            //menu settings
+            menuType:"list",
+            showMenu:"no",
+            multipleCategorySelection:"yes",
+            showMenuButtonsSpacers:"no",
+            showTotalThumbnailsPerCategory:"yes",
+            showSearchBox:"yes",
+            centerNoSearchFoundLabelWithMenu:"yes",
+            comboboxSelectorLabel:"SELECT GALLERIES",
+            menuPosition:"left",
+            searchLabel:"search",
+            searchNotFoundLabel:"NOTHING FOUND!",
+            comboboxArrowNormalColor:"#FFFFFF",
+            comboboxArrowSelectedColor:"#000000",
+            menuButtonSpacerWidth:1,
+            menuButtonSpacerHeight:20,
+            menuButtonsSapcerLeftAndRight:0,
+            menuMaxWidth:920,
+            menuOffsetTop:25,
+            menuOffsetBottom:25,
+            horizontalSpaceBetweenMenuButtons:10,
+            verticalSpaceBetweenMenuButtons:10,
+            //thumbnail settings
+            thumbnailLoadingType:"loadMoreWithButton",
+            hideAndShowTransitionType:"scale",
+            thumbanilBoxShadow:"",
+            disableThumbnails:"no",
+            inverseButtonsIcons:"no",
+            thumbnailBackgroundColor:"#333333",
+            thumbnailBorderNormalColor:"#FFFFFF",
+            thumbnailBorderSelectedColor:"#c1c1c1",
+            howManyThumbnailsToDisplayPerSet:10,
+            thumbnailsHorizontalOffset:15,
+            thumbnailsVerticalOffset:10,
+            thumbnailMaxWidth:255,
+            thumbnailMaxHeight:360,
+            horizontalSpaceBetweenThumbnails:10,
+            verticalSpaceBetweenThumbnails:10,
+            thumbnailBorderSize:0,
+            thumbnailBorderRadius:0,
+            //load more button settings
+            loadMoreButtonLabel:"LOAD MORE THUMBNAILS",
+            loadMoreButtonOffsetTop:25,
+            loadMoreButtonOffsetBottom:25,
+            //preset settings
+            preset:"scaletext",
+            textVerticalAlign:"center",
+            useIconButtons:"yes",
+            thumbnailOverlayColor:"#000000",
+            thumbnailOverlayOpacity:.8,
+            thumbnailIconWidth:30,
+            thumbnailIconHeight:29,
+            spaceBetweenThumbanilIcons:12,
+            spaceBetweenTextAndIcons:0,
+            //ligtbox settings (optional)
+            facebookAppId:"213684265480896",
+            buttonsAlignment:"in",
+            itemBoxShadow:"none",
+            descriptionWindowAnimationType:"opacity",
+            descriptionWindowPosition:"bottom",
+            useAsModal:"no",
+            slideShowAutoPlay:"no",
+            addKeyboardSupport:"yes",
+            showCloseButton:"yes",
+            showShareButton:"yes",
+            showZoomButton:"yes",
+            showSlideShowButton:"yes",
+            showSlideShowAnimation:"yes",
+            showNextAndPrevButtons:"yes",
+            showNextAndPrevButtonsOnMobile:"yes",
+            showDescriptionButton:"yes",
+            showDescriptionByDefault:"no",
+            videoShowFullScreenButton:"yes",
+            videoAutoPlay:"no",
+            nextVideoOrAudioAutoPlay:"yes",
+            videoLoop:"no",
+            audioAutoPlay:"no",
+            audioLoop:"no",
+            backgroundOpacity:.9,
+            descriptionWindowBackgroundOpacity:.95,
+            buttonsHideDelay:3,
+            slideShowDelay:4,
+            defaultItemWidth:640,
+            defaultItemHeight:480,
+            itemOffsetHeight:50,
+            spaceBetweenButtons:1,
+            buttonsOffsetIn:2,
+            buttonsOffsetOut:5,
+            itemBorderSize:0,
+            itemBorderRadius:0,
+            itemBackgroundColor:"#333333",
+            itemBorderColor:"#333333",
+            lightBoxBackgroundColor:"#000000",
+            descriptionWindowBackgroundColor:"#FFFFFF",
+            videoPosterBackgroundColor:"#0099FF",
+            videoControllerBackgroundColor:"#FFFFFF",
+            audioControllerBackgroundColor:"#FFFFFF",
+            timeColor:"#000000"
+        });
+    });
+</script>

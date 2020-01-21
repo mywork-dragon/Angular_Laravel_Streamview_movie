@@ -1,0 +1,3558 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+use App\Helpers\Helper;
+
+use App\Jobs\NormalPushNotification;
+
+use App\Repositories\PaymentRepository as PaymentRepo;
+
+use App\Repositories\VideoRepository as VideoRepo;
+
+use Log;
+
+use Hash;
+
+use File;
+
+use DB;
+
+use Auth;
+
+use Setting;
+
+use Validator;
+
+use Exception;
+
+use App\Subscription;
+
+use App\Card;
+
+use App\Notification;
+
+use App\PayPerView;
+
+use App\Moderator;
+
+use App\Flag;
+
+use App\Genre;
+
+use App\LikeDislikeVideo;
+
+use App\UserPayment;
+
+use App\User;
+
+use App\Admin;
+
+use App\AdminVideo;
+
+use App\AdminVideoImage;
+
+use App\Settings;
+
+use App\UserRating;
+
+use App\Wishlist;
+
+use App\UserHistory;
+
+use App\Coupon;
+
+use App\Page;
+
+use App\Category;
+
+use App\SubProfile;
+
+use App\UserLoggedDevice;
+
+use App\ContinueWatchingVideo;
+
+use App\SubCategory;
+
+use App\VideoCastCrew;
+
+use App\CastCrew;
+
+use App\UserCoupon;
+
+class UserApiController extends Controller
+{
+
+    public function __construct(Request $request)
+    {
+        $this->middleware('UserApiVal' , 
+                    array('except' => ['register' , 
+                            'login' , 
+                            'forgot_password',
+                            'privacy',
+                            'about' , 
+                            'terms',
+                            'contact', 
+                            'site_settings',
+                            'allPages',
+                            'getPage', 
+                            'check_social', 
+                            'searchAll', 
+                            'reasons',
+                            'save_continue_watching_video', // While watching video we no need to logout the user
+                            ])
+                    );
+
+    }
+    
+    /**
+     * Function Name : register()
+     * 
+     * @uses Register a new user 
+     *
+     * @created: Vithya R
+     * 
+     * @edited: Shobana C
+     *
+     * @param object $request - New User Details
+     * 
+     * @return Json Response with user details
+     *
+     */
+    
+    public function register(Request $request) {
+
+        try {
+
+            DB::beginTransaction();
+
+            $basicValidator = Validator::make(
+                $request->all(),
+                array(
+                    'device_type' => 'required|in:'.DEVICE_ANDROID.','.DEVICE_IOS.','.DEVICE_WEB,
+                    'device_token' => 'required',
+                    'login_by' => 'required|in:manual,facebook,google',
+                )
+            );
+
+            if($basicValidator->fails()) {
+
+                $error_messages = implode(',', $basicValidator->messages()->all());
+
+                $response_array = array('success' => false, 'error' => Helper::get_error_message(101), 'error_code' => 101, 'error_messages'=> $error_messages);
+
+                throw new Exception($error_messages);
+
+            } else {
+
+                $allowedSocialLogin = array('facebook','google');
+
+                if (in_array($request->login_by,$allowedSocialLogin)) {
+
+                    // validate social registration fields
+
+                    $socialValidator = Validator::make(
+                                $request->all(),
+                                array(
+                                    'social_unique_id' => 'required',
+                                    'name' => 'required|min:2|max:100',
+                                    'email' => 'required|email|max:255',
+                                    'mobile' => 'digits_between:4,16',
+                                    'picture' => '',
+                                    'gender' => 'in:male,female,others',
+                                )
+                            );
+
+                    if ($socialValidator->fails()) {
+
+                        $error_messages = implode(',', $socialValidator->messages()->all());
+
+                        $response_array = array('success' => false, 'error' => Helper::get_error_message(101), 'error_code' => 101, 'error_messages'=> $error_messages);
+
+                        throw new Exception($error_messages);
+
+                    }
+
+                } else {
+
+                    // Validate manual registration fields
+
+                    $manualValidator = Validator::make(
+                        $request->all(),
+                        array(
+                            'name' => 'required|regex:/^[a-z\d\-.\s]+$/i|min:2|max:255',
+                            'email' => 'required|email|max:255',
+                            'password' => 'required|min:6',
+                            'picture' => 'mimes:jpeg,jpg,bmp,png',
+                        )
+                    );
+
+                    // validate email existence
+
+                    $emailValidator = Validator::make(
+                        $request->all(),
+                        array(
+                            'email' => 'unique:users,email',
+                        )
+                    );
+
+                    if($manualValidator->fails()) {
+
+                        $error_messages = implode(',', $manualValidator->messages()->all());
+
+                        $response_array = array('success' => false, 'error' => Helper::get_error_message(101), 'error_code' => 101, 'error_messages'=> $error_messages);
+
+                        throw new Exception($error_messages);
+                        
+                    } else if($emailValidator->fails()) {
+
+                        $error_messages = implode(',', $emailValidator->messages()->all());
+
+                        $response_array = array('success' => false, 'error' => Helper::get_error_message(101), 'error_code' => 101, 'error_messages'=> $error_messages);
+                        
+                        throw new Exception($error_messages);
+
+                    } 
+
+                }
+
+                $user = User::where('email' , $request->email)->first();
+
+                $new_user_send_email = NO;
+
+                // Creating the user
+
+                if(!$user) {
+
+                    $user = new User;
+
+                    register_mobile($request->device_type);
+
+                    $new_user_send_email = YES;
+
+                } else {
+
+                    if ($user->is_activated == USER_DECLINED) {
+
+                        throw new Exception(tr('user_login_decline'));
+                    
+                    }
+
+                    $sub_profile = SubProfile::where('user_id', $user->id)->first();
+
+                    if (!$sub_profile) {
+
+                        $new_user_send_email = YES;
+
+                    }
+
+                }
+
+                if($request->has('name')) {
+
+                    $user->name = $request->name;
+
+                }
+
+                if($request->has('email')) {
+
+                    $user->email = $request->email;
+
+                }
+
+                if($request->has('mobile')) {
+
+                    $user->mobile = $request->mobile;
+
+                }
+
+                if($request->has('password')) {
+
+                    $user->password = Hash::make($request->password);
+
+                }
+
+                $user->gender = $request->has('gender') ? $request->gender : "male";
+
+                $user->token = Helper::generate_token();
+
+                $user->token_expiry = Helper::generate_token_expiry();
+
+                $check_device_exist = User::where('device_token', $request->device_token)->first();
+
+                if($check_device_exist){
+
+                    $check_device_exist->device_token = "";
+
+                    $check_device_exist->save();
+                }
+
+                $user->device_token = $request->has('device_token') ? $request->device_token : "";
+
+                $user->device_type = $request->has('device_type') ? $request->device_type : "";
+
+                $user->login_by = $request->has('login_by') ? $request->login_by : "";
+
+                $user->social_unique_id = $request->has('social_unique_id') ? $request->social_unique_id : '';
+
+                $user->picture = asset('placeholder.png');
+
+                // Upload Picture
+
+                if($request->login_by == "manual") {
+
+                    if($request->hasFile('picture')) {
+
+                        $user->picture = Helper::normal_upload_picture($request->file('picture'));
+
+                    }
+
+                } else {
+
+                    if($request->has('picture')) {
+
+                        $user->picture = $request->picture;
+
+                    }
+
+                    $user->is_verified = USER_EMAIL_VERIFIED;
+
+                }
+
+                $user->is_activated = $user->no_of_account = $user->is_verified = 1;
+
+                if(Setting::get('email_verify_control')) {
+
+                    $user->status = DEFAULT_FALSE;
+
+                    $user->is_verified = USER_EMAIL_VERIFIED;
+
+                    if ($request->login_by == 'manual') {
+
+                        $user->is_verified = USER_EMAIL_NOT_VERIFIED;
+
+                    }
+
+                } 
+
+                if ($user->is_verified) {
+
+                    $user->status = 1;   
+
+                    $user->logged_in_account = 1;
+                }
+
+                if ($user->save()) {
+
+                    // Send welcome email to the new user:
+                    
+                    if($new_user_send_email == YES) {
+
+                        // Check the default subscription and save the user type 
+
+                        user_type_check($user->id);
+
+                        if ($user->login_by == 'manual') {
+
+                            $user->password = $request->password;
+
+                           // $subject = tr('user_welcome_title').' '.Setting::get('site_name');
+
+                            $email_data = [];
+
+                            $email_data['user_id'] = $user->id;
+
+                            $email_data['verification_code'] = $user->verification_code;
+
+                            $email_data['template_type'] = USER_WELCOME;
+
+                            $page = "emails.welcome";
+
+                            $email = $user->email;
+
+                            Helper::send_email($page,$subject = null,$email,$email_data);
+
+                        }
+
+                        $sub_profile = new SubProfile;
+
+                        $sub_profile->user_id = $user->id;
+
+                        $sub_profile->name = $user->name;
+
+                        $sub_profile->picture = $user->picture;
+
+                        $sub_profile->status = DEFAULT_TRUE;
+
+                        if ($sub_profile->save()) {
+
+                            // Response with registered user details:
+
+                            if (!Setting::get('email_verify_control')) {
+
+                                $logged_device = new UserLoggedDevice();
+
+                                $logged_device->user_id = $user->id;
+
+                                $logged_device->token_expiry = Helper::generate_token_expiry();
+
+                                $logged_device->status = DEFAULT_TRUE;
+
+                                $logged_device->save();
+
+                            }
+                            
+
+                        } else {
+
+                            throw new Exception(tr('sub_profile_not_save'));
+                            
+                        }
+
+
+                    }
+
+                    $moderator = Moderator::where('email', $user->email)->first();
+
+                    // If the user already registered as moderator, automatically the status will update.
+
+                    if($moderator && $user) {
+
+                        $user->is_moderator = DEFAULT_TRUE;
+
+                        $user->moderator_id = $moderator->id;
+
+                        $user->save();
+
+                        $moderator->is_activated = DEFAULT_TRUE;
+
+                        $moderator->is_user = DEFAULT_TRUE;
+
+                        $moderator->save();
+
+                    }
+
+                    if ($user->is_verified) {
+
+                        $response_array = array(
+                            'success' => true,
+                            'id' => $user->id,
+                            'name' => $user->name,
+                            'mobile' => $user->mobile,
+                            'gender' => $user->gender,
+                            'email' => $user->email,
+                            'picture' => $user->picture,
+                            'token' => $user->token,
+                            'token_expiry' => $user->token_expiry,
+                            'login_by' => $user->login_by,
+                            'social_unique_id' => $user->social_unique_id,
+                            'verification_control'=> Setting::get('email_verify_control'),
+                            'sub_profile_id'=>$sub_profile->id,
+                            'email_notification'=>$user->email_notification,
+                            'payment_subscription' => Setting::get('ios_payment_subscription_status'),
+                            'message'=> Setting::get('email_verify_control') ? tr('register_verify_success') : tr('register_success')
+                        );
+
+                        $response_array = Helper::null_safe($response_array);
+
+                        $response_array['user_type'] = $user->user_type ? 1 : 0;
+                        
+                        $response_array['push_status'] = $user->push_status ? 1 : 0;
+
+                    } else {
+
+                       // throw new Exception(Helper::get_error_message(3001), 3001);
+
+                        $response_array = ['success'=>false, 'error_messages'=>Helper::get_error_message(3001), 'error_code'=>3001];
+
+                        DB::commit();
+
+                        return response()->json($response_array, 200);
+
+                    }
+                }
+
+            }
+
+            DB::commit();
+
+            $response = response()->json($response_array, 200);
+
+            return $response;
+
+        } catch(Exception $e) {
+
+            DB::rollback();
+
+            $error = $e->getMessage();
+
+            $code = $e->getCode();
+
+            $response_array = ['success'=>false, 'error_messages'=>$error, 'error_code'=>$code];
+
+            return response()->json($response_array);
+
+        }
+    
+    }
+
+    /**
+     * Function Name : login()
+     *
+     * @uses Registered user can login using their email & Password
+     * 
+     * @created: Vithya R
+     * 
+     * @edited: Shobana C
+     *
+     * @param object $request - User Email & Password
+     *
+     * @return Json response with user details
+     */
+    public function login(Request $request) {
+
+        try {
+
+            DB::beginTransaction();
+            
+            $basicValidator = Validator::make($request->all(), 
+                array(
+
+                    'device_token' => 'required',
+                    'device_type' => 'required|in:'.DEVICE_ANDROID.','.DEVICE_IOS.','.DEVICE_WEB,
+                    'login_by' => 'required|in:manual,facebook,google',
+                )
+            );
+           
+            if($basicValidator->fails()){
+                
+                $error_messages = implode(',',$basicValidator->messages()->all());
+               
+                $response_array = array('success' => false, 'error' => Helper::get_error_message(101), 'error_code' => 101, 'error_messages'=> $error_messages);
+
+                throw new Exception($error_messages);
+            
+            } else {
+
+                /*validate manual login fields*/
+
+                $manualValidator = Validator::make($request->all(),
+                    array(
+                        'email' => 'required|email',
+                        'password' => 'required',
+
+                    )
+                );
+
+                if ($manualValidator->fails()) {
+
+                    $error_messages = implode(',',$manualValidator->messages()->all());
+
+                    $response_array = array('success' => false, 'error' => Helper::get_error_message(101), 'error_code' => 101, 'error_messages'=> $error_messages);
+
+                    throw new Exception($error_messages);
+                
+                }
+
+                $user = User::where('email', '=', $request->email)->first();
+
+                $email_active = DEFAULT_TRUE;
+
+                if($user) {
+
+                    Log::info("Before user Login verification control = ".print_r($user->is_activated, true));
+                
+                    if(!$user->is_activated) {
+
+                        throw new Exception(Helper::get_error_message(905));
+
+                    }
+                    
+                    Log::info("Before Login verification control = ".print_r($user->is_activated, true));
+
+                    if ($user->is_activated) {
+
+                        Log::info("Login verification control = ".print_r($user->is_activated, true));
+                        
+                        if (Setting::get('email_verify_control')) {
+
+                            if (!$user->is_verified) {
+
+                                $response_array = array( 'success' => false, 'error_messages' => Helper::get_error_message(111), 'error_code' => 111 );
+
+                                Helper::check_email_verification("" , $user->id, $error);
+
+                                $email_active = DEFAULT_FALSE;
+
+                            }
+
+                        }
+
+                        if($email_active) {
+
+                            if(!$user->is_activated) {
+
+                                throw new Exception(Helper::get_error_message(905));
+
+                            }
+
+                            if(Hash::check($request->password, $user->password)){
+
+                                $user->is_verified = 1;
+
+                            } else {
+
+                                $response_array = array( 'success' => false, 'error_messages' => Helper::get_error_message(105), 'error_code' => 105 );
+
+                                throw new Exception(Helper::get_error_message(105));
+                                
+                            }
+
+                        } else {
+
+                            throw new Exception(tr('verification_code_title'));
+                        }
+
+                    } else {
+
+                       
+                        $response_array = ['success'=>false, 'error_messages'=>tr('user_login_decline')];
+
+                        throw new Exception(tr('user_login_decline'));
+                        
+                        
+                    }
+                } else {
+
+                    $response_array = array( 'success' => false, 'error_messages' => Helper::get_error_message(105), 'error_code' => 105 );
+
+                    throw new Exception(Helper::get_error_message(105));
+
+                     
+                }
+
+                if($email_active) {
+
+                    $subProfile = SubProfile::where('user_id', $user->id)->where('status',1)->first();
+
+                    if ($subProfile) {
+
+                        $sub_profile_id = $subProfile->id;
+
+                    } else {
+
+                        $sub_profile = new SubProfile;
+
+                        $sub_profile->user_id = $user->id;
+
+                        $sub_profile->name = $user->name;
+
+                        $sub_profile->status = DEFAULT_TRUE;
+
+                        $sub_profile->picture = $user->picture;
+
+                        if ($sub_profile->save()) {
+
+                            $sub_profile_id = $sub_profile->id;
+
+                            $user->no_of_account += DEFAULT_TRUE;
+
+                            $user->save();
+
+                        } else {
+
+                            throw new Exception(tr('sub_profile_not_save'));
+                            
+                        }
+                    }
+
+                    if ($user->email != DEMO_USER) {
+
+                        if ($user->no_of_account >= $user->logged_in_account) {
+
+                            $model = UserLoggedDevice::where("user_id",$user->id)->get();
+
+                            foreach ($model as $key => $value) {
+
+                                if ($value->token_expiry > time()) {
+
+
+                                } else {
+
+                                   if ($value->delete()) {
+
+                                        $user->logged_in_account -= 1;
+
+                                        $user->save();
+
+                                    }
+
+                                }
+
+                            }
+                        }
+
+                    } else {
+
+                        $user->no_of_account = $user->no_of_account ? $user->no_of_account : 1;
+
+                        $user->logged_in_account = 0;
+
+                        $user->save();
+
+                    }
+
+                    if ($user->no_of_account > $user->logged_in_account) {
+ 
+                        // Generate new tokens
+                        // $user->token = Helper::generate_token();
+
+                        $user->token_expiry = Helper::generate_token_expiry();
+
+                        // Save device details
+                        $user->device_token = $request->device_token;
+                        $user->device_type = $request->device_type;
+                        $user->login_by = $request->login_by;
+
+                        if ($user->save()) {
+
+                            $payment_mode_status = $user->payment_mode ? $user->payment_mode : 0;
+
+
+                            $logged_device = new UserLoggedDevice();
+
+                            $logged_device->user_id = $user->id;
+
+                            $logged_device->token_expiry = Helper::generate_token_expiry();
+
+                            $logged_device->status = DEFAULT_TRUE;
+
+                            $logged_device->save();
+
+                            $user->logged_in_account += 1;
+
+                            $user->save();
+
+                            // Respond with user details
+
+                            $response_array = array(
+                                'success' => true,
+                                'id' => $user->id,
+                                'name' => $user->name,
+                                'mobile' => $user->mobile,
+                                'email' => $user->email,
+                                'gender' => $user->gender,
+                                'picture' => $user->picture,
+                                'token' => $user->token,
+                                'token_expiry' => $user->token_expiry,
+                                'login_by' => $user->login_by,
+                                'is_activated'=>$user->is_activated,
+                                // 'user_type' => $user->user_type,
+                                'sub_profile_id'=>$sub_profile_id,
+                                'social_unique_id' => $user->social_unique_id,
+                                // 'push_status' => $user->push_status,
+                                'one_time_subscription'=>$user->one_time_subscription,
+                                'sub_profile_id'=>$sub_profile_id,
+                                'email_notification'=>$user->email_notification,
+                                'payment_subscription' => Setting::get('ios_payment_subscription_status'),
+                                'message'=>tr('login_success')
+                            );
+
+                            $response_array = Helper::null_safe($response_array);
+
+                            $response_array['user_type'] = $user->user_type ? 1 : 0;
+                            $response_array['push_status'] = $user->push_status ? 1 : 0;
+
+
+                        } else {
+
+                            throw new Exception(tr('user_details_not_save'));
+                            
+                        }
+
+                    } else {
+
+                        throw new Exception(tr('no_of_logged_in_device'));
+                        
+                    }
+                       
+                } else {
+
+                    $response_array = ['success'=>false, 'error_messages'=>Helper::get_error_message(111)];
+                }
+            }
+           
+            DB::commit();
+
+            $response = response()->json($response_array, 200);
+
+            return $response;
+
+        } catch(Exception $e) {
+
+            DB::rollback();
+
+            $e = $e->getMessage();
+
+            $response_array = ['success'=>false, 'error_messages'=>$e];
+
+            return response()->json($response_array);
+
+        }
+    
+    }
+
+ 
+    /**
+     * Function Name : forgot_password()
+     *
+     * @uses If the user forgot his/her password he can hange it over here
+     *
+     * @created: Vithya R
+     * 
+     * @edited: Shobana C
+     *     
+     * @param object $request - Email id
+     *
+     * @return send mail to the valid user
+     */
+    
+    public function forgot_password(Request $request) {
+
+        try {
+
+            DB::beginTransaction();
+
+            $email =$request->email;
+            
+            $validator = Validator::make(
+
+                $request->all(),
+
+                array(
+                    'email' => 'required|email|exists:users,email',
+                ),
+                 array(
+                    'exists' => 'The :attribute doesn\'t exists',
+                )
+            );
+
+            if ($validator->fails()) {
+                
+                $error_messages = implode(',',$validator->messages()->all());
+                
+                $response_array = array('success' => false, 'error' => Helper::get_error_message(101), 'error_code' => 101, 'error_messages'=> $error_messages);
+
+                throw new Exception($error_messages);
+            
+            } else {
+
+                $user = User::where('email' , $email)->first();
+
+                if($user) {
+
+                    // If the user social login users, should not send mail to the users.
+
+                    $allowedSocialLogin = array('facebook','google');
+
+                    if (in_array($user->login_by,$allowedSocialLogin)) {
+
+                        throw new Exception(tr('you_registered_as_social_user'));
+
+                    } else {
+
+                        $new_password = Helper::generate_password();
+
+                        $user->password = Hash::make($new_password);
+
+                        $user->save();
+
+                        $email_data = array();
+
+                       // $email = $user->email;
+
+                        $email_data['email']  = $user->email;
+
+                        $email_data['password'] = $new_password;
+
+                        $email_data['template_type'] = FORGOT_PASSWORD;
+
+                        $page = "emails.forgot-password";
+
+                        $email_send = Helper::send_email($page,$subject = null,$user->email,$email_data);
+
+                        $response_array['success'] = true;
+
+                        $response_array['message'] = Helper::get_message(106);
+
+                    } 
+
+                } else {
+
+                    throw new Exception(tr('no_user_detail_found'));
+                    
+                }
+
+            }
+
+            DB::commit();
+
+            $response = response()->json($response_array, 200);
+
+            return $response;
+
+        } catch(Exception $e) {
+
+            DB::rollback();
+
+            $e = $e->getMessage();
+
+            $response_array = ['success'=>false, 'error_messages'=>$e];
+
+            return response()->json($response_array);
+        }
+    
+    }
+
+    /**
+     * Function Name : change_password()
+     *
+     * @uses To change the password of the user
+     *
+     * @created: Vithya R
+     * 
+     * @edited: Shobana C
+     *
+     * @param object $request - Password & confirm Password
+     *
+     * @return json response of the user
+     */
+    public function change_password(Request $request) {
+
+        try {
+
+            DB::beginTransaction();
+
+            $validator = Validator::make($request->all(), [
+                    'password' => 'required|confirmed',
+                    'old_password' => 'required',
+                ]);
+
+            if($validator->fails()) {
+                
+                $error_messages = implode(',',$validator->messages()->all());
+               
+                $response_array = array('success' => false, 'error' => 'Invalid Input', 'error_code' => 401, 'error_messages' => $error_messages );
+
+                throw new Exception($error_messages);
+           
+            } else {
+
+                $user = User::find($request->id);
+
+                if(Hash::check($request->old_password,$user->password)) {
+
+                    $user->password = Hash::make($request->password);
+                    
+                    $user->save();
+
+                    $response_array = Helper::null_safe(array('success' => true , 'message' => Helper::get_message(102)));
+
+                } else {
+                    $response_array = array('success' => false , 'error' => Helper::get_error_message(131),'error_messages' => Helper::get_error_message(131) ,'error_code' => 131);
+
+                    throw new Exception(Helper::get_error_message(131));
+                    
+                }
+
+            }
+
+            DB::commit();
+
+            $response = response()->json($response_array,200);
+
+            return $response;
+
+        } catch(Exception $e) {
+
+            DB::rollback();
+
+            $e = $e->getMessage();
+
+            $response_array = ['success'=>false, 'error_messages'=>$e];
+
+            return response()->json($response_array);
+
+        }
+
+    }
+
+    /** 
+     * Function Name : user_details()
+     *
+     * @uses To display the user details based on user  id
+     *
+     * @created: Vithya R
+     * 
+     * @edited: Shobana C
+     *
+     * @param object $request - User Id
+     *
+     * @return json response with user details
+     */
+    public function user_details(Request $request) {
+
+        try {
+
+            $user = User::find($request->id);
+
+            if (!$user) { 
+
+                throw new Exception(tr('no_user_detail_found'));
+                
+            }
+            $currency = Setting::get('currency');
+
+             $model = UserPayment::select('user_payments.*', DB::raw("'$currency' as currency"))->where('user_id', $request->id)
+                ->where('status', DEFAULT_TRUE)
+                ->orderBy('created_at', 'desc')->first();
+                if ($model) 
+                 $model->expiry_date = date('d-m-Y h:i A', strtotime($model->expiry_date));
+
+            $subProfile = SubProfile::where('user_id', $user->id)->where('status', DEFAULT_TRUE)->first();
+
+            $sub_profile_id = ($subProfile) ? $subProfile->id : '';
+
+            $card_last_four_number = "";
+
+            if ($user->card_id) {
+
+                $card = Card::find($user->card_id);
+
+                if ($card) {
+
+                    $card_last_four_number = $card->last_four;
+
+                }
+
+            }
+
+            $response_array = array(
+                'success' => true,
+                'id' => $user->id,
+                'name' => $user->name,
+                'mobile' => $user->mobile,
+                'gender' => $user->gender,
+                'email' => $user->email,
+                'picture' => $user->picture,
+                'token' => $user->token,
+                'token_expiry' => $user->token_expiry,
+                'login_by' => $user->login_by,
+                'social_unique_id' => $user->social_unique_id,
+                'user_type'=>$user->user_type,
+                'sub_profile_id'=>$sub_profile_id,
+                'card_last_four_number'=>$card_last_four_number,
+                'email_notification'=>$user->email_notification,
+                'subscription'=>$model->subscription
+            );
+
+            $response = response()->json(Helper::null_safe($response_array), 200);
+
+            return $response;
+
+        } catch(Exception $e) {
+
+            $e = $e->getMessage();
+
+            $response_array = ['success'=>false , 'error_messages'=> $e];
+
+            return response()->json($response_array);
+        }
+    
+    }
+ 
+    /**
+     * Function Name : update_profile()
+     *
+     * @uses To update the user details
+     *
+     * @created: Vithya R
+     * 
+     * @edited: Shobana C
+     *
+     * @param objecct $request : User details
+     *
+     * @return json response with user details
+     */
+    public function update_profile(Request $request) {
+
+        try {
+
+            DB::beginTransaction();
+            
+            $validator = Validator::make(
+                $request->all(),
+                array(
+                    'name' => 'required|regex:/^[a-z\d\-.\s]+$/i|min:2|max:100',
+                    'email' => 'email|unique:users,email,'.$request->id.'|max:255',
+                    'mobile' => 'digits_between:4,16',
+                    'picture' => 'mimes:jpeg,bmp,png',
+                    'gender' => 'in:male,female,others',
+                    'device_token' => '',
+                ));
+
+            if ($validator->fails()) {
+                // Error messages added in response for debugging
+                $error_messages = implode(',',$validator->messages()->all());
+                $response_array = array(
+                        'success' => false,
+                        'error' => Helper::get_error_message(101),
+                        'error_code' => 101,
+                        'error_messages' => $error_messages
+                );
+
+                throw new Exception($error_messages);
+                
+            } else {
+
+                $user = User::find($request->id);
+
+                if($user) {
+                    
+                    $user->name = $request->name ? $request->name : $user->name;
+                    
+                    if($request->has('email')) {
+
+                        $user->email = $request->email;
+                    }
+
+                    $user->mobile = $request->mobile ? $request->mobile : $user->mobile;
+
+                    $user->gender = $request->gender ? $request->gender : $user->gender;
+
+                    $user->address = $request->address ? $request->address : $user->address;
+
+                    $user->description = $request->description ? $request->description : $user->address;
+
+                    // Upload picture
+                    if ($request->hasFile('picture') != "") {
+
+                        Helper::delete_picture($user->picture, "/uploads/images/"); // Delete the old pic
+
+                        $user->picture = Helper::normal_upload_picture($request->file('picture'));
+
+                    }
+
+                    if ($user->save()) {
+
+                        $payment_mode_status = $user->payment_mode ? $user->payment_mode : "";
+
+                        $subProfile = SubProfile::where('user_id', $user->id)->where('status', DEFAULT_TRUE)->first();
+
+                        $sub_profile_id = ($subProfile) ? $subProfile->id : '';
+
+                        $response_array = array(
+                            'success' => true,
+                            'id' => $user->id,
+                            'name' => $user->name,
+                            'mobile' => $user->mobile,
+                            'gender' => $user->gender,
+                            'email' => $user->email,
+                            'picture' => $user->picture,
+                            'token' => $user->token,
+                            'token_expiry' => $user->token_expiry,
+                            'login_by' => $user->login_by,
+                            'social_unique_id' => $user->social_unique_id,
+                            'sub_profile_id'=>$sub_profile_id,
+                            'message'=>tr('update_success')
+                        );
+
+                        $response_array = Helper::null_safe($response_array);
+
+                    } else {
+
+                        throw new Exception(tr('user_details_not_save'));
+                        
+                    }
+
+                } else {
+
+                    throw new Exception(tr('no_user_detail_found'));
+                    
+                }
+            
+            }
+
+            DB::commit();
+
+            $response = response()->json($response_array, 200);
+
+            return $response;
+
+        } catch (Exception $e) {
+
+            DB::rollback();
+
+            $e = $e->getMessage();
+
+            $response_array = ['success'=>false, 'error_messages'=>$e];
+
+            return $response_array;
+        }
+    
+    }
+
+    /**
+     * Function Name : delete_account()
+     * 
+     * @uses Delete user account based on user id
+     * 
+     * @created: Vithya R
+     * 
+     * @edited: Shobana C
+     *
+     * @param object $request - Password and user id
+     *
+     * @return json with boolean output
+     */
+    public function delete_account(Request $request) {
+
+        try {
+
+            DB::beginTransaction();
+
+            $validator = Validator::make(
+                $request->all(),
+                array(
+                    'password' => '',
+                ));
+
+            if ($validator->fails()) {
+
+                $error_messages = implode(',',$validator->messages()->all());
+
+                $response_array = array('success' => false,'error' => Helper::get_error_message(101),'error_code' => 101,'message' => $error_messages
+                );
+
+                throw new Exception($error_messages);
+                
+            } else {
+
+                $user = User::find($request->id);
+
+                if (!$user) {
+
+                    throw new Exception(tr('no_user_detail_found'));
+                    
+                }
+
+                if($user->login_by != 'manual') {
+
+                    $allow = 1;
+
+                } else {
+
+                    if(Hash::check($request->password, $user->password)) {
+
+                        $allow = 1;
+
+                    } else {
+
+                        $allow = 0 ;
+
+                        $response_array = array('success' => false , 'message' => Helper::get_error_message(108) ,'error_code' => 108);
+
+                        throw new Exception(Helper::get_error_message(108));
+                        
+                    }
+
+                }
+
+                if($allow) {
+
+                    if ($user->device_type) {
+
+                        // Load Mobile Registers
+                        subtract_count($user->device_type);
+                        
+                    }
+
+                    $user->delete();
+
+                    $response_array = array('success' => true , 'message' => tr('user_account_delete_success'));
+
+                }
+
+            }
+
+            DB::commit();
+
+    		return response()->json($response_array,200);
+
+        } catch(Exception $e) {
+
+            DB::rollback();
+
+            $e = $e->getMessage();
+
+            $response_array = ['success'=>false, 'error_messages'=>$e];
+
+            return response()->json($response_array);
+        }
+
+	}
+
+    /**
+     * Function Name : wishlist_add()
+     *
+     * @uses To add wishlist of logged in user
+     *
+     * @created: Vithya R
+     * 
+     * @edited: Shobana C
+     *
+     * @param object $request - Sub profile id & Video id
+     *
+     * @return response of wishlist
+     */
+    public function wishlist_add(Request $request) {
+
+        Log::info("wishlist_add".print_r($request->all(), true));
+
+        try {
+
+            DB::beginTransaction();
+
+            if (!$request->has('sub_profile_id')) {
+
+                $sub_profile = SubProfile::where('user_id', $request->id)->where('status', DEFAULT_TRUE)->first();
+
+                if ($sub_profile) {
+
+                    $request->request->add([ 
+
+                        'sub_profile_id' => $sub_profile->id,
+
+                    ]);
+
+                } else {
+
+                    throw new Exception(tr('sub_profile_details_not_found'));
+
+                }
+
+            } else {
+
+                $subProfile = SubProfile::where('user_id', $request->id)
+                            ->where('id', $request->sub_profile_id)->first();
+
+                if (!$subProfile) {
+
+                    throw new Exception(tr('sub_profile_details_not_found'));
+                    
+                }
+
+            } 
+
+            $validator = Validator::make(
+                $request->all(),
+                array(
+                    'admin_video_id' => 'required|integer|exists:admin_videos,id,status,'.VIDEO_PUBLISHED.',is_approved,'.VIDEO_APPROVED,
+                    'sub_profile_id'=>'required|exists:sub_profiles,id'
+                ),
+                array(
+                    'exists' => 'The :attribute doesn\'t exists please provide correct video id',
+                    'unique' => 'The :attribute already added in wishlist.'
+                )
+            );
+
+            if ($validator->fails()) {
+
+                $error_messages = implode(',', $validator->messages()->all());
+
+                $response_array = array('success' => false, 'error' => Helper::get_error_message(101), 'error_code' => 101, 'error_messages'=>$error_messages);
+
+                throw new Exception($error_messages);
+
+            } else {
+
+                if (check_flag_video($request->admin_video_id,$request->sub_profile_id)) {
+
+                    throw new Exception(tr('flagged_video'));
+
+                }
+
+                $wishlist = Wishlist::where('user_id' , $request->sub_profile_id)
+                            ->where('admin_video_id' , $request->admin_video_id)
+                            ->first();
+
+                if(count($wishlist) > 0) {
+
+                    $wishlist->delete();
+
+                    $response_array = ['success'=>true, 'message'=> tr('wishlist_removed'),'wishlist_status' => 0];
+                    
+                } else {
+                    
+                    $wishlist = new Wishlist();
+
+                    $wishlist->user_id = $request->sub_profile_id;
+
+                    $wishlist->admin_video_id = $request->admin_video_id;
+
+                    $wishlist->status = DEFAULT_TRUE;
+
+                    if ($wishlist->save()) {
+
+                        $response_array = array('success' => true ,
+                                'wishlist_id' => $wishlist->id ,
+                                'wishlist_status' => $wishlist->status,
+                                'message' => tr('added_wishlist'));
+
+                    } else {
+
+                        throw new Exception(tr('wishlist_not_save'));
+                        
+                    }
+                }
+               
+            }
+
+            DB::commit();
+
+            $response = response()->json($response_array, 200);
+
+            return $response;
+
+        } catch (Exception $e) {
+
+            DB::rollback();
+
+            $e = $e->getMessage();
+
+            $response_array = ['success'=>false, 'error_messages'=>$e];
+
+            return response()->json($response_array);
+            
+        }
+    
+    }
+
+    /**
+     * Function Name : wishlist_index()
+     *
+     * @uses To get all the lists based on logged in user id
+     *
+     * @created: Vithya R
+     * 
+     * @edited: Shobana C
+     *
+     * @param object $request - Wishlist id
+     *
+     * @return respone with array of objects
+     */
+    public function wishlist_index(Request $request)  {
+
+        try {
+
+            $validator = Validator::make(
+                $request->all(),
+                array(
+                    'skip' => 'required|numeric',
+                )
+            );
+
+            if ($validator->fails()) {
+
+                $error_messages = implode(',', $validator->messages()->all());
+
+                throw new Exception($error_messages);
+                
+            } else {
+
+                if (!$request->has('sub_profile_id')) {
+
+                    $sub_profile = SubProfile::where('user_id', $request->id)->where('status', DEFAULT_TRUE)->first();
+
+                    if ($sub_profile) {
+                        
+                        $sub_profile_id = $sub_profile->id;
+
+                    } else  {
+
+                        throw new Exception(tr('sub_profile_details_not_found'));
+                        
+                    }
+
+                } else  {
+
+                    $subProfile = SubProfile::where('user_id', $request->id)
+                                    ->where('id', $request->sub_profile_id)->first();
+
+                    if (!$subProfile) {
+
+                        throw new Exception(tr('sub_profile_details_not_found'));
+                        
+                    }
+
+                    $sub_profile_id = $request->sub_profile_id;
+                 
+                }
+            
+
+                $wishlist = Helper::wishlist($sub_profile_id,NULL,$request->skip);
+
+                $wishlist_video = [];
+
+                if ($wishlist != null && !empty($wishlist)) {
+
+                    foreach ($wishlist as $key => $value) {
+                        
+                        $wishlist_video[] = displayFullDetails($value->admin_video_id, $request->id);
+
+                    }
+                }
+
+                $total = count($wishlist_video);
+
+        		$response_array = array('success' => true, 'wishlist' => $wishlist_video , 'total' => $total);
+
+                return response()->json($response_array, 200);
+            }
+
+        } catch (Exception $e) {
+
+            $e = $e->getMessage();
+
+            $response_array = ['success'=>false, 'error_messages'=>$e];
+
+            return response()->json($response_array);
+
+        }
+    
+    }
+
+    /**
+     * Function Name : wishlist_delete()
+     * 
+     * @uses To delete wishlist based on the logged in user id and video id
+     *
+     * @created: Vithya R
+     * 
+     * @edited: Shobana C
+     *
+     * @param object $request - User Id & Video Id
+     *
+     * @return response with boolean status
+     *
+     */
+    public function wishlist_delete(Request $request) {
+
+        Log::info(print_r($request->all() , true));
+
+        try {
+
+            DB::beginTransaction();
+
+            if (!$request->has('sub_profile_id')) {
+
+                $sub_profile = SubProfile::where('user_id', $request->id)->where('status', DEFAULT_TRUE)->first();
+
+                if ($sub_profile) {
+
+                    $request->request->add([ 
+                        'sub_profile_id' => $sub_profile->id,
+                    ]);
+
+                } else {
+
+                    throw new Exception(tr('sub_profile_details_not_found'));
+                    
+                }
+
+            } else {
+
+                $subProfile = SubProfile::where('user_id', $request->id)
+                                    ->where('id', $request->sub_profile_id)->first();
+
+                if (!$subProfile) {
+
+                    throw new Exception(tr('sub_profile_details_not_found'));
+                    
+                }
+            
+            }
+
+            $validator = Validator::make(
+                $request->all(),
+                array(
+                    'wishlist_id' => 'integer|exists:admin_videos,id',
+                    'sub_profile_id' => 'integer|exists:sub_profiles,id',
+                ),
+                array(
+                    'exists' => 'The :attribute doesn\'t exists please add to wishlists',
+                )
+            );
+
+            if ($validator->fails()) {
+
+                $error_messages = implode(',', $validator->messages()->all());
+
+                $response_array = array('success' => false, 'error' => Helper::get_error_message(101), 'error_code' => 101, 'error_messages'=>$error_messages);
+
+                throw new Exception($error_messages);
+                
+            } else {
+
+                /** Clear All wishlist of the loggedin user */
+
+                if($request->status == 1) {
+
+                    Log::info("Check Delete Wishlist - 1");
+
+                    $wishlist = Wishlist::where('user_id',$request->sub_profile_id)->delete();
+
+                } else {  /** Clear particularv wishlist of the loggedin user */
+
+                    Log::info("Check Delete Wishlist - 0");
+
+                    $wishlist = Wishlist::where('admin_video_id',$request->wishlist_id)
+                            ->where('user_id', $request->sub_profile_id)
+                            ->first();
+
+                    if($wishlist) {
+
+                        $wishlist->delete();
+
+                    } else {
+
+                        throw new Exception(tr('video_not_found'));
+                        
+                    }
+                }
+
+    			$response_array = array('success' => true, 'message'=>tr('delete_wishlist_success'));
+           
+            }
+
+            DB::commit();
+
+            $response = response()->json($response_array, 200);
+
+            return $response;
+
+        } catch (Exception $e) {
+
+            DB::rollback();
+
+            $e = $e->getMessage();
+
+            $response_array = ['success'=>false, 'error_messages'=>$e];
+
+            return response()->json($response_array);
+
+        }
+    
+    }
+
+    /**
+     * Function Name : history_add
+     *
+     * @uses To add history based on logged in user id
+     *
+     * @created: Vithya R
+     * 
+     * @edited: Shobana C
+     *
+     * @param object $request - History Id
+     *
+     * @return response with history details
+     */
+    public function history_add(Request $request)  {
+
+        try {
+
+            DB::beginTransaction();
+
+            if (!$request->has('sub_profile_id')) {
+
+                $sub_profile = SubProfile::where('user_id', $request->id)->where('status', DEFAULT_TRUE)->first();
+
+                if ($sub_profile) {
+
+                    $request->request->add([ 
+                        'sub_profile_id' => $sub_profile->id,
+                    ]);
+
+                } else {
+
+                    throw new Exception(tr('sub_profile_details_not_found'));
+                    
+                }
+            } else {
+
+                $subProfile = SubProfile::where('user_id', $request->id)
+                                        ->where('id', $request->sub_profile_id)->first();
+
+                if (!$subProfile) {
+
+                    throw new Exception(tr('sub_profile_details_not_found'));
+                    
+                }
+            }
+
+            $validator = Validator::make(
+                $request->all(),
+                array(
+                    'admin_video_id' => 'required|integer|exists:admin_videos,id,status,'.VIDEO_PUBLISHED.',is_approved,'.VIDEO_APPROVED,
+                    'sub_profile_id' => 'required|integer|exists:sub_profiles,id',
+                ),
+                array(
+                    'exists' => 'The :attribute doesn\'t exists please provide correct video id',
+                    'unique' => 'The :attribute already added in history.'
+                )
+            );
+
+            if ($validator->fails()) {
+
+                $error_messages = implode(',', $validator->messages()->all());
+
+                $response_array = array('success' => false, 'error' => Helper::get_error_message(101), 'error_code' => 101, 'error_messages'=>$error_messages);
+
+                throw new Exception($error_messages);
+
+            } else {
+
+                if (check_flag_video($request->admin_video_id,$request->sub_profile_id)) {
+
+                    throw new Exception(tr('flagged_video'));
+
+                }
+
+                $history = UserHistory::where('user_id' , $request->sub_profile_id)
+                            ->where('admin_video_id' ,$request->admin_video_id)->first();
+
+                if ($history) {
+
+
+                } else {
+
+                    //Save Wishlist
+                    $rev_user = new UserHistory();
+
+                    $rev_user->user_id = $request->sub_profile_id;
+
+                    $rev_user->admin_video_id = $request->admin_video_id;
+
+                    $rev_user->save();
+
+                }
+
+                $payperview = PayPerView::where('user_id', $request->id)
+                                ->where('video_id',$request->admin_video_id)
+                                ->where('status',DEFAULT_TRUE)
+                                ->where('is_watched',DEFAULT_FALSE)
+                                ->orderBy('id', 'desc')
+                                ->first();
+
+                $navigateback = 0;
+
+                if($video = AdminVideo::find($request->admin_video_id)) {
+
+                    // Check the video have PPV -> if yes need to restrict the watch_count revenue
+
+                    if ($video->amount <= 0) {
+
+                        \Log::info("uploaded_by ".$video->uploaded_by);
+
+                        \Log::info("Viewer Count ".Setting::get('video_viewer_count'));
+
+                        if($video->watch_count >= Setting::get('video_viewer_count') && is_numeric($video->uploaded_by)) {
+
+                            $video_amount = Setting::get('amount_per_video');
+
+                            // $video->watch_count = $video->watch_count + 1;
+
+                            $video->redeem_amount += $video_amount;
+
+                            Log::info("Uploaded By ".$video->uploaded_by);
+
+                            if($moderator = Moderator::find($video->uploaded_by)) {
+
+                                Log::info("Inside");
+
+                                $moderator->total_user_amount += $video_amount;
+
+                                $moderator->remaining_amount += $video_amount;
+
+                                $moderator->total += $video_amount;
+
+                                $moderator->save();
+
+                            }
+
+                            add_to_redeem($video->uploaded_by , $video_amount);
+
+                        } 
+                    }
+
+                    $video->watch_count += 1;
+
+                    $video->save();
+
+                    if ($video->type_of_subscription == RECURRING_PAYMENT) {
+
+                        $navigateback = 1;
+
+                    }
+                }
+
+                
+                if ($payperview) {
+
+                    $payperview->is_watched = DEFAULT_TRUE;
+
+                    $payperview->save();
+
+                }
+
+            }
+
+            $response_array = array('success' => true , 'message'=>tr('added_history'), 'navigateback'=>$navigateback);
+
+            DB::commit();
+
+            return response()->json($response_array, 200);
+
+        } catch (Exception $e) {
+
+            DB::rollback();
+
+            $e = $e->getMessage();
+
+            $response_array = ['success'=>false, 'error_messages'=>$e];
+
+            return response()->json($response_array);
+        }
+    
+    }
+
+    /**
+     * Function Name : history_index()
+     *  
+     * @uses To get all the history details based on logged in user id
+     *
+     * @created: Vithya R
+     * 
+     * @edited: Shobana C
+     *
+     * @param object $request - User Profile details
+     *
+     * @return Response with list of details
+     */     
+    public function history_index(Request $request) {
+
+        try {
+
+            $validator = Validator::make(
+                $request->all(),
+                array(
+                    'skip' => 'required|numeric',
+                )
+            );
+
+            if ($validator->fails()) {
+
+                $error_messages = implode(',', $validator->messages()->all());
+
+                throw new Exception($error_messages);
+                
+            } else {
+
+                if (!$request->has('sub_profile_id')) {
+
+                    $sub_profile = SubProfile::where('user_id', $request->id)->where('status', DEFAULT_TRUE)->first();
+
+                    if ($sub_profile) {
+
+                        $request->id = $sub_profile->id;
+
+                    } else {
+
+                        throw new Exception(tr('sub_profile_details_not_found'));
+                    }
+
+                } else {
+
+                    $subProfile = SubProfile::where('user_id', $request->id)
+                                                ->where('id', $request->sub_profile_id)->first();
+
+                    if (!$subProfile) {
+
+                        throw new Exception(tr('sub_profile_details_not_found'));
+                        
+                    }
+
+                    $request->id = $request->sub_profile_id;
+
+                }
+                
+        		//get wishlist
+
+                $history = Helper::watch_list($request->id,NULL,$request->skip);
+
+                $history_video = [];
+
+                if ($history != null && !empty($history)) {
+
+                    foreach ($history as $key => $value) {
+                        
+                        $history_video[] = displayFullDetails($value->admin_video_id, $request->id);
+
+                    }
+                }
+
+                $total = count($history_video);
+
+        		$response_array = array('success' => true, 'history' => $history_video , 'total' => $total);
+
+                return response()->json($response_array, 200);
+
+            }
+
+        } catch (Exception $e) {
+
+            $e = $e->getMessage();
+
+            $response_array = ['success'=>false, 'error_messages'=>$e];
+
+            return response()->json($response_array);
+        }   
+    
+    }
+
+    /**
+     * Function Name : history_delete()
+     *
+     * @uses To delete history based on login id
+     *
+     * @created: Vithya R
+     * 
+     * @edited: Shobana C
+     *
+     * @param Object $request - History Id
+     *
+     * @return Json object based on history
+     */
+    public function history_delete(Request $request) {
+
+        try {
+
+            DB::beginTransaction();
+
+            if (!$request->has('sub_profile_id')) {
+
+                $sub_profile = SubProfile::where('user_id', $request->id)->where('status', DEFAULT_TRUE)->first();
+
+                if ($sub_profile) {
+
+                    $request->request->add([ 
+                        'sub_profile_id' => $sub_profile->id,
+                    ]);
+
+                } else {
+
+                    throw new Exception(tr('sub_profile_details_not_found'));
+
+                }
+
+            } else {
+
+                $subProfile = SubProfile::where('user_id', $request->id)
+                                                ->where('id', $request->sub_profile_id)->first();
+
+                if (!$subProfile) {
+
+                    throw new Exception(tr('sub_profile_details_not_found'));
+                    
+                }
+
+            }
+
+            $validator = Validator::make(
+                $request->all(),
+                array(
+                    'admin_video_id' => 'integer|exists:admin_videos,id',
+                    'sub_profile_id' => 'required|integer|exists:sub_profiles,id',
+                ),
+                array(
+                    'exists' => 'The :attribute doesn\'t exists please add to history',
+                )
+            );
+
+            if ($validator->fails()) {
+
+                $error_messages = implode(',', $validator->messages()->all());
+
+                $response_array = array('success' => false, 'error' => Helper::get_error_message(101), 'error_code' => 101, 'error_messages'=>$error_messages);
+
+                throw new Exception($error_messages);
+                
+            } else {
+
+                if($request->has('status')) {
+
+                    $history = UserHistory::where('user_id',$request->sub_profile_id)->delete();
+
+                } else {
+                    
+                    $history = UserHistory::where('admin_video_id' ,  $request->admin_video_id)
+                        ->where('user_id', $request->sub_profile_id)
+                        ->delete();
+                }
+
+                $response_array = array('success' => true, 'message'=>tr('delete_history_success'));
+            }
+
+            DB::commit();
+
+            $response = response()->json($response_array, 200);
+
+            return $response;
+
+        } catch(Exception $e) {
+
+            DB::rollback();
+
+            $e = $e->getMessage();
+
+            $response_array = ['success'=>false, 'error_messages'=>$e];
+
+            return $response_array;
+        }
+    
+    }
+
+    /**
+     * Function Name : get_categories
+     *
+     * @uses To get all the categories
+     *
+     * @created: Vithya R
+     * 
+     * @edited: Shobana C
+     *
+     * @param object $request - As of now no attributes
+     *
+     * @return array of response
+     */
+    public function get_categories(Request $request) {
+
+        $categories = get_categories();
+
+        if($categories) {
+
+            if ($categories != null && !empty($categories)) {
+
+                $response_array = array('success' => true , 'categories' => $categories->toArray());
+
+            } else {
+
+                $response_array = array('success' => true , 'categories' => []);
+            }
+        
+        } else {
+
+            $response_array = array('success' => false,'error_messages' => Helper::get_error_message(135),'error_code' => 135);
+        }
+
+        $response = response()->json($response_array, 200);
+
+        return $response;
+    }
+
+
+    /**
+     * Function Name : get_sub_categories()
+     *
+     * @uses To get sub categories based on category id
+     *
+     * @created: Vithya R
+     * 
+     * @edited: Shobana C
+     *
+     * @param object $request - Category id
+     *
+     * @return response of array
+     */
+    public function SubCategories(Request $request) {
+       $data=  SubCategory::orderBy('name','asc')->get();
+       $chunks = $data->chunk(8);
+       $chunks->toArray();
+       $response_array = array('success' => true , 'sub_categories' =>  $chunks);
+       $response = response()->json($response_array, 200);
+        return $response;
+    } 
+
+    public function video_by_subcategory(Request $request) {
+
+        $sub_videos = sub_category_videos($request->category_id, WEB, 0 , 0 ,null);
+        $SubCategory=  SubCategory::where('id',$request->category_id)->first();
+        $response_array = ['data'=>$sub_videos, 'success'=>true,'SubCategory'=>$SubCategory];
+        return $response = response()->json($response_array, 200);
+
+
+    }
+    public function get_sub_categories(Request $request) {
+
+        $validator = Validator::make(
+            $request->all(),
+            array(
+                'category_id' => 'required|integer|exists:categories,id',
+            ),
+            array(
+                'exists' => 'The :attribute doesn\'t exists',
+            )
+        );
+
+        if ($validator->fails()) {
+
+            $error_messages = implode(',', $validator->messages()->all());
+
+            $response_array = array('success' => false, 'error' => Helper::get_error_message(101), 'error_code' => 101, 'error_messages'=>$error_messages);
+
+        } else {
+
+            $sub_categories = get_sub_categories($request->category_id);
+
+            if($sub_categories) {
+
+                if ($sub_categories != null && !empty($sub_categories)) {
+
+                    $response_array = array('success' => true , 'sub_categories' => $sub_categories->toArray());
+
+                } else {
+
+                    $response_array = array('success' => true , 'sub_categories' => []);
+
+                }
+
+            } else {
+                $response_array = array('success' => false,'error_messages' => Helper::get_error_message(130),'error_code' => 130);
+            }
+
+        }
+
+        $response = response()->json($response_array, 200);
+
+        return $response;
+    
+    }
+
+    /**
+     * Function Name : home()
+     * 
+     * @uses To list out all wishlist, history, recommended videos, suggestion videos based on logged in user 
+     *
+     * @created: Vithya R
+     * 
+     * @edited: Shobana C
+     *
+     * @param object @request - User Id, skip , take and etc
+     *
+     * @return response of array
+     */
+    public function home(Request $request) {
+
+        Log::info("HOME PAGE".print_r($request->all() , true));
+
+        $videos = $wishlist = $recent =  $banner = $trending = $history = $suggestion =array();
+
+        counter('home');
+
+        if (!$request->has('sub_profile_id')) {
+
+            $sub_profile = SubProfile::where('user_id', $request->id)->where('status', DEFAULT_TRUE)->first();
+
+            if ($sub_profile) {
+
+                $request->request->add([ 
+
+                    'sub_profile_id' => $sub_profile->id,
+
+                ]);
+
+                $id = $sub_profile->id;
+
+            } else {
+
+                $response_array = ['success'=>false, 'error_messages'=>tr('sub_profile_details_not_found')];
+
+                return response()->json($response_array , 200);
+
+            }
+
+        } else {
+
+            $subProfile = SubProfile::where('user_id', $request->id)
+                        ->where('id', $request->sub_profile_id)->first();
+
+            if (!$subProfile) {
+
+                $response_array = ['success'=>false, 'error_messages'=>tr('sub_profile_details_not_found')];
+                
+                return response()->json($response_array , 200);
+                
+            } else {
+
+                $id = $subProfile->id;
+
+            }
+
+        } 
+
+        $banner['name'] = tr('mobile_banner_heading');
+
+        $banner['key'] = BANNER;
+
+        $banner['list'] = Helper::banner_videos($id);
+
+        $continue_videos['name'] = tr('continue_watching_videos');
+
+        $continue_videos['key'] = CONTINUE_WATCHING;
+
+        $continnue_watching_videos = Helper::continue_watching_videos($request->sub_profile_id, $request->device_type, 0);
+
+        $continue_watch_videos = [];
+
+        foreach ($continnue_watching_videos as $key => $value) {
+            
+            $continue_watch_videos[] = displayFullDetails($value->admin_video_id, $id);
+
+        }
+        $continue_videos['list'] = $continue_watch_videos;
+
+        array_push($videos , $continue_videos);
+
+        $wishlist['name'] = tr('mobile_wishlist_heading');
+
+        $wishlist['key'] = WISHLIST;
+
+        $wishlists = Helper::wishlist($request->sub_profile_id, $request->device_type);
+
+        $wishlist_video = [];
+
+        foreach ($wishlists as $key => $value) {
+            
+            $wishlist_video[] = displayFullDetails($value->admin_video_id, $id);
+
+        }
+
+        $wishlist['list'] = $wishlist_video;
+
+        array_push($videos , $wishlist);
+
+        $recent['name'] = tr('mobile_recent_upload_heading');
+
+        $recent['key'] = RECENTLY_ADDED;
+
+        $recents = Helper::recently_added(WEB, 0, 0, $id);
+
+        $recent_videos = [];
+
+        foreach ($recents as $key => $value) {
+            
+            $recent_videos[] = displayFullDetails($value->admin_video_id, $id);
+
+        }
+
+        $recent['list'] = $recent_videos;
+
+
+        array_push($videos , $recent);
+
+        $trending['name'] = tr('mobile_trending_heading');
+        $trending['key'] = TRENDING;
+
+        $trendings = Helper::trending(WEB, 0, 0,$id);
+
+        $trending_videos = [];
+
+        foreach ($trendings as $key => $value) {
+            
+            $trending_videos[] = displayFullDetails($value->admin_video_id, $id);
+
+        }
+
+        $trending['list'] = $trending_videos;
+
+        array_push($videos, $trending);
+
+        $history['name'] = tr('mobile_watch_again_heading');
+
+        $history['key'] = WATCHLIST;
+
+        $history_videos = Helper::watch_list($request->sub_profile_id, $request->device_type);
+
+        $histories = [];
+
+        foreach ($history_videos as $key => $value) {
+            
+            $histories[] = displayFullDetails($value->admin_video_id, $id);
+
+        }
+
+        $history['list'] = $histories;
+
+        array_push($videos , $history);
+
+        $suggestion['name'] = tr('mobile_suggestion_heading');
+
+        $suggestion['key'] = SUGGESTIONS;
+
+        $suggestion_videos = Helper::suggestion_videos(WEB, null, null, $id);
+
+        $suggestions = [];
+
+        foreach ($suggestion_videos as $key => $value) {
+            
+            $suggestions[] = displayFullDetails($value->admin_video_id, $id);
+
+        }
+
+        $suggestion['list'] = $suggestions;
+
+        array_push($videos , $suggestion);
+
+        $recent_video = Helper::recently_video(0, $id);
+
+        $get_video_details = ($recent_video) ? displayFullDetails($recent_video->admin_video_id, $id) : '';
+
+        $response_array = array('success' => true , 'data' => $videos , 'banner' => $banner, 'recent_video'=>$get_video_details);
+
+        return response()->json($response_array , 200);
+
+    }
+
+    /**
+     * Function Name : common()
+     *
+     * @uses To get common response from all the section of videos like recent, recommended, wishlist and history
+     *
+     * @created: Vithya R
+     * 
+     * @edited: Shobana C
+     *
+     * @param object @request - User Id, skip , take and etc
+     * 
+     * @request response of array
+     */  
+    public function common(Request $request) {
+
+        Log::info("common".print_r($request->all() , true));
+
+        $validator = Validator::make(
+            $request->all(),
+            array(
+                'key'=>'required',
+                'skip' => 'required|numeric',
+            )
+        );
+
+        if ($validator->fails()) {
+
+            $error_messages = implode(',', $validator->messages()->all());
+
+            return response()->json(['success'=>false, 'error_messages'=>$error_messages]);
+            
+        } else {
+
+            $key = $request->key;
+
+            $total = 18;
+
+            switch($key) {
+
+                case TRENDING:
+
+                    $videos = Helper::trending(NULL,$request->skip);
+
+                    break;
+
+                case WISHLIST:
+
+                    $videos = Helper::wishlist($request->id,NULL,$request->skip);
+
+
+                    $total = get_wishlist_count($request->id);
+
+                    break;
+
+                case SUGGESTIONS:
+
+                    $videos = Helper::suggestion_videos(NULL,$request->skip);
+
+                    break;
+                case RECENTLY_ADDED:
+
+                    $videos = Helper::recently_added(NULL,$request->skip);
+
+                    break;
+
+                case WATCHLIST:
+
+                    $videos = Helper::watch_list($request->id,NULL,$request->skip);
+
+                    $total = get_history_count($request->id);
+
+                    break;
+
+                default:
+
+                    $videos = Helper::recently_added(NULL,$request->skip);
+            }
+
+
+            $response_array = array('success' => true , 'data' => $videos , 'total' => $total);
+
+            return response()->json($response_array , 200);
+
+        }
+
+    }
+
+    /**
+     * Function Name : get_category_videos()
+     *
+     * @uses Based on category id , videos will dispaly
+     *
+     * @created: Vithya R
+     * 
+     * @edited: Shobana C
+     *
+     * @param object @request - Category id
+     *
+     * @return array of response
+     */
+    public function get_category_videos(Request $request) {
+
+        Log::info("get_category_videos".print_r($request->all() , true));
+
+        $validator = Validator::make(
+            $request->all(),
+            array(
+                'category_id' => 'required|integer|exists:categories,id',
+            ),
+            array(
+                'exists' => 'The :attribute doesn\'t exists',
+            )
+        );
+
+        if ($validator->fails())  {
+
+            $error_messages = implode(',', $validator->messages()->all());
+
+            $response_array = array('success' => false, 'error' => Helper::get_error_message(101), 'error_code' => 101, 'error_messages'=>$error_messages);
+
+        } else {
+
+            $data = array();
+
+            $sub_categories = get_sub_categories($request->category_id);
+
+            if($sub_categories) {
+
+                foreach ($sub_categories as $key => $sub_category) {
+
+                    $videos = Helper::sub_category_videos($sub_category->id);
+
+                    if(count($videos) > 0) {
+
+                        $results['sub_category_name'] = $sub_category->name;
+                        $results['key'] = $sub_category->id;
+                        $results['videos_count'] = count($videos);
+                        $results['videos'] = $videos->toArray();
+
+                        array_push($data, $results);
+                    }
+                }
+            }
+
+            $response_array = array('success' => true, 'data' => $data);
+        }
+
+        $response = response()->json($response_array, 200);
+
+        return $response;
+
+    }
+
+    /**
+     * Function Name : get_category_videos()
+     *
+     * @uses Based on category id , videos will dispaly
+     *
+     * @created:
+     * 
+     * @edited: 
+     *
+     * @param object @request - Category id
+     *
+     * @return array of response
+     */
+    public function get_sub_category_videos(Request $request) {
+
+        Log::info("get_sub_category_videos".print_r($request->all() , true));
+
+        $validator = Validator::make(
+            $request->all(),
+            array(
+                'sub_category_id' => 'required|integer|exists:sub_categories,id',
+                'skip' => 'integer'
+            ),
+            array(
+                'exists' => 'The :attribute doesn\'t exists',
+            )
+        );
+
+        if ($validator->fails()) {
+            $error_messages = implode(',', $validator->messages()->all());
+
+            $response_array = array('success' => false, 'error' => Helper::get_error_message(101), 'error_code' => 101, 'error_messages'=>$error_messages);
+
+        } else {
+
+            $data = array();
+
+            $total = 18;
+
+            if($videos = Helper::sub_category_videos($request->sub_category_id , NULL,$request->skip)) {
+                $data = $videos->toArray();
+            }
+
+            $total = get_sub_category_video_count($request->sub_category_id);
+
+            $response_array = array('success' => true, 'data' => $data , 'total' => $total);
+
+        }
+
+        $response = response()->json($response_array, 200);
+        
+        return $response;
+
+    }
+     /**
+     * Function Name : videoDetail()
+     *
+     * @uses To get a single video page based on the id
+     *
+     * @created : vidhya R (11/12/2017)
+     *
+     * @edited : vidhya R (2018-07-21)
+     *
+     * @param object $request - Video Id
+     *
+     * @return response of single video details
+     */
+
+    public function videoDetail(Request $request) {
+
+        try {
+
+            $validator = Validator::make(
+                $request->all(),
+                array(
+                    'admin_video_id' => 'required|integer|exists:admin_videos,id,is_approved,1',
+                  // 'sub_profile_id'=>'required|sub_profiles,id'
+                ),
+                array(
+                    'exists' => 'The :attribute doesn\'t exists',
+                )
+            );
+
+            if ($validator->fails()) {
+
+                $error_messages = implode(',', $validator->messages()->all());
+
+                $response_array = array('success' => false, 'error' => Helper::get_error_message(101), 'error_code' => 101, 'error_messages'=>$error_messages);
+
+                throw new Exception($error_messages);
+                
+            } else {
+                $data = DB::table('admin_videos')->where('id',$request->admin_video_id)->first();
+                // $data = Helper::get_video_details($request->admin_video_id);
+                // print_r(DB::table('admin_videos')->where('id',37)->first());exit;
+                if($data->video_type == VIDEO_TYPE_UPLOAD || $data->video_type ==VIDEO_TYPE_OTHER){
+                 $data->video = change_web_url_to_cdn($data->video);
+                 $data->trailer_video = change_web_url_to_cdn($data->trailer_video);   
+                }
+                 
+
+                $data->actors = shwoCastAndCrews($data->actors,true);
+                $data->directors = shwoCastAndCrews($data->directors,true);
+                $data->writers = shwoCastAndCrews($data->writers,true);
+              
+                $trailer_video = $ios_trailer_video = $data->trailer_video;
+
+                $video = $ios_video = $data->video;
+
+                $video_pixels = $trailer_pixels = "";
+
+                $trailer_video_rtmp_smil = $video_rtmp_smil = $trailer_subtitle_name = $video_subtitle_name = "";
+
+                if($data->video_type == VIDEO_TYPE_UPLOAD && $data->video_upload_type == VIDEO_UPLOAD_TYPE_DIRECT) {
+
+                    $trailer_subtitle_name = $data->trailer_subtitle ? get_video_end($data->trailer_subtitle) : "";
+
+                    $video_subtitle_name = $data->video_subtitle ? get_video_end($data->video_subtitle) : "";
+
+                    if(check_valid_url($data->trailer_video)) {
+
+                        if ($data->trailer_video) {
+
+                            // $trailer_video = Helper::convert_rtmp_to_secure(get_video_end($data->trailer_video) , $data->trailer_video);
+
+                        
+                           // $ios_trailer_video = Helper::convert_hls_to_secure(get_video_end($data->trailer_video) , $data->trailer_video);
+
+                            $trailer_video = Setting::get('streaming_url') ? Setting::get('streaming_url').get_video_end($data->trailer_video) : $data->trailer_video;
+
+                            if(Setting::get('HLS_STREAMING_URL')) {
+                            
+                                $ios_trailer_video = Setting::get('HLS_STREAMING_URL').get_video_end($data->trailer_video);
+
+                            } else {
+
+                                $ios_trailer_video = $data->trailer_video;
+
+                            }
+
+                        }
+                        
+                    }
+
+                    if(check_valid_url($data->video)) {
+
+                        // if(Setting::get('streaming_url'))
+                        // $video = Helper::convert_rtmp_to_secure(get_video_end($data->video) , $data->video);
+                            
+                        // $ios_video = Helper::convert_hls_to_secure(get_video_end($data->video) , $data->video);
+                        
+                        $video = Setting::get('streaming_url') ? Setting::get('streaming_url').get_video_end($data->video) : $data->video;
+
+                        $ios_video = Setting::get('HLS_STREAMING_URL') ? Setting::get('HLS_STREAMING_URL').get_video_end($data->video) : $data->video;
+                    
+                    }
+
+                    if ($request->device_type == DEVICE_WEB) {
+
+                        if (\Setting::get('streaming_url')) {
+                            
+                            if($data->trailer_video_resolutions) {
+
+                                $trailer_video_rtmp_smil = get_video_end_smil($data->trailer_video).'.smil';
+
+                                // $trailer_video = Helper::web_url().'/uploads/smil/'.$trailer_video_rtmp_smil;
+
+                                $trailer_video = Helper::convert_smil_to_secure($trailer_video_rtmp_smil , $trailer_video);
+
+                            } 
+
+                            if ($data->video_resolutions) {
+
+                                $video_rtmp_smil = get_video_end_smil($data->video).'.smil';
+
+                                // $video = Helper::web_url().'/uploads/smil/'.$video_rtmp_smil;
+
+                                Log::info("video_rtmp_smil".$video_rtmp_smil);
+
+                                $video = Helper::convert_smil_to_secure($video_rtmp_smil , $video);
+                            
+                            }
+                            
+                        } else {
+
+
+                            $video = $data->video_resize_path ? $data->video.','.$data->video_resize_path : $data->video;
+
+                            $video_pixels = $data->video_resolutions ? 'original,'.$data->video_resolutions : 'original';
+
+                            $trailer_video = $data->trailer_resize_path ? $data->trailer_video.','.$data->trailer_resize_path : $data->trailer_video;
+
+                            $trailer_pixels = $data->trailer_video_resolutions ? 'original,'.$data->trailer_video_resolutions : 'original';
+                        }
+                    
+                    }
+                }
+
+                if($data->video_type == VIDEO_TYPE_YOUTUBE) {
+
+                    if ($request->device_type != DEVICE_WEB) {
+
+                        $video = $ios_video = get_api_youtube_link($data->video);
+
+                        $trailer_video =  $ios_trailer_video = get_api_youtube_link($data->trailer_video);
+
+                    } else {
+
+                        $video = $ios_video = get_youtube_embed_link($data->video);
+
+                        $trailer_video =  $ios_trailer_video = get_youtube_embed_link($data->trailer_video);
+
+
+                    }
+
+                }
+
+                $admin_video_images = AdminVideoImage::where('admin_video_id' , $request->admin_video_id)
+                                    ->orderBy('is_default' , 'desc')
+                                    ->get();
+
+                if ($ratings = Helper::video_ratings($request->admin_video_id,0)) {
+
+                    $ratings = $ratings->toArray();
+
+                }
+
+
+
+
+                $share_link = Setting::get('ANGULAR_SITE_URL').'video/'.$request->admin_video_id;
+
+                $cnt = $this->watch_count($request)->getData();
+
+                $likes_count = Helper::likes_count($request->admin_video_id);
+
+                $genrenames = [];
+
+                $genre_videos = [];
+
+                if ($data->genre_id > 0) {
+
+                    $genrenames = Genre::where('genres.sub_category_id' , $data->sub_category_id)
+                                        ->leftJoin('admin_videos' , 'genres.id' , '=' , 'admin_videos.genre_id')
+                                        ->select(
+                                                'genres.id as genre_id',
+                                                'genres.name as genre_name'
+                                                )
+                                        ->groupBy('admin_videos.genre_id')
+                                        ->havingRaw("COUNT(admin_videos.id) > 0")
+                                        ->orderBy('genres.updated_at', 'desc')
+                                        ->where('genres.is_approved', DEFAULT_TRUE)
+                                        ->get()->toArray();
+
+                    if (count($genrenames)) {
+
+                        $videos_query = AdminVideo::where('genre_id', $data->genre_id)
+                                            // ->whereNotIn('admin_videos.genre_id', [$video->id])
+                                            ->where('admin_videos.status' , 1)
+                                            ->where('admin_videos.is_approved' , 1)
+                                            ->orderBy('admin_videos.created_at', 'desc')
+                                            ->whereNotIn('admin_videos.id', [$request->admin_video_id]);
+
+                     
+
+                        $seasons = $videos_query->skip(0)->take(6)
+                                        ->get();
+                        
+                        
+                        if(!empty($seasons) && $seasons != null) {
+
+                            foreach ($seasons as $key => $value) {
+
+                                $genre_videos[] = [
+                                        'title'=>$value->title,
+                                        'description'=>$value->description,
+                                        'ratings'=>$value->ratings,
+                                        'publish_time'=>date('F j y', strtotime($value->publish_time)),
+                                        'duration'=>$value->duration,
+                                        'watch_count'=>$value->watch_count,
+                                        'default_image'=>$value->default_image,
+                                        'admin_video_id'=>$value->id,
+                                    ];
+                            }
+                        }
+                    }
+
+                }
+
+
+                $video_cast_crews = VideoCastCrew::select('cast_crew_id', 'name')
+                    ->where('admin_video_id', $request->admin_video_id)
+                    ->leftjoin('cast_crews', 'cast_crews.id', '=', 'video_cast_crews.cast_crew_id')
+                    ->get()->toArray();
+
+                $resolutions = [];
+
+                if ($data->trailer_video_resolutions) {
+
+                    $exp_resolution = explode(',', $data->trailer_video_resolutions);
+
+                    $exp_resize_path = $data->trailer_resize_path ? explode(',', $data->trailer_resize_path) : [];
+
+                    foreach ($exp_resolution as $key => $value) {
+                        
+                        $resolutions[$value] = isset($exp_resize_path[$key]) ? 
+                        $exp_resize_path[$key] : $data->trailer_video;
+
+                    }
+
+                    $resolutions['original'] = $data->trailer_video;
+
+                }
+
+                if (!$resolutions) {
+
+
+                    $resolutions['original'] = $data->trailer_video;
+                    
+                }
+
+               // $resolutions = $resolutions ? implode(',', $resolutions) : [];
+                 $similar_videos = AdminVideo::where('category_id' , $data->category_id)
+                                    ->where('id' ,'!=', $data->id)
+                                    ->inRandomOrder()
+                                    ->skip(0)->take(3)
+                                    ->get();
+
+                $response_array = array(
+                        'success' => true,
+                         'similar_videos'=>$similar_videos,
+                         'resolutions'=>$resolutions,
+                        'share_link' => $share_link,
+                        'main_video' => $video,
+                        'trailer_video' => $trailer_video,
+                        'ios_video' => $ios_video,
+                        'ios_trailer_video' => $ios_trailer_video,
+                        'currency' => Setting::get('currency') ? Setting::get('currency') : "$",
+                        'likes' => number_format_short($likes_count),
+                        'video_subtitle'=>$data->video_subtitle,
+                        'trailer_subtitle'=>$data->trailer_subtitle,
+                        'trailer_embed_link'=>route('embed_video', array('v_t'=>2, 'u_id'=>$data->unique_id)),
+                        'video_embed_link'=>route('embed_video', array('v_t'=>1, 'u_id'=>$data->unique_id)),
+                        'video_images' => $admin_video_images,
+                        'video' => $data,
+                        'comments' => $ratings,
+                        'watch_count'=>number_format_short($data->watch_count),
+                        'trailer_subtitle_name' => $trailer_subtitle_name,
+                        'video_subtitle_name' => $video_subtitle_name,
+                        'trailer_video_rtmp_smil' => $trailer_video_rtmp_smil,
+                        'video_rtmp_smil' => $video_rtmp_smil,
+                        'genres'=>$genrenames,
+                        'genre_videos'=>$genre_videos,
+                        'genre_id'=>$data->genre_id,
+                        // 'is_genre'=>$data->is_series,
+                        'cast_crews'=>$video_cast_crews,
+                        'video_pixels'=>$video_pixels,
+                        'trailer_pixels'=>$trailer_pixels,
+                       
+                );
+            }
+
+            $response = response()->json($response_array, 200);
+
+            return $response;
+
+        } catch (Exception $e) {
+
+            $message = $e->getMessage();
+
+            $code = $e->getCode();
+
+            $response_array = ['success'=>false, 'error_messages'=>$message, 'error_code'=> $code];
+
+            return response()->json($response_array);
+        }
+
+    }
+
+    /**
+     * Function Name : single_video()
+     *
+     * @uses To get a single video page based on the id
+     *
+     * @created : vidhya R (11/12/2017)
+     *
+     * @edited : vidhya R (2018-07-21)
+     *
+     * @param object $request - Video Id
+     *
+     * @return response of single video details
+     */
+
+    public function single_video(Request $request) {
+
+        try {
+
+            $validator = Validator::make(
+                $request->all(),
+                array(
+                    'admin_video_id' => 'required|integer|exists:admin_videos,id,is_approved,1',
+                  // 'sub_profile_id'=>'required|sub_profiles,id'
+                ),
+                array(
+                    'exists' => 'The :attribute doesn\'t exists',
+                )
+            );
+
+            if ($validator->fails()) {
+
+                $error_messages = implode(',', $validator->messages()->all());
+
+                $response_array = array('success' => false, 'error' => Helper::get_error_message(101), 'error_code' => 101, 'error_messages'=>$error_messages);
+
+                throw new Exception($error_messages);
+                
+            } else {
+
+                if (!$request->has('sub_profile_id')) {
+
+                    $sub_profile = SubProfile::where('user_id', $request->id)->where('status', DEFAULT_TRUE)->first();
+
+                    if ($sub_profile) {
+
+                        $request->request->add([ 
+                            'sub_profile_id' => $sub_profile->id,
+                        ]);
+                    }
+
+                }  else {
+
+                    $subProfile = SubProfile::where('user_id', $request->id)
+                                        ->where('id', $request->sub_profile_id)->first();
+
+                    if (!$subProfile) {
+
+                        throw new Exception(tr('sub_profile_details_not_found'));
+                        
+                    }
+
+                }
+
+                if (check_flag_video($request->admin_video_id,$request->sub_profile_id)) {
+
+                    throw new Exception(Helper::get_error_message(904), 904);
+
+                }
+
+                $data = Helper::get_video_details($request->admin_video_id);
+
+                $trailer_video = $ios_trailer_video = $data->trailer_video;
+
+                $video = $ios_video = $data->video;
+
+                $video_pixels = $trailer_pixels = "";
+
+                $trailer_video_rtmp_smil = $video_rtmp_smil = $trailer_subtitle_name = $video_subtitle_name = "";
+
+                if($data->video_type == VIDEO_TYPE_UPLOAD && $data->video_upload_type == VIDEO_UPLOAD_TYPE_DIRECT) {
+
+                    $trailer_subtitle_name = $data->trailer_subtitle ? get_video_end($data->trailer_subtitle) : "";
+
+                    $video_subtitle_name = $data->video_subtitle ? get_video_end($data->video_subtitle) : "";
+
+                    if(check_valid_url($data->trailer_video)) {
+
+                        if ($data->trailer_video) {
+
+                            // $trailer_video = Helper::convert_rtmp_to_secure(get_video_end($data->trailer_video) , $data->trailer_video);
+
+                        
+                           // $ios_trailer_video = Helper::convert_hls_to_secure(get_video_end($data->trailer_video) , $data->trailer_video);
+
+                            $trailer_video = Setting::get('streaming_url') ? Setting::get('streaming_url').get_video_end($data->trailer_video) : $data->trailer_video;
+
+                            if(Setting::get('HLS_STREAMING_URL')) {
+                            
+                                $ios_trailer_video = Setting::get('HLS_STREAMING_URL').get_video_end($data->trailer_video);
+
+                            } else {
+
+                                $ios_trailer_video = $data->trailer_video;
+
+                            }
+
+                        }
+                        
+                    }
+
+                    if(check_valid_url($data->video)) {
+
+                        // if(Setting::get('streaming_url'))
+                        // $video = Helper::convert_rtmp_to_secure(get_video_end($data->video) , $data->video);
+                            
+                        // $ios_video = Helper::convert_hls_to_secure(get_video_end($data->video) , $data->video);
+                        
+                        $video = Setting::get('streaming_url') ? Setting::get('streaming_url').get_video_end($data->video) : $data->video;
+
+                        $ios_video = Setting::get('HLS_STREAMING_URL') ? Setting::get('HLS_STREAMING_URL').get_video_end($data->video) : $data->video;
+                    
+                    }
+
+                    if ($request->device_type == DEVICE_WEB) {
+
+                        if (\Setting::get('streaming_url')) {
+                            
+                            if($data->trailer_video_resolutions) {
+
+                                $trailer_video_rtmp_smil = get_video_end_smil($data->trailer_video).'.smil';
+
+                                // $trailer_video = Helper::web_url().'/uploads/smil/'.$trailer_video_rtmp_smil;
+
+                                $trailer_video = Helper::convert_smil_to_secure($trailer_video_rtmp_smil , $trailer_video);
+
+                            } 
+
+                            if ($data->video_resolutions) {
+
+                                $video_rtmp_smil = get_video_end_smil($data->video).'.smil';
+
+                                // $video = Helper::web_url().'/uploads/smil/'.$video_rtmp_smil;
+
+                                Log::info("video_rtmp_smil".$video_rtmp_smil);
+
+                                $video = Helper::convert_smil_to_secure($video_rtmp_smil , $video);
+                            
+                            }
+                            
+                        } else {
+
+
+                            $video = $data->video_resize_path ? $data->video.','.$data->video_resize_path : $data->video;
+
+                            $video_pixels = $data->video_resolutions ? 'original,'.$data->video_resolutions : 'original';
+
+                            $trailer_video = $data->trailer_resize_path ? $data->trailer_video.','.$data->trailer_resize_path : $data->trailer_video;
+
+                            $trailer_pixels = $data->trailer_video_resolutions ? 'original,'.$data->trailer_video_resolutions : 'original';
+                        }
+                    
+                    }
+                }
+
+                if($data->video_type == VIDEO_TYPE_YOUTUBE) {
+
+                    if ($request->device_type != DEVICE_WEB) {
+
+                        $video = $ios_video = get_api_youtube_link($data->video);
+
+                        $trailer_video =  $ios_trailer_video = get_api_youtube_link($data->trailer_video);
+
+                    } else {
+
+                        $video = $ios_video = get_youtube_embed_link($data->video);
+
+                        $trailer_video =  $ios_trailer_video = get_youtube_embed_link($data->trailer_video);
+
+
+                    }
+
+                }
+
+                $admin_video_images = AdminVideoImage::where('admin_video_id' , $request->admin_video_id)
+                                    ->orderBy('is_default' , 'desc')
+                                    ->get();
+
+                if ($ratings = Helper::video_ratings($request->admin_video_id,0)) {
+
+                    $ratings = $ratings->toArray();
+
+                }
+
+                $wishlist_status = Helper::wishlist_status($request->admin_video_id,$request->sub_profile_id);
+
+                $history_status = Helper::history_status($request->sub_profile_id,$request->admin_video_id);
+
+                $like_status = Helper::like_status($request->sub_profile_id,$request->admin_video_id);
+
+                $share_link = Setting::get('ANGULAR_SITE_URL').'video/'.$request->admin_video_id;
+
+                $user = User::find($request->id);
+
+                $cnt = $this->watch_count($request)->getData();
+
+                $likes_count = Helper::likes_count($request->admin_video_id);
+
+                $video_play_duration = videoPlayDuration($request->admin_video_id, $request->sub_profile_id);
+
+                $is_ppv_status = ($data->type_of_user == NORMAL_USER || $data->type_of_user == BOTH_USERS) ? ( ( $user->user_type == 0 ) ? DEFAULT_TRUE : DEFAULT_FALSE ) : DEFAULT_FALSE; 
+
+                $genrenames = [];
+
+                $genre_videos = [];
+
+                if ($data->genre_id > 0) {
+
+                    $genrenames = Genre::where('genres.sub_category_id' , $data->sub_category_id)
+                                        ->leftJoin('admin_videos' , 'genres.id' , '=' , 'admin_videos.genre_id')
+                                        ->select(
+                                                'genres.id as genre_id',
+                                                'genres.name as genre_name'
+                                                )
+                                        ->groupBy('admin_videos.genre_id')
+                                        ->havingRaw("COUNT(admin_videos.id) > 0")
+                                        ->orderBy('genres.updated_at', 'desc')
+                                        ->where('genres.is_approved', DEFAULT_TRUE)
+                                        ->get()->toArray();
+
+                    if (count($genrenames)) {
+
+                        $videos_query = AdminVideo::where('genre_id', $data->genre_id)
+                                            // ->whereNotIn('admin_videos.genre_id', [$video->id])
+                                            ->where('admin_videos.status' , 1)
+                                            ->where('admin_videos.is_approved' , 1)
+                                            ->orderBy('admin_videos.created_at', 'desc')
+                                            ->whereNotIn('admin_videos.id', [$request->admin_video_id]);
+
+                        if ($request->sub_profile_id) {
+                            // Check any flagged videos are present
+                            $flagVideos = getFlagVideos($request->sub_profile_id);
+
+                            if($flagVideos) {
+                                $videos_query->whereNotIn('admin_videos.id',$flagVideos);
+                            }
+                        }
+
+                        if($request->device_type == DEVICE_WEB) {
+
+                            // Check any flagged videos are present
+                            $continue_watching_videos = continueWatchingVideos($request->sub_profile_id);
+                            
+                            if($continue_watching_videos) {
+
+                                $videos_query->whereNotIn('admin_videos.id', $continue_watching_videos);
+
+                            }
+
+                        }
+
+                        $seasons = $videos_query->skip(0)->take(6)
+                                        ->get();
+                        
+                        
+                        if(!empty($seasons) && $seasons != null) {
+
+                            foreach ($seasons as $key => $value) {
+
+                                $genre_videos[] = [
+                                        'title'=>$value->title,
+                                        'description'=>$value->description,
+                                        'ratings'=>$value->ratings,
+                                        'publish_time'=>date('F j y', strtotime($value->publish_time)),
+                                        'duration'=>$value->duration,
+                                        'watch_count'=>$value->watch_count,
+                                        'default_image'=>$value->default_image,
+                                        'admin_video_id'=>$value->id,
+                                    ];
+                            }
+                        }
+                    }
+
+                }
+
+                $ppv_status = VideoRepo::pay_per_views_status_check($user->id, $user->user_type, $data)->getData();
+
+                $video_cast_crews = VideoCastCrew::select('cast_crew_id', 'name')
+                    ->where('admin_video_id', $request->admin_video_id)
+                    ->leftjoin('cast_crews', 'cast_crews.id', '=', 'video_cast_crews.cast_crew_id')
+                    ->get()->toArray();
+
+                $resolutions = [];
+
+                if ($data->trailer_video_resolutions) {
+
+                    $exp_resolution = explode(',', $data->trailer_video_resolutions);
+
+                    $exp_resize_path = $data->trailer_resize_path ? explode(',', $data->trailer_resize_path) : [];
+
+                    foreach ($exp_resolution as $key => $value) {
+                        
+                        $resolutions[$value] = isset($exp_resize_path[$key]) ? 
+                        $exp_resize_path[$key] : $data->trailer_video;
+
+                    }
+
+                    $resolutions['original'] = $data->trailer_video;
+
+                }
+
+                if (!$resolutions) {
+
+
+                    $resolutions['original'] = $data->trailer_video;
+                    
+                }
+
+               // $resolutions = $resolutions ? implode(',', $resolutions) : [];
+
+                $response_array = array(
+                        'success' => true,
+                         'resolutions'=>$resolutions,
+                        'user_type' => $user->user_type ? $user->user_type : 0,
+                        'wishlist_status' => $wishlist_status,
+                        'history_status' => $history_status,
+                        'share_link' => $share_link,
+                        'main_video' => $video,
+                        'trailer_video' => $trailer_video,
+                        'ios_video' => $ios_video,
+                        'ios_trailer_video' => $ios_trailer_video,
+                        'is_liked' => $like_status,
+                        'currency' => Setting::get('currency') ? Setting::get('currency') : "$",
+                        'likes' => number_format_short($likes_count),
+                        'video_subtitle'=>$data->video_subtitle,
+                        'trailer_subtitle'=>$data->trailer_subtitle,
+                        'trailer_embed_link'=>route('embed_video', array('v_t'=>2, 'u_id'=>$data->unique_id)),
+                        'video_embed_link'=>route('embed_video', array('v_t'=>1, 'u_id'=>$data->unique_id)),
+                        'pay_per_view_status'=>$ppv_status->success,
+                        'ppv_details'=>$ppv_status,
+                        'is_ppv_subscribe_page'=>$is_ppv_status,
+                        'video_images' => $admin_video_images,
+                        'video' => $data,
+                        'comments' => $ratings,
+                        'watch_count'=>number_format_short($data->watch_count),
+                        'trailer_subtitle_name' => $trailer_subtitle_name,
+                        'video_subtitle_name' => $video_subtitle_name,
+                        'trailer_video_rtmp_smil' => $trailer_video_rtmp_smil,
+                        'video_rtmp_smil' => $video_rtmp_smil,
+                        'video_play_duration'=>$video_play_duration,
+                        'seek'=>seek($video_play_duration),
+                        'genres'=>$genrenames,
+                        'genre_videos'=>$genre_videos,
+                        'genre_id'=>$data->genre_id,
+                        'is_genre'=>$data->is_series,
+                        'cast_crews'=>$video_cast_crews,
+                        'video_pixels'=>$video_pixels,
+                        'trailer_pixels'=>$trailer_pixels,
+                        'message'=>$ppv_status->success ? tr('ppv_success') : '',
+                       
+                );
+            }
+
+            $response = response()->json($response_array, 200);
+
+            return $response;
+
+        } catch (Exception $e) {
+
+            $message = $e->getMessage();
+
+            $code = $e->getCode();
+
+            $response_array = ['success'=>false, 'error_messages'=>$message, 'error_code'=> $code];
+
+            return response()->json($response_array);
+        }
+
+    }
+
+    /**
+     * Function Name : search_video()
+     *
+     * @uses To search videos based on title
+     *
+     * @created : vidhya R
+     *
+     * @edited : 
+     *
+     * @param object $request - Title of the video (For Web Usage)
+     *
+     * @return response of the array 
+     */
+   
+    public function search_video(Request $request) {
+
+        $validator = Validator::make(
+            $request->all(),
+            array(
+                'key' => '',
+            ),
+            array(
+                'exists' => 'The :attribute doesn\'t exists',
+            )
+        );
+
+        if ($validator->fails()) {
+
+            $error_messages = implode(',', $validator->messages()->all());
+
+            $response_array = array('success' => false, 'error' => Helper::get_error_message(101), 'error_code' => 101, 'error_messages'=>$error_messages);
+
+        } else {
+
+            $query = AdminVideo::where('admin_videos.is_approved' , 1)
+                ->leftjoin('categories', 'categories.id', '=', 'admin_videos.category_id')
+                ->leftjoin('sub_categories', 'sub_categories.id', '=', 'admin_videos.sub_category_id')
+                ->where('title', 'like', '%' . $request->key . '%')
+                ->whereNotIn('admin_videos.is_banner',[1])
+                ->where('admin_videos.status' , 1)
+                ->videoResponse()
+                ->leftJoin('genres' , 'admin_videos.genre_id' , '=' , 'genres.id')
+                ->where('categories.is_approved' , 1)
+                ->where('sub_categories.is_approved' , 1)
+                ->orderBy('admin_videos.created_at' , 'desc');
+
+            $subProfile = SubProfile::where('user_id', $request->id)
+                        ->where('id', $request->sub_profile_id)->first();
+
+            if (!$subProfile) {
+
+                return response()->json(['success'=>false, 'error_messages'=>tr('sub_profile_details_not_found')]);
+                
+            }
+
+            if ($request->key) {
+
+               if($request->skip >= 0 && $request->device_type == DEVICE_IOS) {
+
+                    $query->skip($request->skip)->take(12);
+
+                }
+
+            } else {
+
+                $query->skip(0)->take(6);
+            }
+                
+            if ($request->sub_profile_id) {
+                
+                $flagVideos = getFlagVideos($request->sub_profile_id);
+
+                if($flagVideos) {
+
+                    $query->whereNotIn('admin_videos.id', $flagVideos);
+
+                }
+
+            }
+
+            $videos = $query->get();
+
+            $results = [];
+
+            if (!empty($videos) && $videos != null) {
+
+                if($request->device_type == DEVICE_WEB) {
+
+                    $chunk = $videos->chunk(6);
+
+                    foreach ($chunk as $key => $value) {
+
+                        $group = [];
+
+                        foreach ($value as $key => $data) {
+                         
+                            $group[] = displayFullDetails($data->admin_video_id, $request->sub_profile_id);
+
+                        }
+
+                        array_push($results , $group);
+
+                    }
+
+                } else {
+
+                    foreach ($videos as $key => $value) {
+
+                        $results[] = displayFullDetails($value->admin_video_id, $request->sub_profile_id);
+
+                    }
+                    
+                }
+
+            }
+
+            $response_array = array('success' => true, 'data' => $results, 'title'=>$request->key);
+        }
+
+        $response = response()->json($response_array, 200);
+
+        return $response;
+
+    }
+    /**
+     * Function Name : all_channels()
+     *
+     * @uses Get all channels
+     *
+     * @created : Naeem
+     *
+     * @edited : 
+     *
+     * @param none
+     *
+     * @return response of the array 
+     */
+
+    public function all_channels(Request $request) {
+ 
+           $channels = Moderator::where('is_activated',1)->get();
+           foreach ($channels as $key => $channel) {
+             $file='uploads/images/'.basename($channel->picture);
+              if(!is_file($file)){
+                $channel->picture=url('placeholder.png');
+              }
+           }
+           $response_array = array('success' => true, 'channels' => $channels);
+           $response = response()->json($response_array, 200);
+            return $response;
+
+    }
+     /**
+     * Function Name : single_channel()
+     *
+     * @uses Get a channel and its videos
+     *
+     * @created : Naeem
+     *
+     * @edited : 
+     *
+     * @param channels id 
+     *
+     * @return response of the array 
+     */
+
+    public function single_channel(Request $request) {
+ 
+           $channel = Moderator::find($request->id);
+           if($channel){
+               $file='uploads/images/'.basename($channel->picture);
+              if(!is_file($file)){
+                $channel->picture=url('placeholder.png');
+              }
+            $videos = AdminVideo::where('admin_videos.is_approved' , 1)
+                    ->leftjoin('categories', 'categories.id', '=', 'admin_videos.category_id')
+                    ->leftjoin('sub_categories', 'sub_categories.id', '=', 'admin_videos.sub_category_id')
+                    ->where('admin_videos.moderator_id', '=', $request->id)
+                    ->where('admin_videos.status' , 1)
+                    ->where('categories.is_approved' , 1)
+                    ->where('sub_categories.is_approved' , 1)
+                    ->orderBy('admin_videos.created_at' , 'desc')
+                    ->select('admin_videos.*', 'categories.name', 'sub_categories.name')->get();
+                    $channel->videos=$videos;
+           
+            $response_array = array('success' => true, 'channel' => $channel);
+
+           }else{
+            $response_array = array('success' => false, 'channel' => []);
+           }
+
+           $response = response()->json($response_array, 200);
+
+            return $response;
+
+    }
+/**
+     * Function Name : castAndCrew_videos()
+     *
+     * @uses Get a castAndCrew and its videos
+     *
+     * @created : Naeem
+     *
+     * @edited : 
+     *
+     * @param castAndCrew id 
+     *
+     * @return response of the array 
+     */
+
+    public function castAndCrew_videos(Request $request) {
+ 
+           $data = CastCrew::find($request->id);
+           $results=[];
+            $videos = AdminVideo::where('admin_videos.is_approved' , 1)
+                    ->leftjoin('categories', 'categories.id', '=', 'admin_videos.category_id')
+                    ->leftjoin('sub_categories', 'sub_categories.id', '=', 'admin_videos.sub_category_id')
+                    ->where('admin_videos.'.$request->field, 'LIKE', '%,'.$request->id.',%')
+                    ->orWhere('admin_videos.'.$request->field, 'LIKE', '%,'.$request->id.']%')
+                    ->orWhere('admin_videos.'.$request->field, 'LIKE', '%['.$request->id.',%')
+                    ->orWhere('admin_videos.'.$request->field, 'LIKE', '%['.$request->id.']%')
+                    ->where('admin_videos.status' , 1)
+                    ->where('categories.is_approved' , 1)
+                    ->where('sub_categories.is_approved' , 1)
+                    ->orderBy('admin_videos.created_at' , 'desc')
+                    ->select('admin_videos.*', 'categories.name', 'sub_categories.name')->get();
+                    if (!empty($videos)) {
+
+                
+
+                    $chunk = $videos->chunk(6);
+
+                    foreach ($chunk as $key => $value) {
+
+                        $group = [];
+
+                        foreach ($value as $key => $video) {
+                         
+                            $group[] = displayFullDetails($video->id, '');
+
+                        }
+
+                        array_push($results , $group);
+
+                    }
+
+                }
+                $data->videos=$results;
+                if(count($results)){
+                  $response_array = array('success' => true, 'data' => $data);
+                } else{
+                      $response_array = array('success' => false, 'data' => $data);
+                }   
+           
+          
+            $response = response()->json($response_array, 200);
+            return $response;
+
+    }
+    /**
+     * Function Name : api_search_video()
+     *
+     * @uses To search videos based on title
+     *
+     * @created : vidhya R
+     *
+     * @edited : 
+     *
+     * @param object $request - Title of the video (For Mobile Usage)
+     *
+     * @return response of the array 
+     */
+
+    public function api_search_video(Request $request) {
+
+        $validator = Validator::make(
+            $request->all(),
+            array(
+                'key' => '',
+                // 'sub_profile_id'=>'required|exists:sub_profiles,id',
+            ),
+            array(
+                'exists' => 'The :attribute doesn\'t exists',
+            )
+        );
+
+        if ($validator->fails()) {
+
+            $error_messages = implode(',', $validator->messages()->all());
+
+            $response_array = array('success' => false, 'error' => Helper::get_error_message(101), 'error_code' => 101, 'error_messages'=>$error_messages);
+
+        } else {
+
+            // $subProfile = SubProfile::where('user_id', $request->id)
+            //             ->where('id', $request->sub_profile_id)->first();
+
+            // if (!$subProfile) {
+
+            //     return response()->json(['success'=>false, 'error_messages'=>tr('sub_profile_details_not_found')]);
+                
+            // }
+
+            if($request->key) {
+                $query = AdminVideo::where('admin_videos.is_approved' , 1)
+                    ->leftjoin('categories', 'categories.id', '=', 'admin_videos.category_id')
+                    ->leftjoin('sub_categories', 'sub_categories.id', '=', 'admin_videos.sub_category_id')
+                    ->where('title', 'like', '%' . $request->key . '%')
+                    ->whereNotIn('admin_videos.is_banner',[1

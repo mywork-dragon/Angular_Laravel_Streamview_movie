@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    @include('guest.partials._head')
+
+
+        <!-- Import grid -->
+        <link rel="stylesheet" type="text/css"  href="/css/ugp_global.css"/>
+        <script type="text/javascript" src="/java/FWDUGP.js"></script>
+
+        <style>
+            @font-face{
+                font-family:myFont;
+                src: url(/fonts/Lato-Lig.ttf);
+            }
+        </style>
+
+        <script type="text/javascript">
+            FWDRLUtils.onReady(function(){
+                new FWDUGP({
+                    //main settings
+                    gridType:"classicVertical",
+                    rightClickContextMenu:"default",
+                    instanceName:"myUGP",
+                    parentId:"myDiv",
+                    mainFolderPath:"content",
+                    gridSkinPath:"grid_skin_classic",
+                    lightboxSkinPath:"lightbox_skin_classic",
+                    playlistId:"myPlaylist",
+                    allCategoriesLabel:"ALL GALLERIES",
+                    showAllCategories:"yes",
+                    randomizeCategories:"no",
+                    animateParent:"yes",
+                    startAtCategory:0,
+                    backgroundColor:"#e9e9e9",
+                    //menu settings
+                    menuType:"list",
+                    showMenu:"yes",
+                    multipleCategorySelection:"yes",
+                    showMenuButtonsSpacers:"no",
+                    showTotalThumbnailsPerCategory:"yes",
+                    showSearchBox:"yes",
+                    centerNoSearchFoundLabelWithMenu:"yes",
+                    comboboxSelectorLabel:"SELECT GALLERIES",
+                    menuPosition:"left",
+                    searchLabel:"search",
+                    searchNotFoundLabel:"NOTHING FOUND!",
+                    comboboxArrowNormalColor:"#FFFFFF",
+                    comboboxArrowSelectedColor:"#000000",
+                    menuButtonSpacerWidth:1,
+                    menuButtonSpacerHeight:20,
+                    menuButtonsSapcerLeftAndRight:0,
+                    menuMaxWidth:920,
+                    menuOffsetTop:25,
+                    menuOffsetBottom:25,
+                    horizontalSpaceBetweenMenuButtons:10,
+                    verticalSpaceBetweenMenuButtons:10,
+                    //thumbnail settings
+                    thumbnailLoadingType:"loadMoreWithButton",//loadMoreWithButton, loadMoreOnScroll
+                    hideAndShowTransitionType:"scale",
+                    thumbanilBoxShadow:"none",
+                    disableThumbnails:"no",
+                    inverseButtonsIcons:"no",
+                    thumbnailBackgroundColor:"#c1c1c1",
+                    thumbnailBorderNormalColor:"#BBBBBB",
+                    thumbnailBorderSelectedColor:"#FFFFFF",
+                    howManyThumbnailsToDisplayPerSet:19,
+                    thumbnailsHorizontalOffset:10,
+                    thumbnailsVerticalOffset:10,
+                    thumbnailMaxWidth:278,
+                    thumbnailMaxHeight:188,
+                    horizontalSpaceBetweenThumbnails:10,
+                    verticalSpaceBetweenThumbnails:10,
+                    thumbnailBorderSize:1,
+                    thumbnailBorderRadius:0,
+                    //load more button settings
+                    loadMoreButtonLabel:"LOAD MORE THUMBNAILS",
+                    loadMoreButtonOffsetTop:15,
+                    loadMoreButtonOffsetBottom:25,
+                    //preset settings
+                    preset:"animtext",
+                    textVerticalAlign:"center",
+                    textAnimationType:"scale",
+                    useIconButtons:"yes",
+                    thumbnailOverlayColor:"#000000",
+                    thumbnailOverlayOpacity:.5,
+                    thumbnailIconWidth:30,
+                    thumbnailIconHeight:29,
+                    spaceBetweenThumbanilIcons:12,
+                    spaceBetweenTextAndIcons:10,
+                    //ligtbox settings (optional)
+                    facebookAppId:"213684265480896",
+                    buttonsAlignment:"in",
+                    itemBoxShadow:"none",
+                    descriptionWindowAnimationType:"opacity",
+                    descriptionWindowPosition:"bottom",
+                    useAsModal:"no",
+                    slideShowAutoPlay:"no",
+                    addKeyboardSupport:"yes",
+                    showCloseButton:"yes",
+                    showShareButton:"yes",
+                    showZoomButton:"yes",
+                    showSlideShowButton:"yes",
+                    showSlideShowAnimation:"yes",
+                    showNextAndPrevButtons:"yes",
+                    showNextAndPrevButtonsOnMobile:"yes",
+                    showDescriptionButton:"yes",
+                    showDescriptionByDefault:"no",
+                    videoShowFullScreenButton:"yes",
+                    videoAutoPlay:"no",
+                    nextVideoOrAudioAutoPlay:"yes",
+                    videoLoop:"no",
+                    audioAutoPlay:"no",
+                    audioLoop:"no",
+                    backgroundOpacity:.9,
+                    descriptionWindowBackgroundOpacity:.95,
+                    buttonsHideDelay:3,
+                    slideShowDelay:4,
+                    defaultItemWidth:640,
+                    defaultItemHeight:480,
+                    itemOffsetHeight:50,
+                    spaceBetweenButtons:1,
+                    buttonsOffsetIn:2,
+                    buttonsOffsetOut:5,
+                    itemBorderSize:0,
+                    itemBorderRadius:0,
+                    itemBackgroundColor:"#333333",
+                    itemBorderColor:"#333333",
+                    lightBoxBackgroundColor:"#000000",
+                    descriptionWindowBackgroundColor:"#FFFFFF",
+                    videoPosterBackgroundColor:"#0099FF",
+                    videoControllerBackgroundColor:"#FFFFFF",
+                    audioControllerBackgroundColor:"#FFFFFF",
+                    timeColor:"#000000"
+                });
+            });
+        </script>
+</head>
+
+<body>
+<div id="preloader"></div>
+
+<!-- header-start -->
+@include('guest.partials._header')
+<!-- header-end -->
+
+<!-- UGP holder -->
+<div id="myDiv"></div>
+
+<!-- UGP playlist -->
+<div id="myPlaylist" style="display:none">
+
+    <ul data-category-name="MULTIMEDIA GALLERY">
+
+        <div class="section-title">
+            <h2 class="genre">{{$key}}<a href="<?= '/browse_list?category='.$key.'&id='?><?= ($video['id'])??'' ?>" class="btn btn-view-all btn-sm">VIEW ALL</a> </h2>
+        </div>
+
+        @foreach ($videoData as $data)
+        <li data-url="content/media/images/a1.jpg" data-extra-button-url=""/movie_details/<?= $data['admin_video_id']??''?>"" data-extra-button-target="_blank">
+            <img src="<?= $data['default_image']?>" alt="custom alt"/>
+            <div data-thumbnail-extra-content="">
+                <div class="extraContent2">
+                    <p class="extraContent2P3-1">IMAGE DISPLAY</p>
+                    <p class="extraContent2P4">LOREM IPSUM DOLER AMNET</p>
+                    <p class="extraContent2P5"></p>
+                    <p class="extraContent2P6">Fusce varius, metus vitae bibendum euismod, nunc velit mattis nunc, vitae semper diam nisi sit amet lacus...</p>
+                    <div class="extraContentIconsHolder">
+                        <div class="extraContentIconsHolder2">
+                            <div class="facebookIcon"></div>
+                            <div class="googleIcon"></div>
+                            <div class="twitterIcon"></div>
+                            <div class="shareIcon"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div data-lightbox-desc="">
+                <p class="gallery1DecHeader">Ultimate Grid Pro</p>
+                <p class="gallery1DescP">Multimedia grid for your website, it runs on all major browsers and mobile devices like iPhone, iPad, IOS, Android and Windows8.</p>
+            </div>
+        </li>
+        @endforeach
+    </ul>
+</div>
+
+<!-- footer-start -->
+@include('guest.partials._footer')
+<!-- footer-end -->
+
+<!-- javascript-start -->
+@include('guest.partials._javascripts')
+<!-- javascript-end -->
+
+</body>
+
+</html>

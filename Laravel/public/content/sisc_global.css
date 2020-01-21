@@ -1,0 +1,320 @@
+/* general */
+div, p{
+	font-family:Arial;
+}
+
+/* FWD font icon	*/
+@font-face {
+  font-family: 'icomoon';
+  src:
+    url('fonts/icomoon.ttf?hojdd7') format('truetype'),
+    url('fonts/icomoon.woff?hojdd7') format('woff'),
+    url('fonts/icomoon.svg?hojdd7#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.icomoon,
+[class^="icon-"]:before,
+[class*=" icon-"]:before {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-basket:before {
+  content: "\e900";
+}
+.icon-calendar:before {
+  content: "\e901";
+}
+.icon-close:before {
+  content: "\e902";
+}
+.icon-comments:before {
+  content: "\e903";
+}
+.icon-download:before {
+  content: "\e904";
+}
+.icon-facebook:before {
+  content: "\e905";
+}
+.icon-fullscreen:before {
+  content: "\e906";
+}
+.icon-fullwidth:before {
+  content: "\e907";
+}
+.icon-g:before {
+  content: "\e908";
+}
+.icon-info:before {
+  content: "\e909";
+}
+.icon-instagram:before {
+  content: "\e90a";
+}
+.icon-left:before {
+  content: "\e90b";
+}
+.icon-left-arrow:before {
+  content: "\e90c";
+}
+.icon-linkedin:before {
+  content: "\e90d";
+}
+.icon-love:before {
+  content: "\e90e";
+}
+.icon-maximize:before {
+  content: "\e90f";
+}
+.icon-minimize:before {
+  content: "\e910";
+}
+.icon-minim-width:before {
+  content: "\e911";
+}
+.icon-normalscreen:before {
+  content: "\e912";
+}
+.icon-pinterest:before {
+  content: "\e913";
+}
+.icon-play:before {
+  content: "\e914";
+}
+.icon-righ-arrow:before {
+  content: "\e915";
+}
+.icon-right:before {
+  content: "\e916";
+}
+.icon-share:before {
+  content: "\e917";
+}
+.icon-twitter:before {
+  content: "\e918";
+}
+
+
+/* Inside text */
+.main-holder{
+	display:inline;
+	margin:0 10px;
+	padding: 0;
+}
+
+.text{
+	display:inline;
+	font-size:30px;
+	padding:10px 0;
+
+	line-height:1.4;
+	background-color:#000;
+	color:#FFF;
+}
+
+.mainHolder{
+	margin:0px;
+	margin-left:10px;
+	margin-top:12px;
+	margin-right:10px;
+	margin-bottom:2px;
+}
+
+.mainHolder2{
+	margin-top:15px;
+	text-align:center;
+}
+
+.mainHolderText{
+	font-family:myFont, Arial;
+	display:inline;
+	font-size:24px;
+	padding:2px;
+	color:#000000;
+	background-color:#FFFFFF;
+	line-height:32px;
+	font-weight:100;
+}
+
+.mainHolderText2{
+	font-family:myFont, Arial;
+	display:inline;
+	font-size:24px;
+	padding:2px;
+	color:#FFFFFF;
+	background-color:#000000;
+	line-height:32px;
+	font-weight:100;
+}
+
+.mainHolderText3{
+	font-family:myFont, Arial;
+	display:inline;
+	font-size:24px;
+	padding:2px;
+	color:#FFFFFF;
+	background-color:#0099FF;
+	line-height:32px;
+	font-weight:100;
+}
+
+.textHolderText{
+	font-family:myFont, Arial;
+	display:inline;
+	padding:2px;
+	font-size:14px;
+	line-height:21px;
+	color:#FFFFFF;
+	font-weight:100;
+	background-color:#000000;
+	letter-spacing:1px;
+}
+
+.textHolderText2{
+	font-family:myFont, Arial;
+	display:inline;
+	padding:2px;
+	font-size:14px;
+	color:#000000;
+	line-height:21px;
+	font-weight:100;
+	background-color:#FFFFFF;
+	letter-spacing:1px;
+}
+
+.textHolder{
+	margin:0px;
+	margin-left:10px;
+	margin-top:2px;
+	margin-right:10px;
+	padding-top:4px;
+}
+
+.textHolderBottom{
+	margin:0px;
+	margin-left:10px;
+	margin-top:2px;
+	margin-right:10px;
+	padding-top:4px;
+	margin-bottom:12px;
+}
+
+.textHolderBottom2{
+	margin:0px;
+	margin-left:10px;
+	margin-top:2px;
+	margin-right:10px;
+	padding-top:4px;
+	margin-bottom:20px;
+}
+
+.textHolderBottom3{
+	margin:0px;
+	margin-left:10px;
+	margin-top:2px;
+	margin-right:10px;
+	padding-top:4px;
+	text-align:center;
+}
+
+
+/* Inside text */
+.mainHolderSimple{
+	font-family:myFont, Arial;
+	text-align:center;
+	color:#FFFFFF;
+	background-color:rgba(0, 0, 0, .7);
+	line-height:26px;
+	font-size:22px;
+	font-weight:100;
+	padding-top:8px;
+}
+
+.mainHolderTextSimple{
+	font-family:myFont, Arial;
+	text-align:center;
+	padding:0px;
+	padding:8px;
+	padding-top:6px;
+	font-size:14px;
+	color:#AAAAAA;
+	background-color:rgba(0, 0, 0, .7);
+	line-height:19px;
+	font-weight:100;
+	margin-bottom:10px;
+	letter-spacing:1px;
+}
+
+.mainHolderTextSimple2{
+	font-family:myFont, Arial;
+	text-align:center;
+	padding:0px;
+	padding:8px;
+	padding-top:6px;
+	font-size:14px;
+	color:#AAAAAA;
+	background-color:rgba(0, 0, 0, .7);
+	line-height:19px;
+	font-weight:100;
+	margin-bottom:0px;
+	letter-spacing:1px;
+}
+
+.fwdsisc-button-normal{
+	position:absolute;
+	width:40px;
+	height:39px;
+	background-color:#FFFFFF;
+	color:#000000;
+	cursor: pointer;
+}
+
+.fwdsisc-button-selected{
+	position:absolute;
+	width:40px;
+	height:39px;
+	background-color:#000000;
+	color:#FFFFFF;
+	cursor: pointer;
+}
+
+.fwdsisc-count-holder{
+	left:auto !important;
+	right:0 !important;
+}
+
+.fwdsisc-count{
+	font-family:myFont, Arial;
+    display: inline-block !important;
+    font-weight: 100;
+    font-size: 18px;
+    line-height: 1.0 !important;
+    padding: 7px 9px 7px 9px !important;
+    background-color: #000;
+    color: #888;
+}
+
+.fwdsisc-current{
+	color:#FFFFFF;
+}
+
+.table-plugin-fwdsisc-button { 
+	display: table; width:100%; height:100%; position:absolute;
+}
+
+.table-cell-fwdsisc-plugin-button {
+ display: table-cell; width:100%; height: 100%; vertical-align: middle; text-align:center;
+}

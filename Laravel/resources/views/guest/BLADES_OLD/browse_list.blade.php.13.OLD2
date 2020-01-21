@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    @include('guest.partials._head')
+
+
+        <!-- Import grid -->
+        <link rel="stylesheet" type="text/css"  href="/css/ugp_global.css"/>
+
+        <script type="text/javascript" src="/java/FWDUGP.js"></script>
+
+        <style>
+            @font-face{
+                font-family:myFont;
+                src: url(/fonts/Lato-Lig.ttf);
+            }
+        </style>
+
+        <script type="text/javascript">
+            FWDRLUtils.onReady(function(){
+                new FWDUGP({
+                    //main settings
+                    gridType:"classicVertical",
+                    rightClickContextMenu:"default",
+                    instanceName:"myUGP",
+                    parentId:"myDiv",
+                    mainFolderPath:"content",
+                    gridSkinPath:"grid_skin_classic",
+                    lightboxSkinPath:"lightbox_skin_classic",
+                    playlistId:"myPlaylist",
+                    allCategoriesLabel:"ALL GALLERIES",
+                    showAllCategories:"yes",
+                    randomizeCategories:"no",
+                    animateParent:"yes",
+                    startAtCategory:0,
+                    backgroundColor:"#000000",
+                    //menu settings
+                    menuType:"list",
+                    showMenu:"no",
+                    multipleCategorySelection:"yes",
+                    showMenuButtonsSpacers:"no",
+                    showTotalThumbnailsPerCategory:"yes",
+                    showSearchBox:"yes",
+                    centerNoSearchFoundLabelWithMenu:"yes",
+                    comboboxSelectorLabel:"SELECT GALLERIES",
+                    menuPosition:"left",
+                    searchLabel:"search",
+                    searchNotFoundLabel:"NOTHING FOUND!",
+                    comboboxArrowNormalColor:"#FFFFFF",
+                    comboboxArrowSelectedColor:"#000000",
+                    menuButtonSpacerWidth:1,
+                    menuButtonSpacerHeight:20,
+                    menuButtonsSapcerLeftAndRight:0,
+                    menuMaxWidth:920,
+                    menuOffsetTop:25,
+                    menuOffsetBottom:25,
+                    horizontalSpaceBetweenMenuButtons:10,
+                    verticalSpaceBetweenMenuButtons:10,
+                    //thumbnail settings
+                    thumbnailLoadingType:"loadMoreWithButton",
+                    hideAndShowTransitionType:"scale",
+                    thumbanilBoxShadow:"none",
+                    disableThumbnails:"no",
+                    inverseButtonsIcons:"no",
+                    thumbnailBackgroundColor:"#333333",
+                    thumbnailBorderNormalColor:"#FFFFFF",
+                    thumbnailBorderSelectedColor:"#c1c1c1",
+                    howManyThumbnailsToDisplayPerSet:14,
+                    thumbnailsHorizontalOffset:10,
+                    thumbnailsVerticalOffset:10,
+                    thumbnailMaxWidth:170,
+                    thumbnailMaxHeight:240,
+                    horizontalSpaceBetweenThumbnails:10,
+                    verticalSpaceBetweenThumbnails:10,
+                    thumbnailBorderSize:1,
+                    thumbnailBorderRadius:0,
+                    //load more button settings
+                    loadMoreButtonLabel:"LOAD MORE THUMBNAILS",
+                    loadMoreButtonOffsetTop:25,
+                    loadMoreButtonOffsetBottom:25,
+                    //preset settings
+                    preset:"3D",
+                    useIconButtons:"yes",
+                    thumbnailOverlayColor:"#FFFFFF",
+                    textVerticalAlign:"center",
+                    thumbnailOverlayOpacity:.9,
+                    thumbnailIconWidth:30,
+                    thumbnailIconHeight:29,
+                    spaceBetweenThumbanilIcons:12,
+                    spaceBetweenTextAndIcons:0,
+                    //ligtbox settings (optional)
+                    facebookAppId:"213684265480896",
+                    buttonsAlignment:"in",
+                    itemBoxShadow:"none",
+                    descriptionWindowAnimationType:"opacity",
+                    descriptionWindowPosition:"bottom",
+                    useAsModal:"no",
+                    slideShowAutoPlay:"no",
+                    addKeyboardSupport:"yes",
+                    showCloseButton:"yes",
+                    showShareButton:"yes",
+                    showZoomButton:"yes",
+                    showSlideShowButton:"yes",
+                    showSlideShowAnimation:"yes",
+                    showNextAndPrevButtons:"yes",
+                    showNextAndPrevButtonsOnMobile:"yes",
+                    showDescriptionButton:"yes",
+                    showDescriptionByDefault:"no",
+                    videoShowFullScreenButton:"yes",
+                    videoAutoPlay:"no",
+                    nextVideoOrAudioAutoPlay:"yes",
+                    videoLoop:"no",
+                    audioAutoPlay:"no",
+                    audioLoop:"no",
+                    backgroundOpacity:.9,
+                    descriptionWindowBackgroundOpacity:.95,
+                    buttonsHideDelay:3,
+                    slideShowDelay:4,
+                    defaultItemWidth:640,
+                    defaultItemHeight:480,
+                    itemOffsetHeight:50,
+                    spaceBetweenButtons:1,
+                    buttonsOffsetIn:2,
+                    buttonsOffsetOut:5,
+                    itemBorderSize:0,
+                    itemBorderRadius:0,
+                    itemBackgroundColor:"#333333",
+                    itemBorderColor:"#333333",
+                    lightBoxBackgroundColor:"#000000",
+                    descriptionWindowBackgroundColor:"#FFFFFF",
+                    videoPosterBackgroundColor:"#0099FF",
+                    videoControllerBackgroundColor:"#FFFFFF",
+                    audioControllerBackgroundColor:"#FFFFFF",
+                    timeColor:"#000000"
+                });
+            });
+        </script>
+</head>
+
+<body>
+<div id="preloader"></div>
+
+<!-- header-start -->
+@include('guest.partials._header')
+<!-- header-end -->
+
+<div class="all-album-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-title">
+                    <h2 class="genre">{{$category}}</h2>
+                </div>
+
+<!-- UGP holder -->
+<div id="myDiv"></div>
+
+
+<?php foreach($videos as $key=>$video) {
+$videoData = isset($video['videos'])?$video['videos']:[];
+?>
+
+
+                <!-- UGP playlist -->
+<div id="myPlaylist" style="display:none">
+
+    <!-- <ul data-category-name="MULTIMEDIA GALLERY">  -->
+        <ul>
+        @foreach ($videoData as $data)
+
+                <li data-url="link:/movie_details/<?= $data['admin_video_id']??''?>" data-target="_self">
+                    <img src="<?= $data['default_image']?>" alt="<?= $data['title']?> Poster"/>
+                    <div data-thumbnail-content1="">
+                        <p class="centerDark"><?= $data['title']?> </p>
+
+                        <div class="centerNormalDark rating clearfix">
+                            @if($data["ratings"] >= 1)
+                                <i class="fa fa-star" style="color: orange; font-weight: 900;"></i>
+                            @else
+                                <i class="fa fa-star" style="color: orange; font-weight: 100;"></i>
+                            @endif
+                            @if($data["ratings"] >= 2)
+                                <i class="fa fa-star" style="color: orange; font-weight: 900;"></i>
+                            @else
+                                <i class="fa fa-star" style="color: orange; font-weight: 100;"></i>
+                            @endif
+                            @if($data["ratings"] >= 3)
+                                <i class="fa fa-star" style="color: orange; font-weight: 900;"></i>
+                            @else
+                                <i class="fa fa-star" style="color: orange; font-weight: 100;"></i>
+                            @endif
+                            @if($data["ratings"] >= 4)
+                                <i class="fa fa-star" style="color: orange; font-weight: 900;"></i>
+                            @else
+                                <i class="fa fa-star" style="color: orange; font-weight: 100;"></i>
+                            @endif
+                            @if($data["ratings"] >= 5)
+                                <i class="fa fa-star" style="color: orange; font-weight: 900;"></i>
+                            @else
+                                <i class="fa fa-star" style="color: orange; font-weight: 100;"></i>
+                            @endif
+                        </div>
+                        <p class="centerNormalDark review age">{{$data["age"]}}</p>
+                        <p class="centerNormalDark date">{{$data["release_date"]}}</p>
+                        <p class="centerNormalDark duration">{{$data["duration"]}}</p>
+
+                    </div>
+                </li>
+
+        @endforeach
+    </ul>
+</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+<?php } ?>
+
+
+<!-- footer-start -->
+@include('guest.partials._footer')
+<!-- footer-end -->
+
+<!-- javascript-start -->
+@include('guest.partials._javascripts')
+<!-- javascript-end -->
+
+</body>
+
+</html>

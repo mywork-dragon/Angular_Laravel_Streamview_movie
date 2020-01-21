@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    @include('guest.partials._head')
+</head>
+
+<body>
+    <div id="preloader"></div>
+    <!-- header-start -->
+    @include('guest.partials._header')
+    <!-- header-start -->
+    <!-- other-page-breadcumb-area-start -->
+
+
+    <section class='movieDetails clearfix' itemscope itemtype="http://schema.org/Movie">
+        <div class="row">
+            <div class='detailsLeft col-xs-12 col-md-6'>
+                <div class="row">
+                    <div class='posterWrapper col-xs-12 col-lg-10'>
+                        <img alt='{{$data["title"]}}' title='{{$data["title"]}}' src='{{$data["default_image"]}}' id="default_image" itemprop="image" />
+
+                        <div class="actionContainer hidden-sm hidden-md hidden-lg">
+                <span class="tvodContainer" itemprop="potentialAction" itemscope itemtype="http://schema.org/WatchAction">
+                  <span class="micro" itemprop="target" itemscope itemtype="http://schema.org/EntryPoint">
+                  <span itemprop="urlTemplate">https://www.flixfling.com/movie/19479/watch-Adele---The-Only-Way-is-Up</span>
+                  <span itemprop="inLanguage">en</span>
+                  <span itemprop="actionPlatform">http://schema.org/DesktopWebPlatform</span>
+                  <span itemprop="actionPlatform">http://schema.org/MobileWebPlatform</span>
+                </span>
+                <span class="micro" itemprop="expectsAcceptanceOf" itemscope itemtype="http://schema.org/Offer">
+                  <span itemprop="category">purchase</span>
+                  <span itemprop="name">Buy in SD</span>
+                  <span itemprop="price">9.99</span>
+                  <span itemprop="priceCurrency">USD</span>
+                  <span itemprop="availabilityStarts">2013-01-01T00:00:00</span>
+                  <span itemprop="availabilityEnds">2099-12-31T00:00</span>
+                  <span itemprop="seller" itemscope itemtype="http://schema.org/EntertainmentBusiness">
+                    <span itemprop="name">FlixFling</span>
+                    <span itemprop="image">https://www.flixfling.com/img/FF_LOGO_YELLOW.png</span>
+                    <span itemprop="sameAs">https://www.flixfling.com</span>
+                  </span>
+                  <span itemprop="eligibleRegion" itemscope itemtype="http://schema.org/Country">
+                    <span itemprop="name">US</span>
+                  </span>
+                  <span itemprop="eligibleRegion" itemscope itemtype="http://schema.org/Country">
+                    <span itemprop="name">CA</span>
+                  </span>
+                </span>
+                  <span class="micro" itemprop="expectsAcceptanceOf" itemscope itemtype="http://schema.org/Offer">
+                  <span itemprop="category">rental</span>
+                  <span itemprop="name">Rent in SD</span>
+                  <span itemprop="price">3.99</span>
+                  <span itemprop="priceCurrency">USD</span>
+                  <span itemprop="availabilityStarts">2013-01-01T00:00:00</span>
+                  <span itemprop="availabilityEnds">2099-12-31T00:00</span>
+                  <span itemprop="seller" itemscope itemtype="http://schema.org/EntertainmentBusiness">
+                    <span itemprop="name">FlixFling</span>
+                    <span itemprop="image">https://www.flixfling.com/img/FF_LOGO_YELLOW.png</span>
+                    <span itemprop="sameAs">https://www.flixfling.com</span>
+                  </span>
+                  <span itemprop="eligibleRegion" itemscope itemtype="http://schema.org/Country">
+                    <span itemprop="name">US</span>
+                  </span>
+                  <span itemprop="eligibleRegion" itemscope itemtype="http://schema.org/Country">
+                    <span itemprop="name">CA</span>
+                  </span>
+                </span>
+                <span class="micro" itemprop="expectsAcceptanceOf" itemscope itemtype="http://schema.org/Offer">
+                  <span itemprop="category">subscription</span>
+                  <span itemprop="name">flashignton Subscription</span>
+                    <!-- <span itemprop="price">7.99</span> -->
+                    <!-- <span itemprop="priceCurrency">USD</span> -->
+                    <!-- <span itemprop="availabilityStarts">2013-01-01T00:00:00</span> -->
+                    <!-- <span itemprop="availabilityEnds">2099-12-31T00:00</span> -->
+                  <span itemprop="seller" itemscope itemtype="http://schema.org/EntertainmentBusiness">
+                    <span itemprop="name">Flashington</span>
+                    <span itemprop="image">https://www.Flashignton.com/img/FF_LOGO_YELLOW.png</span>
+                    <span itemprop="sameAs">https://www.Flashignton.com</span>
+                  </span>
+                  <span itemprop="eligibleRegion" itemscope itemtype="http://schema.org/Country">
+                    <span itemprop="name">US</span>
+                  </span>
+                  <span itemprop="eligibleRegion" itemscope itemtype="http://schema.org/Country">
+                    <span itemprop="name">CA</span>
+                  </span>
+                </span>
+                    <a class="purchaseButton titleAction btn-hollow"
+                       data-sdPrice = "$9.99"
+                       data-hdPrice = "N/A"
+                       data-sdUrl = "/order/19479/MVD473-B-SD"
+                       data-hdUrl = "">
+                      <span class="buyBtnText">BUY</span>
+                      <span class="buyBtnPrice">
+                          FROM&nbsp;
+                            $9.99
+                                                  </span>
+                                          </a>
+                                                        <a class="purchaseButton titleAction btn-hollow"
+                                                           data-sdPrice = "$3.99"
+                                                           data-hdPrice = "N/A"
+                                                           data-sdUrl = "https://www.flixfling.com/order/19479/MVD473-R-SD"
+                                                           data-hdUrl = "">
+                                              <span class="rentBtnText">RENT</span>
+                        <span class="rentBtnPrice">
+                          FROM&nbsp;
+                                                      $3.99
+                                                  </span>
+                                          </a>
+
+                                </span>
+                        </div>
+                        <div class="detail-channel hidden-xs hidden-sm clearfix row" style="margin:15px 0 0 0 !important; padding:0px !important;">
+                            <div class="col-xs-6 col-sm-4"  style="padding:0px !important; ">
+                                <a href="/channels/201">
+                                    <img src="https://admin.flixfling.com/sites/default/files/amp_smallchannelbanner.jpg" alt="https://admin.flixfling.com/sites/default/files/amp_smallchannelbanner.jpg">
+                                </a>
+                            </div>
+                            <div class="col-xs-6">
+                                <a class="btn btn-hollow" href="
+                      /subscribe/amp"
+                                   style="display: block;" >Join Channel</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row hidden-xs hidden-sm">
+                    <div class=" col-lg-10 col-xs-12">
+                        <div class="suggestions">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="social_share col-md-12" >
+                    <!-- SHARE this code -->
+                    <span class='st_facebook_large' displayText='Facebook'></span>
+                    <span class='st_twitter_large' displayText='Tweet'></span>
+                    <span class='st_googleplus_large' displayText='Google +'></span>
+                </div>
+            </div>
+
+            <div class='detailsRight col-xs-12 col-md-6'>
+                <section>
+                    <div class="row">
+                        <h1>
+                            <a href="" itemprop="url">
+                                <span itemprop="name" id="title">{{$data['title']}}</span>
+                            </a>
+                            <span class="btn_subscription_button" id="btn_subscription_button-mobile" data-toggle="tooltip" title="Watch as part of one or more subscription channels.">
+                  SUBSCRIPTION
+                </span>
+                        </h1>
+                        <h3 class="quickDetails">
+                            <!-- <span class="detailsValue" itemprop="contentRating">Unrated</span>
+                            <span itemprop="releasedEvent" itemtype="http://schema.org/PublicationEvent" itemscope>2013
+                              <span class="micro" itemprop="startDate">2013-01-01T00:00:00</span>
+                            </span>
+                            <span class="micro" itemprop="datePublished">2013-01-01T00:00:00</span>
+                            <span class="micro" itemprop="dateCreated">2013-01-01T00:00:00</span>
+                            <span class='detailsValue'>81 mins<span class="micro" itemprop="duration">PT1H21M</span>
+                            </span>
+                            <span class="btn_subscription_button" id="btn_subscription_button-desktop" data-toggle="tooltip" title="Watch as part of one or more subscription channels.">
+                              SUBSCRIPTION
+                            </span> -->
+                            <span class='ratingControl ' data-bind='with:avg_rating' style="margin-top: 20px;">
+                  <div class="ratingStar active" data-rating="20"></div>
+                  <div class="ratingStar active" data-rating="40"></div>
+                  <div class="ratingStar active" data-rating="60"></div>
+                  <div class="ratingStar active" data-rating="80"></div>
+                  <div class="ratingStar" data-rating="100"></div>
+                </span>
+                        </h3>
+                        <div class="actionContainer hidden-xs">
+                <span class="tvodContainer" itemprop="potentialAction" itemscope itemtype="http://schema.org/WatchAction">
+                <span class="micro" itemprop="target" itemscope itemtype="http://schema.org/EntryPoint">
+                  <span itemprop="urlTemplate">https://www.flixfling.com/movie/19479/watch-Adele---The-Only-Way-is-Up</span>
+                  <span itemprop="inLanguage">en</span>
+                  <span itemprop="actionPlatform">http://schema.org/DesktopWebPlatform</span>
+                  <span itemprop="actionPlatform">http://schema.org/MobileWebPlatform</span>
+                </span>
+                <span class="micro" itemprop="expectsAcceptanceOf" itemscope itemtype="http://schema.org/Offer">
+                  <span itemprop="category">purchase</span>
+                  <span itemprop="name">Buy in SD</span>
+                  <span itemprop="price">9.99</span>
+                  <span itemprop="priceCurrency">USD</span>
+                  <span itemprop="availabilityStarts">2013-01-01T00:00:00</span>
+                  <span itemprop="availabilityEnds">2099-12-31T00:00</span>
+                  <span itemprop="seller" itemscope itemtype="http://schema.org/EntertainmentBusiness">
+                    <span itemprop="name">FlixFling</span>
+                    <span itemprop="image">https://www.flixfling.com/img/FF_LOGO_YELLOW.png</span>
+                    <span itemprop="sameAs">https://www.flixfling.com</span>
+                  </span>
+                  <span itemprop="eligibleRegion" itemscope itemtype="http://schema.org/Country">
+                    <span itemprop="name">US</span>
+                  </span>
+                  <span itemprop="eligibleRegion" itemscope itemtype="http://schema.org/Country">
+                    <span itemprop="name">CA</span>
+                  </span>
+                </span>
+                                                                <span class="micro" itemprop="expectsAcceptanceOf" itemscope itemtype="http://schema.org/Offer">
+                  <span itemprop="category">rental</span>
+                  <span itemprop="name">Rent in SD</span>
+                  <span itemprop="price">3.99</span>
+                  <span itemprop="priceCurrency">USD</span>
+                  <span itemprop="availabilityStarts">2013-01-01T00:00:00</span>
+                  <span itemprop="availabilityEnds">2099-12-31T00:00</span>
+                  <span itemprop="seller" itemscope itemtype="http://schema.org/EntertainmentBusiness">
+                    <span itemprop="name">FlixFling</span>
+                    <span itemprop="image">https://www.flixfling.com/img/FF_LOGO_YELLOW.png</span>
+                    <span itemprop="sameAs">https://www.flixfling.com</span>
+                  </span>
+                  <span itemprop="eligibleRegion" itemscope itemtype="http://schema.org/Country">
+                    <span itemprop="name">US</span>
+                  </span>
+                  <span itemprop="eligibleRegion" itemscope itemtype="http://schema.org/Country">
+                    <span itemprop="name">CA</span>
+                  </span>
+                </span>
+                                                                  <span class="micro" itemprop="expectsAcceptanceOf" itemscope itemtype="http://schema.org/Offer">
+                  <span itemprop="category">subscription</span>
+                  <span itemprop="name">FlixFling Subscription</span>
+                  <span itemprop="price">7.99</span>
+                  <span itemprop="priceCurrency">USD</span>
+                  <span itemprop="availabilityStarts">2013-01-01T00:00:00</span>
+                  <span itemprop="availabilityEnds">2099-12-31T00:00</span>
+                  <span itemprop="seller" itemscope itemtype="http://schema.org/EntertainmentBusiness">
+                    <span itemprop="name">FlixFling</span>
+                    <span itemprop="image">https://www.flixfling.com/img/FF_LOGO_YELLOW.png</span>
+                    <span itemprop="sameAs">https://www.flixfling.com</span>
+                  </span>
+                  <span itemprop="eligibleRegion" itemscope itemtype="http://schema.org/Country">
+                    <span itemprop="name">US</span>
+                  </span>
+                  <span itemprop="eligibleRegion" itemscope itemtype="http://schema.org/Country">
+                    <span itemprop="name">CA</span>
+                  </span>
+                </span>
+                    <!-- <a class="purchaseButton titleAction btn-hollow"
+data-sdPrice = "$9.99"
+data-hdPrice = "N/A"
+data-sdUrl = "/order/19479/MVD473-B-SD"
+data-hdUrl = "">
+<span class="buyBtnText">BUY</span>
+<span class="buyBtnPrice">
+FROM&nbsp;
+    $9.99
+</span>
+</a>
+      <a class="purchaseButton titleAction btn-hollow"
+data-sdPrice = "$3.99"
+data-hdPrice = "N/A"
+data-sdUrl = "https://www.flixfling.com/order/19479/MVD473-R-SD"
+data-hdUrl = "">
+<span class="rentBtnText">RENT</span>
+<span class="rentBtnPrice">
+FROM&nbsp;
+    $3.99
+</span>
+</a>
+
+</span>
+</div>
+<p>
+<span class="labelStyle1">Synopsis</span> -->
+              <span class="detailsValue" itemprop="description" id="description">
+                This film discovers who Adele really is and with the aid of rare archive interviews during which she speaks candidly and honestly about her life and career, reveals just what it is that has transformed this seemingly unremarkable girl from Croydon into the most successful musical icon of the third millennium.
+              </span>
+                    </p>
+                    <div class="row">
+                <div class="col-sm-6" style="padding-left:0;">
+                  <span class="labelStyle1">Director: </span>
+                  <ul  style="margin-left:-40px;">
+                      @foreach($data['directors'] as $director)
+                          <li><a>{{$director["name"]}}</a></li>
+                  @endforeach
+                  <!-- <li>
+                        <a target='_blank'  href="/search?terms=N/A" itemprop="director" itemscope itemtype="http://schema.org/Person"><span itemprop="name">N/A</span></a>
+                      </li> -->
+                  </ul>
+
+                  <span class="labelStyle1">Actors: </span>
+                  <ul  style="margin-left:-40px;">
+                      @foreach($data['actors'] as $director)
+                          <li><a>{{$director["name"]}}</a></li>
+                  @endforeach
+                  <!-- <li>
+                        <a target='_blank'  href="/search?terms=N/A" itemprop="actor" itemscope itemtype="http://schema.org/Person"><span itemprop="name">N/A</span></a>
+                      </li> -->
+                                      </ul>
+                </div>
+                <div class="col-sm-6" style="padding-left:0;">
+                                      <!-- <p>
+                      <span class='labelStyle1'>Studio: </span>
+                  <span class='detailsValue'>
+                    <a href="/channels/23" >MVD</a>
+                  </span>
+                    </p> -->
+                                    <p>
+                    <span class='labelStyle1'>Genres: </span>
+                      <ul>
+                      @foreach($data['genres'] as $director)
+                              <li><a>{{$director["name"]}}</a></li>
+                          @endforeach
+                      </ul>
+                        <span class='detailsValue'>
+                      <a target='_blank' href=""><span itemprop="genre"></span></a>                    </span>
+                    </p>
+                </div>
+              </div>
+              <span class="micro" itemprop="sameAs"></span>
+              <span class="micro" itemprop="sameAs"></span>
+                        </div>
+                </section>
+
+
+                <!-- <div class="clearfix" style="clear: both; height: 10px;"></div> -->
+                <div class="row" style="margin-top: 30px;">
+                    <section class='moreDetails2' class="nav nav-tabs" id="movie_reviews" style="border-top:1px dashed #444;">
+                        <!-- <ul class="nav nav-tabs detailsHeader" id="myTab">
+                          <li class="active moreDetails listReviews"><h4>REVIEWS:</h4></li>
+                          <li class="moreDetails writeReview"><a href="#write_review" >Write a Review</a></li>
+                        </ul> -->
+                        <div class="tab-content">
+                            <div id="reviews" class="tab-pane fade in active">
+                            </div>
+                            <div id="write_review" class="tab-pane fade">
+                                <section class='userReview'>
+                                    <div class='anonymousMessage' style="  text-align: center;">
+                                        <h3 class='text-center'>You must be logged in to submit a review.</h3>
+                                        <a href="https://subscribers.flashington.com/signin" class='btn'>Login</a>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                        <div class="detail-channel hidden-md hidden-lg clearfix row" style="margin:15px 0 0 0 !important; padding:0px !important;">
+                            <div class="col-xs-6 col-sm-4"  style="padding:0px !important; ">
+                                <a href="">
+                                    <img src="" alt="">
+                                </a>
+                            </div>
+                            <div class="col-xs-6">
+                                <a class="btn btn-hollow" href="/channels" style="display: block;" >Join Channel</a>
+                            </div>
+                        </div>
+                        <div class="row hidden-md hidden-lg">
+                            <div class=" col-lg-10 col-xs-12">
+                                <div class="suggestions">
+                                    <h3>YOU MAY ALSO LIKE:</h3>
+                                    <div class='slide-wrapper' data-offset='0'>
+                                        <ul class='slide'>
+                                            <li class='movie' data-nid='4734'>
+                                                <a href="/movie/4734/watch-Led-Zeppelin---Physical-Graffiti-A-Classic-Album-Under-Review">
+                                                    <img src="https://admin.flixfling.com/sites/default/files/imagecache/flixfling_desktop/SIDVD539.jpg" onerror='this.src="img/noImage.jpg"' alt='Led Zeppelin - Physical Graffiti: A Classic Album Under Review'>
+                                                </a>
+                                            </li>
+                                            <li class='movie' data-nid='4949'>
+                                                <a href="/movie/4949/watch-From-Mambo-To-Hip-Hop">
+                                                    <img src="https://admin.flixfling.com/sites/default/files/imagecache/flixfling_desktop/MVDV4785.jpg" onerror='this.src="img/noImage.jpg"' alt='From Mambo To Hip Hop'>
+                                                </a>
+                                            </li>
+                                            <li class='movie' data-nid='4085'>
+                                                <a href="/movie/4085/watch-Clutch---Full-Fathom-Five-Video-Field-Recordings-2007-2008">
+                                                    <img src="https://admin.flixfling.com/sites/default/files/imagecache/flixfling_desktop/WM002.jpg" onerror='this.src="img/noImage.jpg"' alt='Clutch - Full Fathom Five: Video Field Recordings 2007-2008'>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- footer-start -->
+    @include('guest.partials._footer')
+
+    @include('guest.partials._javascripts')
+
+</body>
+
+</html>
+n>
+                                       <div class='movie-info-row'>
+                                          <span class='movie-mpaa-rating'>PG-13</span>
+                                          <span class='movie-year'></span>
+                                          <span class='movie-runtime'>86</span>
+                                          <span class='movie-stars'></span>
+                                       </div>"
+                                                     data-content="<div class='movie-description'>
+                                            <p><?= $data['description']?></p>
+                                         </div>"
+                                                     data-container="body"
+                                                     data-html="true">
+                                            </a>
+                                            <div class="movie_title">
+                                                <img alt="Premium Title" src="{{asset('public/img/movie-premium.png')}}" align="right"/>
+                                                <a href="/movie/26697/watch-Pocketman-and-Cargoboy" alt="watch Pocketman and Cargoboy online" style=" white-space: nowrap;" >
+                                                    <?= $data['description']?>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div> <!-- /carousel-inner -->
+                            <a class="left carousel-control" href="#<?= ($video['id'])??''?>" role="button" data-slide="prev">
+                            </a>
+                            <a class="right carousel-control" href="#<?= ($video['id'])??''?>" role="button" data-slide="next">
+                            </a>
+                        </div>
+                    </div>
+                    <?php } ?>
+                </div>
+            </div>
+        </div>
+        <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+        <script type='text/javascript'>
+            $(document).ready(function () {
+
+                $("a[data-page='home']").addClass("active");
+
+                $("#homepageCarousel").carousel();
+
+                // this creates the popover the movies
+                $('[data-toggle="popover"]').popover();
+                if($(window).width() < 769){
+                    $('[data-toggle="popover"]').popover("disable");
+                }
+
+                $('[data-toggle="offcanvas"]').click(function () {
+                    $('.row-offcanvas').toggleClass('active');
+                });
+
+                $('.dropdown-toggle').dropdown();
+
+                $(".dynamic-slider").carousel();
+
+                function updateNav(slider, tid){
+                    var totalItems = slider.find('.item').length;
+                    var currentIndex = slider.find('div.active').index() + 1;
+
+                    if(currentIndex == 1)
+                        $("#btnPrev_" + tid).hide();
+                    else $("#btnPrev_" + tid).show();
+
+                    if(currentIndex == totalItems)
+                        $("#btnNext_" + tid).hide();
+                    else $("#btnNext_" + tid).show();
+                }
+
+                //TODO: Ajax calls for carousel population
+                //slide.bs.carousel = as soon as event occurs, slid.bs.carousel = once slide transition ends.
+                $(".dynamic-slider").on('slid.bs.carousel', function(e){
+                    var self = $(this);
+                    var tid = parseInt($(this).attr("data-tid"));
+                    updateNav(self, tid);
+                });
+
+                $(".dynamic-slider").on('slide.bs.carousel', function(e){
+                    var self = $(this);
+
+                    //Only fetch AJAX data if we're not complete & we're at least half way through
+                    // the carousel (or we're just starting to page)
+                    var totalItems = self.find('.item').length;
+                    var currentIndex = self.find('div.active').index() + 1;
+
+                    if(self.data("complete") === true || self.data("processing") === true || (currentIndex != 1 && currentIndex < totalItems/2))
+                        return;
+
+                    var lastItem = self.find(".item").last();
+                    var offset = parseInt(self.attr("data-offset"));
+                    var tid = parseInt(self.attr("data-tid"));
+                    var filterPath = self.attr("data-filter");
+
+                    switch(filterPath){
+                        case "subscription":
+                            filter = 1;
+                            break;
+                        case "premium":
+                            filter = 2;
+                            break;
+                        default:
+                            filter = 0;
+                    }
+
+
+                    self.data("processing", true);
+                    $.ajax({
+                        url: "/fetch/" + tid + "/" + offset + "/" + filter,
+                        method: "GET",
+                        data: {},
+                        success: function(data){
+                            if(data.length != 0) {
+                                var slidesPerPage = 6;
+                                var width = $(window).width();
+                                //  determine slidesPerPage based on screen width
+                                switch(true){
+                                    case (width > 768):
+                                        slidesPerPage = 6;
+                                        break;
+                                    case (width > 639):
+                                        slidesPerPage = 4;
+                                        break;
+                                    case (width > 359):
+                                        slidesPerPage = 3;
+                                        break;
+                                    default:
+                                        slidesPerPage = 2;
+                                        break;
+                                }
+                                var tabIndex = offset - slidesPerPage;
+                                var leftRightCounter = slidesPerPage + slidesPerPage;
+                                var length = data.length;
+                                for (var index = 0; index < length; index++) {
+                                    //add a new div.item after the carousels last item, and set it to lastItem
+                                    if(index % slidesPerPage === 0)
+                                        lastItem = $("<div class='item'></div>").insertAfter(lastItem);
+                                    lastItem.append("" +
+                                        "<div class='movie_item  col-md-2 col-sm-2 col-xs-4'>" +
+                                        "<a href='/movie/" + data[index].nid + "/watch-" + data[index].node_title.replace(" ", "-") + "' alt='watch " + data[index].node_title + " online'>" + //TODO: Verify this matches with seoLink helper function
+                                        "<img class='cover_img' alt='" + data[index].node_title + "' src='" + data[index].files_filepath + "' " +
+                                        "role='button' data-toggle='popover' data-trigger='hover' data-animation='true' tabindex='" + tabIndex + "' data-placement='" + ((leftRightCounter % 6) < 3 ? 'right' : 'left') + "' " +
+                                        "data-title=\"" +
+                                        "<span class='movie-title'>" + data[index].node_title + "</span>" +
+                                        "<div class='movie-info-row'>" +
+                                        "<span class='movie-mpaa-rating'>" + data[index].mpaa_rating_value + "</span>" +
+                                        "<span class='movie-year'></span>" +
+                                        "<span class='movie-runtime'>" + data[index].runtime_value + "</span>" +
+                                        "<span class='movie-starts'></span>" +
+                                        "</div>" +
+                                        "\" " +
+                                        "data-content=\"" +
+                                        "<div class='movie-description'>" +
+                                        "<p>" + ((data[index].description.length >= 300) ? $.trim(data[index].description).substring(0, 300).split(" ").slice(0, -1).join(" ") + "..." : data[index].description).replace(/"/g, "&quot;") + "</p>" +
+                                        "</div>" +
+                                        "\" " +
+                                        "data-container='body' data-html='true' " + ">" +
+                                        "</a>" +
+                                        "<div class='movie_title'>" +
+                                        ((data[index].premium == 1) ? "<img alt='premium' src='/img/movie-premium.png' align='right'/>" : "<img alt='subscription' src='/img/movie-subscribe.png' align='right'/>") +
+                                        "<a href='/movie/" + data[index].nid + "/watch-" + data[index].node_title.replace(" ", "-") + "' alt='watch " + data[index].node_title + " online' style='white-space:nowrap;'>" +
+                                        data[index].node_title +
+                                        "</a>" +
+                                        "</div>" +
+                                        "</div>");
+
+                                    tabIndex ++;
+                                    leftRightCounter++;
+                                }
+
+                                // this creates the popover the movies
+                                if($(window).width() > 768){
+                                    $('[data-toggle="popover"]').popover();
+                                }
+
+                                offset += length;
+                                self.attr("data-offset", offset);
+                            }
+                            else self.data("complete", true);
+
+                            updateNav(self, tid);
+                        },
+                        error: function(){},
+                        complete: function(){
+                            self.data("processing", false);
+                        }
+                    });
+                });
+
+            });
+        </script>
+    </div>
+</div>
+<script>
+    $(function(){
+        $(".navbar-toggle").click(function(){
+            var body = $("body");
+            var docWrapper = $("#documentWrapper");
+            var footer = $("footer");
+            var mobileMenu = $("#mobile-menu");
+            var slideTime = 250;
+            var menuWidth = 250;
+
+            body.toggleClass("mobile-menu-open");
+            //  open menu
+            if(body.hasClass("mobile-menu-open")){
+                docWrapper.stop().animate({"left":"-" + menuWidth + "px"}, slideTime);
+                footer.stop().animate({"left":"-" + menuWidth + "px"}, slideTime);
+                mobileMenu.stop().animate({"right":0}, slideTime);
+                //  close menu
+            }else{
+                docWrapper.stop().animate({"left":0}, slideTime);
+                footer.stop().animate({"left":0}, slideTime);
+                mobileMenu.stop().animate({"right":"-" + menuWidth + "px"}, slideTime);
+                mobileMenu.children("ul").find("li.has-submenu").find("ul.open").removeClass("open").animate({"right":"-" + menuWidth + "px"}, slideTime);
+            }
+
+            //  open submenu
+            mobileMenu.children("ul").find("li.has-submenu").find("a").click(function(){
+                var submenu = $(this).siblings("ul");
+                submenu.addClass("open");
+                $(this).siblings("ul").stop().animate({"right":0}, slideTime);
+            });
+            //  close submenu
+            mobileMenu.find("li.back").find("a").click(function(){
+                var submenu = $(this);
+                while(!submenu.is("ul")){
+                    submenu = submenu.parent();
+                }
+                submenu.removeClass("open");
+                submenu.stop().animate({"right":"-" + menuWidth + "px"}, slideTime);
+            });
+
+            docWrapper.off("click");
+            $("body.mobile-menu-open").find("#documentWrapper").click(function(){
+                $(this).off("click");
+                $(".navbar-toggle").click();
+            });
+        });
+    });
+</script>
+<div id="mobile-menu">
+    <ul class = "flixSearch">
+        <li class="search-bar-li mobile">
+            <form method="GET" action="" accept-charset="UTF-8" class="navbar-form navbar-right">
+                <div class="input-group">
+                    <input type="text" name="terms" id="terms" class="form-control search-query" placeholder="Search movie, actor...">
+                    <span class="input-group-btn">
+                        <button class="btn" type="submit">&nbsp;</button>
+                    </span>
+                </div><!-- /input-group -->
+            </form>
+            <div class="musicChoice-dropdown mc-searchResults" style="display:none;">
+                <div class="showResults"></div>
+                <div class="defaultText">Loading Search Results...</div>
+            </div>
+        </li>
+        <li><a href="/browse">Home</a></li>
+        <li><a href="/channels" data-page="channels">Channels</a></li></li>
+        <li><a href="/myflix" data-page="myflix">MyFlix</a></li>
+
+        <li><a href="/musicchoice">Music Choice</a></li>
+
+        <li><a href="/live" data-page="live">Live</a></li>
+        <li><a href="https://subscriber.flashington.com/signin">Sign In</a></li>
+        <li><a href="/subscriber.flashington.com/signup">Join Now For Free</a></li>
+    </ul>
+</div>
+<footer class='container-fluid'>
+    <div class="container">
+        <div>
+            <h6 id='footerCopyright'>&copy; FlixFling. All Rights Reserved. Your use of this site is subject to the
+                <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.
+            </h6>
+        </div>
+        <nav>
+            <a href="https://www.facebook.com/flashington/" target="_blank"><img src="{{asset('public/img/ff_facebook.png')}}" alt="Facebook" /></a>
+            <a href="https://twitter.com/flashington" target="_blank"><img src="{{asset('public/img/ff_twitter.png')}}" alt="Twitter" /></a>
+            <a href="https://plus.google.com/b/114498294128771307642/114498294128771307642" target="_blank"><img src="{{asset('public/img/ff_google.png')}}" alt="Google+" /></a>
+            <a href="https://www.instagram.com/flashington/" target="_blank"><img src="{{asset('public/img/ff_instagram.png')}}" alt="Instagram" /></a>
+            <a href="https://www.flashington.com/eula" class="linkDivider">EULA</a>
+            <a href="https://www.flashington.com/about" class="linkDivider">About</a>
+            <a href="http://blog.flashington.com/" target='_blank' class="linkDivider">Blog</a>
+            <a href="https://www.flashington.com/faq">FAQ</a>
+            <a href="https://www.flashington.com/contact" class="linkDivider">Contact</a>
+        </nav>
+    </div>
+</footer>
+</body>
+</html>
+
