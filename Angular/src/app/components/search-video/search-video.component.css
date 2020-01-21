@@ -1,0 +1,41 @@
+
+    .box-head h3{
+    
+        font-size: 18px;
+      color: #e5e5e5;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-block;
+    
+      margin:0;
+    
+    }
+    
+    .video-box-row {
+    
+      font-size : 14px;
+    
+      white-space: normal;
+    }
+
+    .tile-img {
+        max-height: 420px;
+        object-fit: fill;
+      }
+      
+      .tile-media {
+        /*border: 2px solid #141414;*/
+        height: auto !important;
+        text-align: center;
+      }
+      
+      .slick-initialized .slick-slide {
+        display: inline-block !important;
+        height: 100% !important;
+        padding: 0;
+      }
+      
+      .tab-overlay {
+        background: rgba(0, 0, 0, .90);
+      }
+    

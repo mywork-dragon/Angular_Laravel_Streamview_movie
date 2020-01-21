@@ -1,0 +1,62 @@
+<div class="main-content" *ngIf="loadStatus">
+  <nav class="navbar navbar-default form-navbar" role="navigation">
+    <div class="banner-spacing">
+      <div class="navbar-header form-header">
+        <a class="navbar-brand" routherLink="/">
+					<img src="{{AppSettings.site_logo}}" class="hidden-xs">
+					<img src="{{AppSettings.site_logo}}" class="visible-xs">
+				</a>
+      </div>
+    </div>
+  </nav>
+  <div class="content-panel">
+    <div class="profiles-gate-container">
+      <div class="centered-div">
+        <div class="profile-actions-container">
+          <h1>Edit Profile</h1>
+          <!-- <h2>Add a profile for another person watching Netflix.</h2> -->
+          <form id="sub_profile" #editForm="ngForm" (ngSubmit)="onSubmit()">
+            <div class="profile-metadata profile-entry">
+              <div class="main-profile-avatar" style="position: relative;">
+                <img src="{{profile.picture}}" alt="" style="opacity: 1; transform: scale(1); transition-duration: 400ms;" id="preview_picture">
+                <div class="image_sub_profile" style="cursor: pointer;" (click)="openBrowse()"><i class="fa fa-pencil"></i></div>
+              </div>
+              <input type="file" name="picture" style="display: none" (change)="onFileChange($event)" accept="image/png, image/jpeg" id="picture" >
+              <div class="profile-add-parent">
+                <div class="profile-entry-inputs">
+                  <input id="add-profile-name" placeholder="Name" type="text" name="name" value="{{profile.name}}" [(ngModel)]="profile.name">
+                  <input type="hidden" name="id" value="{{profileDetail.id}}">
+                  <input type="hidden" name="sub_profile_id" value="{{profile.id}}">
+                  <input type="hidden" name="token" value="{{profileDetail.token}}">
+                  <label for="add-profile-name" aria-label="Name"></label>
+                </div>
+              </div>
+            </div>
+
+            <div class="profile-button preferred-action pull-left" role="button" (click)="onEditProfile()">
+              <span>Save</span>
+            </div>
+            <a routerLink="/view-profiles">
+              <div class="profile-button pull-left" style="margin-left: 5px;">
+                <span>Cancel</span>
+              </div>
+            </a>
+
+            <a (click)="onDeleteProfile(profile.id)" class="hidden-xxs">
+              <div class="profile-button pull-left" style="margin-left: 5px;">
+                <span>Delete Profile</span>
+              </div>
+            </a>
+
+            <a (click)="onDeleteProfile(profile.id)" class="visible-xxs">
+              <div class="profile-button pull-left" style="margin-left: 5px;">
+                <span>Delete</span>
+              </div>
+            </a>
+            <div class="clearfix"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,47 @@
+<div class="main-content" *ngIf="loadStatus">
+	<nav class="navbar navbar-default form-navbar" role="navigation">
+		<div class="banner-spacing">
+			<div class="navbar-header form-header">
+				<a class="navbar-brand" routerLink="/">
+					<img src="{{AppSettings.site_logo}}" class="hidden-xs">
+					<img src="{{AppSettings.site_logo}}" class="visible-xs">
+				</a>
+			</div>
+		</div>
+	</nav>
+	<div class="content-panel">
+		<div class="profiles-gate-container">
+			<div class="centered">
+				<div class="list-profiles">
+					<div class="profile-gate-label">Who's watching?</div>
+					<ul class="choose-profile">
+						<li class="profile" *ngFor="let profile of profiles">
+							<div>
+								<a class="profile-link" href="/home/{{profile.id}}">
+									<div class="avatar-wrapper">
+										<div class="profile-icon" [style.backgroundImage]="'url('+ profile.picture +')'"> </div>
+									</div>
+									<span class="profile-name">{{profile.name}}</span>
+								</a>
+							</div>
+						</li>
+
+						<li *ngIf="profiles.length < noOfAccount">
+							<a routerLink="/add-profile">
+								<div class="addProfileIcon icon-tvuiAdd">
+									<div>
+										<i class="fa fa-plus-circle"></i>
+									</div>
+								</div>
+								<span class="profile-name">Add Profile</span>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<span class="profile-button">
+			<a href="/manage-profiles">Manage Profiles</a>
+		</span>
+		</div>
+	</div>
+</div>

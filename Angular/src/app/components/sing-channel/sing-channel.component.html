@@ -1,0 +1,586 @@
+
+<div class="content" id="page_content">
+    <div style="margin-top:80px !important; margin:5%; padding: 10px;">
+        <div class="container">
+            <div class="row mt-4 pb-4">
+                <div class="col-md-3 single-avatar">
+                    <img src="{{picture}}" />
+                </div>
+                <div class="col-md-9 pl-4">
+                    <h1>{{title}}</h1>
+                    <h4 style="line-height: 1.5;">{{description}}</h4>
+                </div>
+            </div>
+        </div>
+      
+        <div class="row" *ngIf="videos.length == 0">
+            <p>No videos found</p>
+        </div>
+        <div class="row" *ngFor="let sub_videos of videos; let parentindex = index">
+            <div id="video_{{video.admin_video_id}}" *ngFor="let video of sub_videos"
+                class="tile col-lg-2 col-md-3 col-sm-4 col-xs-6 video-box"
+                (mouseover)="hoverIn(this, video.admin_video_id, (sub_videos).length)"
+                (mouseleave)="hoverOut(this, video.admin_video_id, (sub_videos).length)" >
+
+                <div class="video-box-outer">
+                    <div class="tile-media" id="{{video?.admin_video_id}}_img">
+                        <img class="tile-img" src="{{video?.default_image}}" alt="" [ngStyle]="media_height" />
+                    </div>
+                    <div class="tile-details">
+                        <div class="video_amount" *ngIf="video.amount > 0 && !video.pay_per_view_status">
+                            <!-- <span ng-if="video.pay_per_view_status">PAID</span> -->
+                            <span>PAY - {{video.currency}} {{video.amount}}</span>
+                        </div>
+                        <span>
+                            <a  href="/video/{{video?.admin_video_id}}">
+                                <div class="hover-icon" id="{{video.admin_video_id}}_div">
+                                <i class="fa fa-play"></i>
+                                </div>
+                            </a>
+                        </span>
+                        <div class="tile-content" id="{{video.admin_video_id}}_desc">
+                            <h3 class="tile-tit">{{video.title}}</h3>
+                            <div class="row no-margin hidden-cls">
+                                <div class="pull-left">
+                                    <div>
+                                        <div class="rating-symbol glyphicon" [ngClass]="{'glyphicon-star-empty' : (video.ratings < 1), 'glyphicon-star' : (video.ratings >= 1)}">
+                                        </div>
+                                        <div class="rating-symbol glyphicon" [ngClass]="{'glyphicon-star-empty' : (video.ratings < 2), 'glyphicon-star' : (video.ratings >= 2)}">
+                                        </div>
+                                        <div class="rating-symbol glyphicon" [ngClass]="{'glyphicon-star-empty' : (video.ratings < 3), 'glyphicon-star' : (video.ratings >= 3)}">
+                                        </div>
+                                        <div class="rating-symbol glyphicon" [ngClass]="{'glyphicon-star-empty' : (video.ratings < 4), 'glyphicon-star' : (video.ratings >= 4)}">
+                                        </div>
+                                        <div class="rating-symbol glyphicon" [ngClass]="{'glyphicon-star-empty' : (video.ratings < 5), 'glyphicon-star' : (video.ratings >= 5)}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="video-season">
+                                    <span>{{video.release_date && video.release_date !="0000-00-00" ? video.release_date:'' }}</span>
+                                    <span class="video-epi-count">{{video.age}} / <i class="fa fa-eye"></i>&nbsp;{{video.watch_count}}</span>
+                                    <span>{{video.duration}}</span>
+                                </p>
+                            </div>
+                            <div class="video-des">
+                                <p class="video-des-inner">{{video.description}}</p>
+                            </div>
+                            <div class="text-center">
+                                <a (click)="showVideoDrop(this, video.admin_video_id, (video).length)" class="arrow">
+                                    <img src="assets/img/down-arrow-red.png" class="arrow_down" />
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div id="drop_{{video.admin_video_id}}" class="video-drop" *ngFor="let video of sub_videos">
+                <div class="tab-content">
+                    <!-- OVERVIEW SECTION  -->
+					  <div role="tabpanel" class="tab-pane active" id="{{video.admin_video_id}}_overview">
+                        <div class="overview tab-section relative">
+                            <div class="close-tab">
+                                <a style="cursor: pointer;" (click)="closeDiv(video.admin_video_id)" class="close-btn">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                            <div class="tab-section-content row no-margin">
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-5 no-pad overview-details">
+                                </div>
+                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-7 no-pad">
+                                    <div class="linear-outer">
+                                        <div class="linear"></div>
+                                        <div class="rotate-img-outer">
+                                            <div class="rotate-img highlight-img bg-img" [ngStyle]="{ 'background-image': 'url(' + video.default_image + ')'}"></div>
+                                            <!-- <div class="rotate-img highlight-img bg-img" style="background-image: url({{video.video_gif_image}});"></div> -->
+                                        </div>
+                                        <div class="play-icon-outer">
+                                            <!-- <a ui-sref="single_video({id : video.admin_video_id})" class="play-icon"><i class="fa fa-play"></i></a>-->
+                                            <span *ngIf="video.pay_per_view_status">
+                                                <a class="play-icon" href="/video/{{video?.admin_video_id}}"><i class="fa fa-play"></i></a>
+                                            </span>
+                                            <span *ngIf="!video.pay_per_view_status">
+                                                <a href="/payment-option/{{video.admin_video_id}}" class="play-icon"><i class="fa fa-play"></i></a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="home-new-deatils">
+                                <div class="overview-details" style="background-color: unset;">
+                                    <h3 class="content-tit">{{video.title}}</h3>
+                                    <div class="row no-margin hidden-xs">
+                                        <div class="pull-left">
+                                            <div>
+                                                <div class="rating-symbol glyphicon" [ngClass]="{'glyphicon-star-empty' : (video.ratings < 1), 'glyphicon-star' : (video.ratings >= 1)}">
+                                                </div>
+                                                <div class="rating-symbol glyphicon" [ngClass]="{'glyphicon-star-empty' : (video.ratings < 2), 'glyphicon-star' : (video.ratings >= 2)}">
+                                                </div>
+                                                <div class="rating-symbol glyphicon" [ngClass]="{'glyphicon-star-empty' : (video.ratings < 3), 'glyphicon-star' : (video.ratings >= 3)}">
+                                                </div>
+                                                <div class="rating-symbol glyphicon" [ngClass]="{'glyphicon-star-empty' : (video.ratings < 4), 'glyphicon-star' : (video.ratings >= 4)}">
+                                                </div>
+                                                <div class="rating-symbol glyphicon" [ngClass]="{'glyphicon-star-empty' : (video.ratings < 5), 'glyphicon-star' : (video.ratings >= 5)}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p class="content-txt bold seasons">
+                                            <span class="green-clr">{{video.release_date && video.release_date !="0000-00-00" ? video.release_date:'' }}</span>
+                                            <span class="epi-count">{{video.age}} / <i class="fa fa-eye"></i>&nbsp;{{video.watch_count}}</span>
+                                            <span>{{video.duration}}</span>
+                                        </p>
+                                    </div>
+
+                                    <div class="">
+                                        <div class="pull-left">
+                                            <a class="white-icon">
+                                                <i class="fa fa-thumbs-up"></i><span id="like_count_{{video.admin_video_id}}">{{video.like_count}}</span>
+                                            </a>
+                                            <a class="white-icon">
+                                                <i class="fa fa-thumbs-down"></i><span id="dis_like_count_{{video.admin_video_id}}">{{video.dis_like_count}}</span>
+                                            </a>
+                                        </div>
+                                        <div class="pull-left">
+                                            <div class="display_amount" *ngIf="video.amount > 0 && !video.pay_per_view_status" style="margin-left: 5px;">
+                                                <!-- <span ng-if="recent_video.pay_per_view_status">PAID</span> -->
+                                                <span>PAY - ${{video.amount}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div>
+                                        <p class="content-txt overview-des">{{video.description}}</p>
+                                        <!-- <p class="content-txt awards"><i class="fa fa-trophy"></i>Lorem ipsum dolor sit amet, consectetur adipisicing elit</p> -->
+                                    </div>
+                                    <div id="my-list-txt_{{video.admin_video_id}}" class="pull-left">
+                                        <a (click)="addWishlist(video.admin_video_id)" class=" bold" id="" *ngIf="!video.wishlist_status"
+                                            style="cursor: pointer;">
+                                            <button class="my-list">
+                                                <i class="fa fa-plus my-list-icon"></i>
+                                                <span class="my-list-txt">My List</span> 
+                                            </button>
+                                        </a>
+                                        <a (click)="removeWishlist(video.wishlist_status, video.admin_video_id)" class="bold" *ngIf="video.wishlist_status"
+                                            style="cursor: pointer;">
+                                            <button class="my-list">
+                                                <i class="fa fa-check my-list-icon"></i>
+                                                <span class="my-list-txt">My List</span> 
+                                            </button>
+                                        </a>
+                                    </div>
+                                    <div class="banner-icon-sec hidden-xs">
+                                        <a id="like_{{video.admin_video_id}}" style="cursor: pointer;" *ngIf="video.is_liked == 1 || video.is_liked == 0" (click)="likeVideo(video.admin_video_id)">
+                                            <button class="banner-icon">
+                                                <i class="fa fa-thumbs-up"></i>
+                                            </button>
+                                        </a>
+                                        <a id="dis_like_{{video.admin_video_id}}" style="cursor: pointer;" *ngIf="video.is_liked == -1 || video.is_liked == 0"
+                                            (click)="dislikeVideo(video.admin_video_id)">
+                                            <button class="banner-icon">
+                                                <i class="fa fa-thumbs-down"></i>
+                                            </button>
+                                        </a>
+                                        <a data-toggle="modal" data-target="#myModal_{{video.admin_video_id}}" title="Report as Spam" style="cursor: pointer;">
+                                            <button class="banner-icon">
+                                                <i class="fa fa-exclamation "></i>
+                                            </button>
+                                        </a>
+                                    </div>
+
+                                    <div class="modal fade" id="myModal_{{video.admin_video_id}}" role="dialog">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content" style="background-color: #333;">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    <h4 class="modal-title bold">Report This Video</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form (ngSubmit)="spamVideo(video.admin_video_id, video.admin_video_id, parentindex)">
+                                                        <div class="radio radio-danger" *ngFor="let spam_reason of spam_reasons">
+                                                            <input type="radio" name="reason" id="reason_{{video.admin_video_id}}_{{video.admin_video_id}}" >
+                                                            <label for="reason_{{video.admin_video_id}}_{{video.admin_video_id}}">
+                                                        {{spam_reason.video}}
+                                                    </label>
+                                                        </div>
+
+                                                        {{spam_reason_video}}
+                                                        <p class="small bold text-center">If you report this video, you won't see again the same video in anywhere in your account except "Spam Videos".
+                                                            If you want to continue to report this video as same. Click continue and proceed the same.</p>
+                                                        <div class="text-right">
+                                                            <button type="submit" class="payment-submit">Submit</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- OVERVIEW SECTION END -->
+
+                    <!-- EPISODES-SECTION -->
+                    <div role="tabpanel" class="tab-pane" id="{{video.admin_video_id}}_episodes" *ngIf="video.is_genre">
+                        <div class="episodes-section tab-section tab-bg bg-img" [ngStyle]="{ 'background-image': 'url(' + video.default_image + ')'}">
+                            <div class="close-tab">
+                                <a style="cursor: pointer;" (click)="closeDiv(video.admin_video_id)" class="close-btn">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                            <div class="tab-overlay">
+                                <div class="episodes-section-inner tab-section-content tab-sec-inner contain-width">
+                                    <h3 class="content-tit">{{video.sub_category_name}}</h3>
+                                    <!-- <form class="season-select">
+                                        <div class="form-group styled-select black">
+                                            <select id="exampleSelect1" ng-model="genres_name" ng-change="getSeasons(genres_name, {{video.admin_video_id}},'_sessions', '_loader_seasons', video.genre_id);">
+                                                <option video="">Select Seasons</option>
+                                                <option video="{{genrename.genre_id}}" ng-repeat="genrename in video.genre_names">
+                                                {{genrename.genre_name}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </form> -->
+    
+                                    <div class="episodes-list">
+                                        <div id="{{video.admin_video_id}}_loader_seasons" style="margin-top: 10px;text-align: center;display: none">
+                                            <img src="assets/img/ellipsis.svg" style="width: 40px;">
+                                        </div>
+                                        <div id="{{video.admin_video_id}}_sessions" class="row">
+                                            <!-- episode list box -->
+                                            <!-- <slick slides-to-show="{{epdisode_slide_to_show}}" slides-to-scroll="{{epdisode_slide_to_scroll}}" dots="false" class="episode-slider"> -->
+                                            <ngx-slick-carousel class="carousel slider multiple-items"  #slickModal="slick-carousel" [config]="slideConfig">
+                                              <div *ngFor="let genre_list of video.first_part" ngxSlickItem>
+                                                    <div class="episode-list-box">
+
+                                                        <div class="episode-img bg-img" [ngStyle]="{ 'background-image': 'url(' + genre_list.default_image + ')'}">
+                                                            <div class="episode-img-overlay">
+                                                                <div class="episode-img-inner">
+                                                                    <!-- <p class="episode-count">{{genre_list.watch_count}}</p> -->
+                                                                    <span class="epi-count">{{genre_list.age}} / <i class="fa fa-eye"></i>&nbsp;{{genre_list.watch_count}}</span>
+                                                                </div>
+
+                                                                <div class="epi-play-icon-outer">
+                                                                    <!-- <a ui-sref="single_video({id : genre_list.id})" class="epi-play-icon">
+                                                            <i class="fa fa-play"></i>
+                                                        </a> -->
+
+                                                                    <span *ngIf="genre_list.pay_per_view_status">
+                                                                        <a href="/video/{{genre_list.id}}" class="epi-play-icon" ><i class="fa fa-play"></i></a>
+                                                                    </span>
+                                                                    <span *ngIf="genre_list.pay_per_view_status">
+                                                                        <a href="/payment-option/{{genre_list.id}}" class="epi-play-icon"><i class="fa fa-play"></i></a>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="episode-list-content">
+                                                            <div class="row">
+                                                                <div class="col-md-8 col-sm-12">
+                                                                    <h4 class="epi-tit gray-color1 txt-overflow">{{genre_list.title}}</h4>
+                                                                </div>
+
+                                                                <div class="col-md-4 text-right hidden-sm">
+                                                                    <p class="bold epi-tit gray-color1 txt-overflow">{{genre_list.duration}}</p>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="">
+                                                                <p class="gray-color1 overview-des more-link mt-0">{{genre_list.description}}</p>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </ngx-slick-carousel>
+                                        </div>
+                                        <!-- episode-list-box end -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- EPISODES-SECTION END-->
+
+                    <!-- TRAILERS SECTION -->
+				    <div role="tabpanel" class="tab-pane" id="{{video.admin_video_id}}_trailers" *ngIf="video.is_genre || video.trailer_video">
+                        <div class="trailers-section tab-section tab-bg bg-img" [ngStyle]="{ 'background-image': 'url(' + video.default_image + ')'}">
+                            <div class="close-tab">
+                                <a style="cursor: pointer;" (click)="closeDiv(video.admin_video_id)" class="close-btn">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                            <div class="tab-overlay">
+
+                                <div class="trailers-section-inner tab-section-content tab-sec-inner contain-width">
+                                    <h3>{{video?.sub_category_name}}</h3>
+
+                                    <div class="trailers-list row">
+
+                                        <!-- episode list box -->
+                                        <!-- <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 top" *ngFor="let trailer of video.genres" *ngIf="video.is_genre">
+                                            <div class="episode-list-box">
+
+                                                <div class="episode-img bg-img" [ngStyle]="{ 'background-image': 'url(' + trailer.default_image + ')'}">
+                                                    <div class="episode-img-overlay">
+
+                                                        <div class="epi-play-icon-outer">
+                                                            <a href="/genre_video/{{trailer.genre_id}}" class="epi-play-icon">
+                                                        <i class="fa fa-play"></i>
+                                                    </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="episode-list-content">
+                                                    <div class="row no-margin">
+                                                        <div class="">
+                                                            <h4 class="epi-tit gray-color1">{{trailer.genre_name}}</h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div> -->
+
+                                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 top" *ngIf="video.trailer_video">
+                                            <div class="episode-list-box">
+
+                                                <div class="episode-img bg-img" [ngStyle]="{ 'background-image': 'url(' + video.default_image + ')'}">
+                                                    <div class="episode-img-overlay">
+
+                                                        <div class="epi-play-icon-outer">
+                                                            <a  href="/trailer_video/{{video?.admin_video_id}}" class="epi-play-icon">
+                                                        <i class="fa fa-play"></i>
+                                                    </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="episode-list-content">
+                                                    <div class="row no-margin">
+                                                        <div class="">
+                                                            <h4 class="epi-tit gray-color1">{{video.title}}</h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MORE LIKE SECTION  -->
+                    <div role="tabpanel" class="tab-pane" id="{{video.admin_video_id}}_more-like">
+                        <div class="morelike-section tab-section tab-bg bg-img" [ngStyle]="{ 'background-image': 'url(' + video.default_image + ')'}">
+                            <div class="close-tab">
+                                <a style="cursor: pointer;" (click)="closeDiv(video.admin_video_id)" class="close-btn">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                            <div class="tab-overlay">
+
+                                <div class="morelike-section-inner tab-section-content tab-sec-inner contain-width">
+                                    <h3 class="content-tit">{{video.sub_category_name}}</h3>
+
+                                    <div class="morelike-list row">
+
+                                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12" *ngFor="let sub_video of video.sub_videos">
+                                            <div class="episode-list-box">
+
+                                                <div class="episode-img bg-img" [ngStyle]="{ 'background-image': 'url(' + sub_video.default_image + ')'}">
+                                                    <div class="episode-img-overlay">
+                                                        <div class="episode-img-inner">
+                                                            <p class="new-epi">{{sub_video.title}}</p>
+                                                        </div>
+
+                                                        <div class="epi-play-icon-outer">
+                                                            <!-- <a ui-sref="single_video({id : sub_video.admin_video_id})" class="epi-play-icon">
+                                                        <i class="fa fa-play"></i>
+                                                    </a> -->
+
+                                                    <span *ngIf="sub_video.pay_per_view_status">
+                                                        <a class="epi-play-icon" href="/video/{{sub_video.admin_video_id}}" ><i class="fa fa-play"></i></a>
+                                                    </span>
+                                                            <span *ngIf="!sub_video.pay_per_view_status">
+                                                        <a href="payment-option/{{sub_video.admin_video_id}}" class="epi-play-icon"><i class="fa fa-play"></i></a>
+                                                    </span>
+
+
+                                                        </div>
+
+                                                        <div class="duration_more">
+                                                            <span>{{sub_video.duration}}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="episode-list-content">
+                                                    <div class="row no-margin">
+                                                        <div class="pull-left">
+                                                            <div>
+                                                                <div class="rating-symbol glyphicon" [ngClass]="{'glyphicon-star-empty' : (sub_video.ratings < 1), 'glyphicon-star' : (sub_video.ratings >= 1)}">
+
+                                                                </div>
+                                                                <div class="rating-symbol glyphicon" [ngClass]="{'glyphicon-star-empty' : (sub_video.ratings < 2), 'glyphicon-star' : (sub_video.ratings >= 2)}">
+
+                                                                </div>
+                                                                <div class="rating-symbol glyphicon" [ngClass]="{'glyphicon-star-empty' : (sub_video.ratings < 3), 'glyphicon-star' : (sub_video.ratings >= 3)}">
+
+                                                                </div>
+                                                                <div class="rating-symbol glyphicon" [ngClass]="{'glyphicon-star-empty' : (sub_video.ratings < 4), 'glyphicon-star' : (sub_video.ratings >= 4)}">
+
+                                                                </div>
+                                                                <div class="rating-symbol glyphicon" [ngClass]="{'glyphicon-star-empty' : (sub_video.ratings < 5), 'glyphicon-star' : (sub_video.ratings >= 5)}">
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <p class="content-txt bold seasons">
+                                                            <span class="green-clr hidden-sm">{{sub_video.release_date && sub_video.release_date !="0000-00-00" ? sub_video.release_date:'' }}</span>
+                                                            <span class="epi-count hidden-sm hidden-md">{{sub_video.age}} / <i class="fa fa-eye"></i>&nbsp;{{sub_video.watch_count}}</span>
+                                                            <!-- <span>{{sub_video.duration}}</span> -->
+                                                        </p>
+                                                    </div>
+
+                                                    <div>
+                                                        <p class="content-txt overview-des more-link">{{sub_video.description}}</p>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- MORE LIKE SECTION END -->
+
+                    <!-- DETAILS-SECTION -->
+                    <div role="tabpanel" class="tab-pane" id="{{video.admin_video_id}}_details">
+                        <div class="details-section tab-section tab-bg bg-img" [ngStyle]="{ 'background-image': 'url(' + video?.default_image + ')'}">
+                            <div class="close-tab">
+                                <a style="cursor: pointer;" (click)="closeDiv(video.admin_video_id)" class="close-btn">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                            <div class="tab-overlay">
+                                <div class="details-section-inner tab-section-content tab-sec-inner contain-width details_section_tab">
+                                    <h3 class="content-tit">{{video.title}}</h3>
+                                    <div class="row col-sm-12 col-sm-12 col-lg-12 col-md-12">
+                                        <div class="detailsItem detailsMedia col-md-2">
+                                            <h4>Directors</h4>
+                                            <ul class="list-unstyled">
+                                                <li *ngFor="let director of video.directors" class="listLabel">
+                                                    <a href="/director/{{director.id}}">{{director.name}}</a></li>
+                                            </ul>
+                                            <h4>Writers</h4>
+                                            <ul class="list-unstyled">
+                                                <li *ngFor="let writer of video.writers" class="listLabel">
+                                                    <a href="/writer/{{writer.id}}">{{writer.name}}</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="detailsItem detailsMedia col-md-2">
+                                            <h4>Actors</h4>
+                                            <ul class="list-unstyled">
+                                                <li *ngFor="let actor of video.actors" class="listLabel">
+                                                    <a href="/actor/{{actor.id}}">{{actor.name}}</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="detailsItem detailsMedia col-md-2">
+                                            <h4>Category</h4>
+                                            <ul class="list-unstyled">
+                                                <li class="listLabel">
+                                                    <a>{{video.sub_category_name}}</a>
+                                                </li>
+                                            </ul>
+                                            <div class="clear-fix"></div>
+                                            <h4>Publish Date</h4>
+                                            <ul class="list-unstyled">
+                                                <li class="listLabel">
+                                                    <p class="content-txt bold seasons">
+                                                        <span class="green-clr hidden-sm">{{video.release_date  && video.release_date !="0000-00-00" ? video.release_date:''}}</span>
+                                                    </p>
+                                                </li>
+                                            </ul>
+                                            <h4>Duration</h4>
+                                            <ul class="list-unstyled">
+                                                <li class="listLabel">
+                                                    <p class="content-txt bold seasons">
+                                                        <span>{{video.duration}}</span>
+                                                    </p>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="detailsItem detailsMedia col-md-2">
+                                            <h4>Ratings</h4>
+                                            <div class="mt-3">
+                                                <div class="rating-symbol glyphicon" [ngClass]="{'glyphicon-star-empty' : (video.ratings < 1), 'glyphicon-star' : (video.ratings >= 1)}"></div>
+                                                <div class="rating-symbol glyphicon" [ngClass]="{'glyphicon-star-empty' : (video.ratings < 2), 'glyphicon-star' : (video.ratings >= 2)}"></div>
+                                                <div class="rating-symbol glyphicon" [ngClass]="{'glyphicon-star-empty' : (video.ratings < 3), 'glyphicon-star' : (video.ratings >= 3)}"></div>
+                                                <div class="rating-symbol glyphicon" [ngClass]="{'glyphicon-star-empty' : (video.ratings < 4), 'glyphicon-star' : (video.ratings >= 4)}"></div>
+                                                <div class="rating-symbol glyphicon" [ngClass]="{'glyphicon-star-empty' : (video.ratings < 5), 'glyphicon-star' : (video.ratings >= 5)}"></div>
+                                            </div>
+                                            <h4>Age</h4>
+                                            <ul class="list-unstyled">
+                                                <li class="listLabel">
+                                                    <p class="content-txt bold seasons">
+                                                        Recommended for ages {{video.age}} and up
+                                                    </p>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="drop-tab hidden-xs">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active">
+                            <a style="cursor:pointer" (click)="dynamicContent(video.admin_video_id, 'overview')" aria-controls="overview" role="tab"
+                                data-toggle="tab">Overview</a>
+                        </li>
+
+                        <li role="presentation" *ngIf="value?.is_genre">
+                            <a style="cursor:pointer" (click)="dynamicContent(video.admin_video_id, 'episodes')" aria-controls="episodes" role="tab" data-toggle="tab">Episodes</a>
+                        </li>
+
+                        <li role="presentation" *ngIf="value?.is_genre || value?.trailer_video">
+                            <a style="cursor:pointer" (click)="dynamicContent(video.admin_video_id, 'trailers')" aria-controls="trailers" role="tab" data-toggle="tab">Trailers &amp; More</a>
+                        </li>
+
+                        <li role="presentation">
+                            <a style="cursor:pointer" (click)="dynamicContent(video.admin_video_id, 'more-like')" aria-controls="more-like" role="tab"
+                                data-toggle="tab">More Like This</a>
+                        </li>
+
+                        <li role="presentation">
+                            <a style="cursor:pointer" (click)="dynamicContent(video.admin_video_id, 'details')" aria-controls="details" role="tab" data-toggle="tab">Details</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+
+        <div id="data_loader" style="margin-top: 5px;text-align: center;display: none">
+            <img src="assets/img/ellipsis.svg" style="width: 40px;">
+        </div>
+
+    </div>
+  

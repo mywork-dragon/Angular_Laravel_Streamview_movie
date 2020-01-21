@@ -1,0 +1,51 @@
+<div class="main-content" *ngIf="loadStatus">
+  <nav class="navbar navbar-default form-navbar" role="navigation">
+    <div class="banner-spacing">
+      <div class="navbar-header form-header">
+        <a class="navbar-brand" routherLink="/">
+					<img src="{{AppSettings.site_logo}}" class="hidden-xs">
+					<img src="{{AppSettings.site_logo}}" class="visible-xs">
+				</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="content-panel">
+    <div class="profiles-gate-container">
+      <div class="centered-div">
+        <div class="profile-actions-container">
+          <h1>Add Profile</h1>
+          <h2>Add a profile for another person watching {{site_name}}.</h2>
+          <form #addForm="ngForm" enctype="multipart/form-data">
+            <div class="profile-metadata profile-entry">
+              <div class="main-profile-avatar" style="position: relative;">
+                <img src="{{profileDetail.imgsrc}}" alt="" style="opacity: 1; transform: scale(1); transition-duration: 400ms;" id="preview_picture">
+                <div class="image_sub_profile" style="cursor: pointer;" (click)="openBrowse()"><i class="fa fa-plus-circle"></i></div>
+              </div>
+              <input type="file" name="picture" id="picture" style="display: none" (change)="onFileChange($event)"
+                accept="image/png, image/jpeg">
+              <div class="profile-add-parent">
+                <div class="profile-entry-inputs">
+                  <input id="add-profile-name" class="" placeholder="Name" type="text" required [(ngModel)]="profileDetail.name" name="name">
+                  <input type="type" name="id" style="display: none;" ng-model="id">
+                  <input type="type" name="token" style="display: none;" ng-model="token">
+                  <label for="add-profile-name" aria-label="Name"></label>
+                </div>
+              </div>
+            </div>
+
+            <div class="profile-button preferred-action pull-left" role="button" (click)="onAddProfile()">
+              <span>Continue</span>
+            </div>
+            <a routerLink="/view-profiles">
+              <div class="profile-button pull-left" style="margin-left: 5px;">
+                <span>Cancel</span>
+              </div>
+            </a>
+            <div class="clearfix"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
